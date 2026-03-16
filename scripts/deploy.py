@@ -12,7 +12,7 @@ Required environment variables (per env):
     S3_BUCKET_ADMIN_DEV / S3_BUCKET_ADMIN_PRD
     CF_ID_USER_DEV / CF_ID_USER_PRD
     CF_ID_ADMIN_DEV / CF_ID_ADMIN_PRD
-    AWS_REGION (optional, defaults to eu-west-1)
+    AWS_REGION (optional, defaults to eu-west-3)
 """
 
 import os
@@ -115,7 +115,7 @@ def deploy(env: str) -> None:
     bucket_admin = os.environ.get(f"S3_BUCKET_ADMIN_{suffix}")
     cf_user = os.environ.get(f"CF_ID_USER_{suffix}")
     cf_admin = os.environ.get(f"CF_ID_ADMIN_{suffix}")
-    region = os.environ.get("AWS_REGION", "eu-west-1")
+    region = os.environ.get("AWS_REGION", "eu-west-3")
 
     missing = []
     for name, val in [
