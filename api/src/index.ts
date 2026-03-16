@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { handle } from "hono/aws-lambda";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { auth } from "./auth";
@@ -43,13 +44,17 @@ app.route("/api/admin", adminRoutes);
 // Health check
 app.get("/api/health", (c) => c.json({ status: "ok" }));
 
-const port = Number(process.env.PORT ?? 3001);
+// Handler Lambda pour API Gateway
+export const handler = handle(app);
 
-const server = Bun.serve({
-  port,
-  fetch: app.fetch,
-});
-
-console.log(`API server running on http://localhost:${server.port}`);
+// Démarrer le serveur uniquement en local (pas sur Lambda)
+if (!process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  const port = Number(process.env.PORT ?? 3001);
+  const server = Bun.serve({
+    port,
+    fetch: app.fetch,
+  });
+  console.log(`API server running on http://localhost:${server.port}`);
+}
 
 export default app;
