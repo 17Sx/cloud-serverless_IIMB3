@@ -33,7 +33,7 @@ export default function LoginPage() {
     <div className="flex min-h-[70vh] items-center justify-center">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Connexion</h1>
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Connexion DEV</h1>
           <p className="mt-1 text-sm text-zinc-500">Accédez à votre espace</p>
         </div>
 
