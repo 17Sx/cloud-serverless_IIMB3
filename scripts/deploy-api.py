@@ -51,7 +51,7 @@ def create_zip(source_dir: str) -> str:
 def deploy(env: str) -> None:
     suffix = env.upper()
     function_name = os.environ.get(f"LAMBDA_FUNCTION_{suffix}")
-    region = os.environ.get("AWS_REGION", "eu-west-3")
+    region = (os.environ.get("AWS_REGION") or "").strip() or "eu-west-3"
 
     if not function_name:
         print(f"ERROR: LAMBDA_FUNCTION_{suffix} not set")

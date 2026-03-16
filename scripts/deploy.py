@@ -115,7 +115,7 @@ def deploy(env: str) -> None:
     bucket_admin = os.environ.get(f"S3_BUCKET_ADMIN_{suffix}")
     cf_user = os.environ.get(f"CF_ID_USER_{suffix}")
     cf_admin = os.environ.get(f"CF_ID_ADMIN_{suffix}")
-    region = os.environ.get("AWS_REGION", "eu-west-3")
+    region = (os.environ.get("AWS_REGION") or "").strip() or "eu-west-3"
 
     missing = []
     for name, val in [
