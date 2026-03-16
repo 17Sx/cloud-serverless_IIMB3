@@ -21,6 +21,10 @@ import subprocess
 import mimetypes
 import time
 
+from dotenv import load_dotenv
+
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
+
 import boto3
 
 VALID_ENVS = ("dev", "prd")
