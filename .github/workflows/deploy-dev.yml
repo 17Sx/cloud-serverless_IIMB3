@@ -52,6 +52,7 @@ jobs:
           S3_BUCKET_ADMIN_DEV: ${{ secrets.S3_BUCKET_ADMIN_DEV }}
           CF_ID_USER_DEV: ${{ secrets.CF_ID_USER_DEV }}
           CF_ID_ADMIN_DEV: ${{ secrets.CF_ID_ADMIN_DEV }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
         run: python scripts/deploy.py dev
 
       - name: Deploy API to dev
