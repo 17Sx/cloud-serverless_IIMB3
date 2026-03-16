@@ -51,7 +51,7 @@ CONTENT_TYPE_OVERRIDES = {
 
 def run(cmd: list[str], cwd: str | None = None) -> None:
     print(f"  > {' '.join(cmd)}")
-    result = subprocess.run(cmd, cwd=cwd, check=False, shell=True)
+    result = subprocess.run(cmd, cwd=cwd, check=False, shell=(sys.platform == "win32"))
     if result.returncode != 0:
         print(f"ERROR: command failed with exit code {result.returncode}")
         sys.exit(result.returncode)

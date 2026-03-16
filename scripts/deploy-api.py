@@ -31,7 +31,7 @@ DIST_DIR = os.path.join(API_DIR, "dist")
 
 def run(cmd: list[str], cwd: str | None = None) -> None:
     print(f"  > {' '.join(cmd)}")
-    result = subprocess.run(cmd, cwd=cwd, check=False)
+    result = subprocess.run(cmd, cwd=cwd, check=False, shell=(sys.platform == "win32"))
     if result.returncode != 0:
         print(f"ERROR: command failed with exit code {result.returncode}")
         sys.exit(result.returncode)
