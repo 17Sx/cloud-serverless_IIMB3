@@ -28,13 +28,6 @@ export default function AdminProjectsPage() {
   const [editName, setEditName] = useState("");
   const [editDesc, setEditDesc] = useState("");
 
-  async function loadTeams() {
-    try {
-      const d = await api.get<{ teams: Team[] }>("/api/admin/teams");
-      setTeams(d.teams);
-    } catch {}
-  }
-
   async function loadProjects() {
     try {
       const url = filterTeam
@@ -46,8 +39,36 @@ export default function AdminProjectsPage() {
     setLoading(false);
   }
 
-  useEffect(() => { loadTeams(); }, []);
-  useEffect(() => { loadProjects(); }, [filterTeam]);
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const d = await api.get<{ teams: Team[] }>("/api/admin/teams");
+        if (!cancelled) setTeams(d.teams);
+      } catch {
+        // ignore
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const url = filterTeam
+          ? `/api/admin/projects?teamId=${filterTeam}`
+          : "/api/admin/projects";
+        const d = await api.get<{ projects: Project[] }>(url);
+        if (!cancelled) setProjects(d.projects);
+      } catch {
+        // ignore
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [filterTeam]);
 
   async function handleSave(id: string) {
     if (!editName.trim()) return;

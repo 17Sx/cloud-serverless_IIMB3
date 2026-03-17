@@ -27,7 +27,20 @@ export default function AdminTeamsPage() {
     setLoading(false);
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const d = await api.get<{ teams: Team[] }>("/api/admin/teams");
+        if (!cancelled) setTeams(d.teams);
+      } catch {
+        // ignore
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   async function handleSave(id: string) {
     if (!editName.trim()) return;

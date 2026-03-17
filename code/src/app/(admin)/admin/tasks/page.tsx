@@ -42,13 +42,6 @@ export default function AdminTasksPage() {
   const [editDesc, setEditDesc] = useState("");
   const [editStatus, setEditStatus] = useState("todo");
 
-  async function loadProjects() {
-    try {
-      const d = await api.get<{ projects: { id: string; name: string }[] }>("/api/admin/projects");
-      setProjects(d.projects);
-    } catch {}
-  }
-
   async function loadTasks() {
     try {
       const url = filterProject
@@ -60,8 +53,36 @@ export default function AdminTasksPage() {
     setLoading(false);
   }
 
-  useEffect(() => { loadProjects(); }, []);
-  useEffect(() => { loadTasks(); }, [filterProject]);
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const d = await api.get<{ projects: { id: string; name: string }[] }>("/api/admin/projects");
+        if (!cancelled) setProjects(d.projects);
+      } catch {
+        // ignore
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const url = filterProject
+          ? `/api/admin/tasks?projectId=${filterProject}`
+          : "/api/admin/tasks";
+        const d = await api.get<{ tasks: Task[] }>(url);
+        if (!cancelled) setTasks(d.tasks);
+      } catch {
+        // ignore
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [filterProject]);
 
   async function handleSave(id: string) {
     if (!editName.trim()) return;

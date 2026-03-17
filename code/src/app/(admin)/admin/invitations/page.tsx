@@ -35,7 +35,23 @@ export default function AdminInvitationsPage() {
     setLoading(false);
   }
 
-  useEffect(() => { load(); }, [filterStatus]);
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const url = filterStatus
+          ? `/api/admin/invitations?status=${filterStatus}`
+          : "/api/admin/invitations";
+        const d = await api.get<{ invitations: Invitation[] }>(url);
+        if (!cancelled) setInvitations(d.invitations);
+      } catch {
+        // ignore
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [filterStatus]);
 
   async function handleDelete(id: string, email: string) {
     if (!confirm(`Supprimer l'invitation pour "${email}" ?`)) return;

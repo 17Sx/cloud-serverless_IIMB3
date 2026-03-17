@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { api } from "@/lib/api";
 import { AuthGuard } from "@/components/AuthGuard";
 
@@ -34,7 +35,22 @@ export default function ProfilePage() {
   useEffect(() => {
     if (didLoad.current) return;
     didLoad.current = true;
-    loadProfile();
+    let cancelled = false;
+    void (async () => {
+      try {
+        const data = await api.get<{ user: UserProfile }>("/api/users/me");
+        if (!cancelled) {
+          setUser(data.user);
+          setName(data.user.name);
+          setImage(data.user.image ?? "");
+        }
+      } catch (err: unknown) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Erreur lors du chargement du profil");
+        }
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -87,11 +103,13 @@ export default function ProfilePage() {
           <div className="rounded-lg border border-zinc-200 p-5 dark:border-zinc-800">
             <div className="space-y-4">
               {user.image && (
-                <div>
-                  <img
+                <div className="relative h-20 w-20">
+                  <Image
                     src={user.image}
                     alt="Photo de profil"
-                    className="h-20 w-20 rounded-full object-cover"
+                    width={80}
+                    height={80}
+                    className="rounded-full object-cover"
                   />
                 </div>
               )}

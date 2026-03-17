@@ -27,13 +27,27 @@ export default function AdminUsersPage() {
     setLoading(false);
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const d = await api.get<{ users: User[] | { users: User[] } }>("/api/admin/users");
+        const list = Array.isArray(d.users) ? d.users : (d.users as { users: User[] }).users ?? [];
+        if (!cancelled) setUsers(list);
+      } catch {
+        // ignore
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   async function handleSetRole(userId: string, role: string) {
     try {
       await authClient.admin.setRole({ userId, role });
       load();
-    } catch (err) {
+    } catch {
       alert("Erreur lors du changement de rôle");
     }
   }
@@ -43,7 +57,7 @@ export default function AdminUsersPage() {
     try {
       await authClient.admin.banUser({ userId });
       load();
-    } catch (err) {
+    } catch {
       alert("Erreur lors du bannissement");
     }
   }
@@ -52,7 +66,7 @@ export default function AdminUsersPage() {
     try {
       await authClient.admin.unbanUser({ userId });
       load();
-    } catch (err) {
+    } catch {
       alert("Erreur lors du débannissement");
     }
   }
