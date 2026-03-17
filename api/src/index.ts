@@ -44,8 +44,25 @@ app.route("/api/admin", adminRoutes);
 // Health check
 app.get("/api/health", (c) => c.json({ status: "ok" }));
 
-// Handler Lambda pour API Gateway
-export const handler = handle(app);
+// Strip API Gateway stage prefix (/dev, /prd) so Hono routes match correctly
+const honoHandler = handle(app);
+const STAGE_PREFIX = /^\/(dev|prd)\//;
+
+export const handler: typeof honoHandler = async (event, context) => {
+  if (event.path && STAGE_PREFIX.test(event.path)) {
+    event.path = event.path.replace(STAGE_PREFIX, "/");
+    if (event.requestContext?.path) {
+      event.requestContext.path = event.path;
+    }
+    if (event.requestContext?.resourcePath) {
+      event.requestContext.resourcePath = event.path;
+    }
+  }
+  if (event.rawPath && STAGE_PREFIX.test(event.rawPath)) {
+    event.rawPath = event.rawPath.replace(STAGE_PREFIX, "/");
+  }
+  return honoHandler(event, context);
+};
 
 // Démarrer le serveur uniquement en local (pas sur Lambda)
 if (!process.env.AWS_LAMBDA_FUNCTION_NAME) {
