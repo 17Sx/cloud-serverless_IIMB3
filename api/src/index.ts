@@ -18,19 +18,36 @@ const rawOrigins = process.env.TRUSTED_ORIGINS ?? "http://localhost:3000";
 app.use(
   "*",
   cors({
-    origin: rawOrigins === "*" ? (origin) => origin : rawOrigins.split(",").map((o) => o.trim()),
+    origin:
+      rawOrigins === "*"
+        ? (origin) => origin
+        : rawOrigins.split(",").map((o) => o.trim()),
     credentials: true,
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-  })
+  }),
 );
 
 app.use("*", logger());
 
-// Better Auth handler
-app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", (c) =>
-  auth.handler(c.req.raw)
-);
+app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
+  const hasBody = c.req.method !== "GET" && c.req.method !== "HEAD";
+  let body: ArrayBuffer | undefined;
+  if (hasBody && c.req.raw.body) {
+    body = await c.req.arrayBuffer();
+  }
+  const req = new Request(c.req.url, {
+    method: c.req.method,
+    headers: c.req.raw.headers,
+    body,
+  });
+  try {
+    return await auth.handler(req);
+  } catch (err) {
+    console.error("[auth] error:", err);
+    throw err;
+  }
+});
 
 // API routes
 app.route("/api/users", usersRoutes);
@@ -41,13 +58,52 @@ app.route("/api/tasks", tasksRoutes);
 app.route("/api/assets", assetsRoutes);
 app.route("/api/admin", adminRoutes);
 
-// Health check
 app.get("/api/health", (c) => c.json({ status: "ok" }));
 
-// Handler Lambda pour API Gateway
-export const handler = handle(app);
+app.onError((err, c) => {
+  console.error("[app] error:", err);
+  const allowOrigin =
+    rawOrigins === "*"
+      ? c.req.header("Origin") ?? "*"
+      : rawOrigins.split(",").map((o) => o.trim())[0] ?? "*";
+  return c.json(
+    { error: "Internal Server Error" },
+    500,
+    {
+      "Access-Control-Allow-Origin": allowOrigin,
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  );
+});
 
-// Démarrer le serveur uniquement en local (pas sur Lambda)
+// API Gateway ajoute /dev ou /prd au path — on le retire avant que Hono ne route
+const STRIP_STAGE = /^\/(dev|prd)\//;
+const honoHandler = handle(app);
+
+export const handler: typeof honoHandler = async (event, context) => {
+  const ev = event as unknown as {
+    path?: string;
+    rawPath?: string;
+    requestContext?: Record<string, unknown>;
+  };
+  const pathToCheck = ev.rawPath ?? ev.path;
+  if (typeof pathToCheck === "string" && STRIP_STAGE.test(pathToCheck)) {
+    const cleaned = pathToCheck.replace(STRIP_STAGE, "/");
+    (ev as Record<string, unknown>).path = cleaned;
+    (ev as Record<string, unknown>).rawPath = cleaned;
+    const ctx = ev.requestContext as Record<string, unknown> | undefined;
+    if (ctx) {
+      ctx.path = cleaned;
+      ctx.resourcePath = cleaned;
+      const http = ctx.http as Record<string, unknown> | undefined;
+      if (http) http.path = cleaned;
+    }
+  }
+  return honoHandler(event, context);
+};
+
 if (!process.env.AWS_LAMBDA_FUNCTION_NAME) {
   const port = Number(process.env.PORT ?? 3001);
   const server = Bun.serve({
