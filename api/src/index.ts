@@ -30,17 +30,25 @@ app.use(
 
 app.use("*", logger());
 
-// Better Auth handler - reconstruire le Request sans le stage (/dev, /prd) pour que better-auth matche
-const AUTH_STAGE_PREFIX = /^\/(dev|prd|staging)\//;
+// Retirer /dev, /prd, /staging du path pour better-auth (API Gateway met le stage dans l'URL)
+const STRIP_STAGE = /^\/(dev|prd|staging)\//;
 app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
   const url = new URL(c.req.url);
-  url.pathname = url.pathname.replace(AUTH_STAGE_PREFIX, "/");
+  const originalPath = url.pathname;
+  url.pathname = url.pathname.replace(STRIP_STAGE, "/");
+  if (process.env.AWS_LAMBDA_FUNCTION_NAME && originalPath !== url.pathname) {
+    console.log("[auth] path rewritten:", originalPath, "->", url.pathname);
+  }
   const req = new Request(url.toString(), {
     method: c.req.method,
     headers: c.req.raw.headers,
     body: c.req.method !== "GET" && c.req.method !== "HEAD" ? c.req.raw.body : undefined,
   });
-  return auth.handler(req);
+  const res = await auth.handler(req);
+  if (process.env.AWS_LAMBDA_FUNCTION_NAME && res.status === 404) {
+    console.log("[auth] better-auth returned 404 for:", url.pathname);
+  }
+  return res;
 });
 
 // API routes
@@ -55,13 +63,8 @@ app.route("/api/admin", adminRoutes);
 // Health check
 app.get("/api/health", (c) => c.json({ status: "ok" }));
 
-// Strip API Gateway stage prefix (/dev, /prd, /staging) so Hono routes match correctly
+// Retirer /dev, /prd, /staging du path (API Gateway met le stage dans l'URL)
 const honoHandler = handle(app);
-const STAGE_PREFIX = /^\/(dev|prd|staging)\//;
-
-function stripStagePrefix(path: string): string {
-  return path.replace(STAGE_PREFIX, "/");
-}
 
 export const handler: typeof honoHandler = async (event, context) => {
   const ev = event as unknown as {
@@ -70,8 +73,11 @@ export const handler: typeof honoHandler = async (event, context) => {
     requestContext?: Record<string, unknown>;
   };
   const pathToCheck = ev.rawPath ?? ev.path;
-  if (typeof pathToCheck === "string" && STAGE_PREFIX.test(pathToCheck)) {
-    const newPath = stripStagePrefix(pathToCheck);
+  if (process.env.AWS_LAMBDA_FUNCTION_NAME && typeof pathToCheck === "string") {
+    console.log("[lambda] incoming path:", pathToCheck);
+  }
+  if (typeof pathToCheck === "string" && STRIP_STAGE.test(pathToCheck)) {
+    const newPath = pathToCheck.replace(STRIP_STAGE, "/");
     (ev as Record<string, unknown>).path = newPath;
     (ev as Record<string, unknown>).rawPath = newPath;
     const ctx = ev.requestContext as Record<string, unknown> | undefined;
