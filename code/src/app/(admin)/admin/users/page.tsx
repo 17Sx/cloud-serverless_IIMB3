@@ -43,7 +43,7 @@ export default function AdminUsersPage() {
     return () => { cancelled = true; };
   }, []);
 
-  async function handleSetRole(userId: string, role: string) {
+  async function handleSetRole(userId: string, role: "user" | "admin") {
     try {
       await authClient.admin.setRole({ userId, role });
       load();
@@ -101,7 +101,7 @@ export default function AdminUsersPage() {
                     <td className="px-4 py-3">
                       <select
                         value={u.role ?? "user"}
-                        onChange={(e) => handleSetRole(u.id, e.target.value)}
+                        onChange={(e) => handleSetRole(u.id, e.target.value as "user" | "admin")}
                         className="rounded border border-zinc-300 px-2 py-0.5 text-xs dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
                       >
                         <option value="user">user</option>
