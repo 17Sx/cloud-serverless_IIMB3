@@ -102170,6 +102170,7 @@ var auth = betterAuth({
     schema: exports_auth_schema
   }),
   basePath: "/api/auth",
+  baseURL: (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(/\/(dev|prd)\/?$/, ""),
   plugins: [admin()],
   advanced: {
     disableOriginCheck: process.env.TRUSTED_ORIGINS === "*"
@@ -102804,11 +102805,8 @@ app.use("*", cors({
   allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
 }));
 app.use("*", logger());
-var AUTH_STAGE_PREFIX = /^\/(dev|prd|staging)\//;
 app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
-  const url2 = new URL(c.req.url);
-  url2.pathname = url2.pathname.replace(AUTH_STAGE_PREFIX, "/");
-  const req = new Request(url2.toString(), {
+  const req = new Request(c.req.url, {
     method: c.req.method,
     headers: c.req.raw.headers,
     body: c.req.method !== "GET" && c.req.method !== "HEAD" ? c.req.raw.body : undefined
@@ -102823,25 +102821,22 @@ app.route("/api/tasks", tasksRoutes);
 app.route("/api/assets", assetsRoutes);
 app.route("/api/admin", adminRoutes);
 app.get("/api/health", (c) => c.json({ status: "ok" }));
+var STRIP_STAGE = /^\/(dev|prd)\//;
 var honoHandler = handle(app);
-var STAGE_PREFIX = /^\/(dev|prd|staging)\//;
-function stripStagePrefix(path2) {
-  return path2.replace(STAGE_PREFIX, "/");
-}
 var handler = async (event, context) => {
   const ev = event;
   const pathToCheck = ev.rawPath ?? ev.path;
-  if (typeof pathToCheck === "string" && STAGE_PREFIX.test(pathToCheck)) {
-    const newPath = stripStagePrefix(pathToCheck);
-    ev.path = newPath;
-    ev.rawPath = newPath;
+  if (typeof pathToCheck === "string" && STRIP_STAGE.test(pathToCheck)) {
+    const cleaned = pathToCheck.replace(STRIP_STAGE, "/");
+    ev.path = cleaned;
+    ev.rawPath = cleaned;
     const ctx = ev.requestContext;
     if (ctx) {
-      ctx.path = newPath;
-      ctx.resourcePath = newPath;
+      ctx.path = cleaned;
+      ctx.resourcePath = cleaned;
       const http = ctx.http;
       if (http)
-        http.path = newPath;
+        http.path = cleaned;
     }
   }
   return honoHandler(event, context);

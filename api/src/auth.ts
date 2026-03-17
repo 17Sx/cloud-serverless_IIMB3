@@ -10,7 +10,10 @@ export const auth = betterAuth({
     schema: authSchema,
   }),
   basePath: "/api/auth",
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL: (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(
+    /\/(dev|prd)\/?$/,
+    "",
+  ),
   plugins: [admin()],
   advanced: {
     disableOriginCheck: process.env.TRUSTED_ORIGINS === "*",
