@@ -1,20 +1,53 @@
-export default function AdminHome() {
+"use client";
+
+import { useState, useEffect } from "react";
+import { api } from "@/lib/api";
+import { AuthGuard } from "@/components/AuthGuard";
+
+interface Stats {
+  users: number;
+  teams: number;
+  projects: number;
+  tasks: number;
+}
+
+export default function AdminDashboard() {
+  const [stats, setStats] = useState<Stats | null>(null);
+
+  useEffect(() => {
+    api.get<{ stats: Stats }>("/api/admin/stats").then((d) => setStats(d.stats)).catch(() => {});
+  }, []);
+
   return (
-    <div className="flex flex-col items-center gap-8 py-20 text-center">
-      <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-        Front Admin
-      </h1>
-      <p className="max-w-md text-lg text-zinc-600 dark:text-zinc-400">
-        Bienvenue sur l&apos;interface administrateur.
-      </p>
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Environnement :{" "}
-          <code className="font-mono font-semibold text-zinc-900 dark:text-zinc-100">
-            {process.env.NEXT_PUBLIC_ENV ?? "non défini"}
-          </code>
-        </p>
+    <AuthGuard requireAdmin>
+      <div className="space-y-8">
+        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+          Dashboard Admin
+        </h1>
+
+        {!stats ? (
+          <p className="text-sm text-zinc-500">Chargement...</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {[
+              { label: "Utilisateurs", value: stats.users },
+              { label: "Équipes", value: stats.teams },
+              { label: "Projets", value: stats.projects },
+              { label: "Tâches", value: stats.tasks },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-lg border border-zinc-200 bg-white p-5 text-center dark:border-zinc-800 dark:bg-zinc-900"
+              >
+                <p className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+                  {item.value}
+                </p>
+                <p className="mt-1 text-sm text-zinc-500">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-    </div>
+    </AuthGuard>
   );
 }

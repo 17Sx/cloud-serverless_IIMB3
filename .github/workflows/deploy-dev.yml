@@ -3,11 +3,12 @@ name: Deploy Dev
 on:
   push:
     branches:
-      - dev
+      - staging
 
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
+    environment: staging
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,6 +20,9 @@ jobs:
           cache: "npm"
           cache-dependency-path: code/package-lock.json
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
       - name: Setup Python 3.11
         uses: actions/setup-python@v5
         with:
@@ -27,15 +31,19 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Install npm dependencies
+      - name: Install frontend dependencies
         working-directory: code
         run: npm ci
 
-      - name: Lint
+      - name: Lint frontend
         working-directory: code
         run: npm run lint
 
-      - name: Deploy to dev
+      - name: Install API dependencies
+        working-directory: api
+        run: bun install --frozen-lockfile
+
+      - name: Deploy frontend to dev
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -44,4 +52,13 @@ jobs:
           S3_BUCKET_ADMIN_DEV: ${{ secrets.S3_BUCKET_ADMIN_DEV }}
           CF_ID_USER_DEV: ${{ secrets.CF_ID_USER_DEV }}
           CF_ID_ADMIN_DEV: ${{ secrets.CF_ID_ADMIN_DEV }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
         run: python scripts/deploy.py dev
+
+      - name: Deploy API to dev
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          LAMBDA_FUNCTION_DEV: ${{ secrets.LAMBDA_FUNCTION_DEV }}
+        run: python scripts/deploy-api.py dev
