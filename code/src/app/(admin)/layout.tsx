@@ -16,6 +16,18 @@ export default function AdminLayout({
             <Link href="/admin/users" className="text-sm text-zinc-400 hover:text-white">
               Utilisateurs
             </Link>
+            <Link href="/admin/teams" className="text-sm text-zinc-400 hover:text-white">
+              Équipes
+            </Link>
+            <Link href="/admin/projects" className="text-sm text-zinc-400 hover:text-white">
+              Projets
+            </Link>
+            <Link href="/admin/tasks" className="text-sm text-zinc-400 hover:text-white">
+              Tâches
+            </Link>
+            <Link href="/admin/invitations" className="text-sm text-zinc-400 hover:text-white">
+              Invitations
+            </Link>
           </div>
           <div className="flex items-center gap-3">
             <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
