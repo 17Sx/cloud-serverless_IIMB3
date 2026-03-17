@@ -1,20 +1,25 @@
-export default function UserHome() {
+"use client";
+
+import { useSession } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+export default function HomePage() {
+  const { data: session, isPending } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isPending) return;
+    if (!session) {
+      router.replace("/login");
+    } else {
+      router.replace("/teams");
+    }
+  }, [session, isPending, router]);
+
   return (
-    <div className="flex flex-col items-center gap-8 py-20 text-center">
-      <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-        Front User
-      </h1>
-      <p className="max-w-md text-lg text-zinc-600 dark:text-zinc-400">
-        Bienvenue sur l&apos;interface utilisateur.
-      </p>
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Environnement :{" "}
-          <code className="font-mono font-semibold text-zinc-900 dark:text-zinc-100">
-            {process.env.NEXT_PUBLIC_ENV ?? "non défini"}
-          </code>
-        </p>
-      </div>
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-300 border-t-zinc-900" />
     </div>
   );
 }

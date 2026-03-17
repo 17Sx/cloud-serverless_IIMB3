@@ -12,7 +12,7 @@ Required environment variables (per env):
     S3_BUCKET_ADMIN_DEV / S3_BUCKET_ADMIN_PRD
     CF_ID_USER_DEV / CF_ID_USER_PRD
     CF_ID_ADMIN_DEV / CF_ID_ADMIN_PRD
-    AWS_REGION (optional, defaults to eu-west-1)
+    AWS_REGION (optional, defaults to eu-west-3)
 """
 
 import os
@@ -51,7 +51,7 @@ CONTENT_TYPE_OVERRIDES = {
 
 def run(cmd: list[str], cwd: str | None = None) -> None:
     print(f"  > {' '.join(cmd)}")
-    result = subprocess.run(cmd, cwd=cwd, check=False)
+    result = subprocess.run(cmd, cwd=cwd, check=False, shell=(sys.platform == "win32"))
     if result.returncode != 0:
         print(f"ERROR: command failed with exit code {result.returncode}")
         sys.exit(result.returncode)
@@ -115,7 +115,7 @@ def deploy(env: str) -> None:
     bucket_admin = os.environ.get(f"S3_BUCKET_ADMIN_{suffix}")
     cf_user = os.environ.get(f"CF_ID_USER_{suffix}")
     cf_admin = os.environ.get(f"CF_ID_ADMIN_{suffix}")
-    region = os.environ.get("AWS_REGION", "eu-west-1")
+    region = (os.environ.get("AWS_REGION") or "").strip() or "eu-west-3"
 
     missing = []
     for name, val in [
