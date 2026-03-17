@@ -78,13 +78,18 @@ def clear_bucket(s3_client, bucket: str) -> None:
     print(f"  Bucket {bucket} cleared.")
 
 
-def upload_directory(s3_client, local_dir: str, bucket: str) -> None:
-    print(f"  Uploading {local_dir} -> s3://{bucket}/")
+def upload_directory(
+    s3_client, local_dir: str, bucket: str, prefix: str = ""
+) -> None:
+    dest = f"s3://{bucket}/{prefix}" if prefix else f"s3://{bucket}/"
+    print(f"  Uploading {local_dir} -> {dest}")
     count = 0
     for root, _, files in os.walk(local_dir):
         for filename in files:
             filepath = os.path.join(root, filename)
             key = os.path.relpath(filepath, local_dir).replace("\\", "/")
+            if prefix:
+                key = f"{prefix.rstrip('/')}/{key}"
             content_type = get_content_type(filepath)
             s3_client.upload_file(
                 filepath,
@@ -93,7 +98,7 @@ def upload_directory(s3_client, local_dir: str, bucket: str) -> None:
                 ExtraArgs={"ContentType": content_type},
             )
             count += 1
-    print(f"  Uploaded {count} files to s3://{bucket}/")
+    print(f"  Uploaded {count} files to {dest}")
 
 
 def invalidate_cloudfront(cf_client, distribution_id: str) -> None:
@@ -148,6 +153,7 @@ def deploy(env: str) -> None:
 
     user_out = os.path.join(OUT_DIR)
     admin_out = os.path.join(OUT_DIR, "admin")
+    next_static = os.path.join(OUT_DIR, "_next")
 
     # Step 3: Clear S3 buckets
     print("\n[3/5] Clearing S3 buckets...")
@@ -157,7 +163,18 @@ def deploy(env: str) -> None:
     # Step 4: Upload to S3
     print("\n[4/5] Uploading to S3...")
     upload_directory(s3_client, user_out, bucket_user)
+    # Admin bucket: pages admin/ + assets _next/ (les HTML admin référencent /_next/...)
     upload_directory(s3_client, admin_out, bucket_admin)
+    if os.path.isdir(next_static):
+        upload_directory(s3_client, next_static, bucket_admin, prefix="_next")
+    # Assets racine (favicon, etc.)
+    for name in ("favicon.ico",):
+        p = os.path.join(OUT_DIR, name)
+        if os.path.isfile(p):
+            s3_client.upload_file(
+                p, bucket_admin, name,
+                ExtraArgs={"ContentType": get_content_type(p)},
+            )
 
     # Step 5: Invalidate CloudFront
     print("\n[5/5] Invalidating CloudFront caches...")
