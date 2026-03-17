@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -11,16 +11,25 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/teams";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
+    const redirectTo = callbackUrl.startsWith("http") ? callbackUrl : callbackUrl.startsWith("/") ? callbackUrl : `/${callbackUrl}`;
     await signIn.email(
-      { email, password, callbackURL: "/teams" },
+      { email, password, callbackURL: redirectTo },
       {
-        onSuccess: () => router.push("/teams"),
+        onSuccess: () => {
+          if (redirectTo.startsWith("http")) {
+            window.location.href = redirectTo;
+          } else {
+            router.push(redirectTo);
+          }
+        },
         onError: (ctx) => {
           setError(ctx.error.message ?? "Erreur de connexion");
           setLoading(false);

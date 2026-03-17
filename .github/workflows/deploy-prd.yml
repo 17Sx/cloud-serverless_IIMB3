@@ -53,6 +53,7 @@ jobs:
           CF_ID_USER_PRD: ${{ secrets.CF_ID_USER_PRD }}
           CF_ID_ADMIN_PRD: ${{ secrets.CF_ID_ADMIN_PRD }}
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_USER_SITE_URL: ${{ secrets.NEXT_PUBLIC_USER_SITE_URL }}
         run: python scripts/deploy.py prd
 
       - name: Deploy API to prd

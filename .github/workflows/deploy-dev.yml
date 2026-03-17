@@ -53,6 +53,7 @@ jobs:
           CF_ID_USER_DEV: ${{ secrets.CF_ID_USER_DEV }}
           CF_ID_ADMIN_DEV: ${{ secrets.CF_ID_ADMIN_DEV }}
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_USER_SITE_URL: ${{ secrets.NEXT_PUBLIC_USER_SITE_URL }}
         run: python scripts/deploy.py dev
 
       - name: Deploy API to dev
