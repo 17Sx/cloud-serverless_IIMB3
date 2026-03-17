@@ -31,10 +31,15 @@ app.use(
 app.use("*", logger());
 
 app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
+  const hasBody = c.req.method !== "GET" && c.req.method !== "HEAD";
+  let body: ArrayBuffer | undefined;
+  if (hasBody && c.req.raw.body) {
+    body = await c.req.arrayBuffer();
+  }
   const req = new Request(c.req.url, {
     method: c.req.method,
     headers: c.req.raw.headers,
-    body: c.req.method !== "GET" && c.req.method !== "HEAD" ? c.req.raw.body : undefined,
+    body,
   });
   try {
     return await auth.handler(req);
@@ -54,6 +59,24 @@ app.route("/api/assets", assetsRoutes);
 app.route("/api/admin", adminRoutes);
 
 app.get("/api/health", (c) => c.json({ status: "ok" }));
+
+app.onError((err, c) => {
+  console.error("[app] error:", err);
+  const allowOrigin =
+    rawOrigins === "*"
+      ? c.req.header("Origin") ?? "*"
+      : rawOrigins.split(",").map((o) => o.trim())[0] ?? "*";
+  return c.json(
+    { error: "Internal Server Error" },
+    500,
+    {
+      "Access-Control-Allow-Origin": allowOrigin,
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  );
+});
 
 // API Gateway ajoute /dev ou /prd au path — on le retire avant que Hono ne route
 const STRIP_STAGE = /^\/(dev|prd)\//;

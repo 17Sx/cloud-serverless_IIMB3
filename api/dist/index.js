@@ -102111,7 +102111,8 @@ var user = pgTable("user", {
   image: text("image"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => /* @__PURE__ */ new Date).notNull(),
-  role: text("role").default("user")
+  role: text("role").default("user"),
+  banned: boolean7("banned").default(false).notNull()
 });
 var session = pgTable("session", {
   id: text("id").primaryKey(),
@@ -102806,12 +102807,22 @@ app.use("*", cors({
 }));
 app.use("*", logger());
 app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
+  const hasBody = c.req.method !== "GET" && c.req.method !== "HEAD";
+  let body;
+  if (hasBody && c.req.raw.body) {
+    body = await c.req.arrayBuffer();
+  }
   const req = new Request(c.req.url, {
     method: c.req.method,
     headers: c.req.raw.headers,
-    body: c.req.method !== "GET" && c.req.method !== "HEAD" ? c.req.raw.body : undefined
+    body
   });
-  return auth.handler(req);
+  try {
+    return await auth.handler(req);
+  } catch (err) {
+    console.error("[auth] error:", err);
+    throw err;
+  }
 });
 app.route("/api/users", usersRoutes);
 app.route("/api/teams", teamsRoutes);
@@ -102821,6 +102832,16 @@ app.route("/api/tasks", tasksRoutes);
 app.route("/api/assets", assetsRoutes);
 app.route("/api/admin", adminRoutes);
 app.get("/api/health", (c) => c.json({ status: "ok" }));
+app.onError((err, c) => {
+  console.error("[app] error:", err);
+  const allowOrigin = rawOrigins === "*" ? c.req.header("Origin") ?? "*" : rawOrigins.split(",").map((o) => o.trim())[0] ?? "*";
+  return c.json({ error: "Internal Server Error" }, 500, {
+    "Access-Control-Allow-Origin": allowOrigin,
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization"
+  });
+});
 var STRIP_STAGE = /^\/(dev|prd)\//;
 var honoHandler = handle(app);
 var handler = async (event, context) => {
