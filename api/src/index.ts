@@ -1,3 +1,18 @@
+import { config } from "dotenv";
+import path from "path";
+
+// Charger .env racine en dev local (credentials AWS, S3_ASSETS_BUCKET, etc.)
+config({ path: path.resolve(process.cwd(), "../.env") });
+
+// Validation des variables critiques en dev local
+if (!process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  const required = ["DATABASE_URL", "S3_ASSETS_BUCKET"];
+  const missing = required.filter((k) => !process.env[k]);
+  if (missing.length) {
+    console.warn(`[api] Warning: missing env: ${missing.join(", ")}`);
+  }
+}
+
 import { Hono } from "hono";
 import { handle } from "hono/aws-lambda";
 import { cors } from "hono/cors";

@@ -101,7 +101,7 @@ def main() -> None:
     env = sys.argv[1]
     print(f"=== Deploying API to {env.upper()} ===")
     deploy(env)
-
+    
 
 if __name__ == "__main__":
     main()

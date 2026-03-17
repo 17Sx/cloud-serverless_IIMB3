@@ -7,6 +7,7 @@ import {
   pgEnum,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import { user } from "../../auth-schema";
 
 export const invitationStatusEnum = pgEnum("invitation_status", [
   "pending",
@@ -49,6 +50,7 @@ export const teamMembers = pgTable("team_members", {
 
 export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
   team: one(teams, { fields: [teamMembers.teamId], references: [teams.id] }),
+  user: one(user, { fields: [teamMembers.userId], references: [user.id] }),
 }));
 
 // ── Invitations ──

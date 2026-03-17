@@ -62,7 +62,15 @@ teamsRoutes.get("/:id", requireAuth, async (c) => {
 
   const team = await db.query.teams.findFirst({
     where: eq(teams.id, teamId),
-    with: { members: true },
+    with: {
+      members: {
+        with: {
+          user: {
+            columns: { id: true, name: true, email: true, image: true },
+          },
+        },
+      },
+    },
   });
 
   return c.json({ team });
