@@ -18,19 +18,30 @@ const rawOrigins = process.env.TRUSTED_ORIGINS ?? "http://localhost:3000";
 app.use(
   "*",
   cors({
-    origin: rawOrigins === "*" ? (origin) => origin : rawOrigins.split(",").map((o) => o.trim()),
+    origin:
+      rawOrigins === "*"
+        ? (origin) => origin
+        : rawOrigins.split(",").map((o) => o.trim()),
     credentials: true,
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-  })
+  }),
 );
 
 app.use("*", logger());
 
-// Better Auth handler
-app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", (c) =>
-  auth.handler(c.req.raw)
-);
+// Better Auth handler - reconstruire le Request sans le stage (/dev, /prd) pour que better-auth matche
+const AUTH_STAGE_PREFIX = /^\/(dev|prd|staging)\//;
+app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
+  const url = new URL(c.req.url);
+  url.pathname = url.pathname.replace(AUTH_STAGE_PREFIX, "/");
+  const req = new Request(url.toString(), {
+    method: c.req.method,
+    headers: c.req.raw.headers,
+    body: c.req.method !== "GET" && c.req.method !== "HEAD" ? c.req.raw.body : undefined,
+  });
+  return auth.handler(req);
+});
 
 // API routes
 app.route("/api/users", usersRoutes);
@@ -44,22 +55,32 @@ app.route("/api/admin", adminRoutes);
 // Health check
 app.get("/api/health", (c) => c.json({ status: "ok" }));
 
-// Strip API Gateway stage prefix (/dev, /prd) so Hono routes match correctly
+// Strip API Gateway stage prefix (/dev, /prd, /staging) so Hono routes match correctly
 const honoHandler = handle(app);
-const STAGE_PREFIX = /^\/(dev|prd)\//;
+const STAGE_PREFIX = /^\/(dev|prd|staging)\//;
+
+function stripStagePrefix(path: string): string {
+  return path.replace(STAGE_PREFIX, "/");
+}
 
 export const handler: typeof honoHandler = async (event, context) => {
-  if (event.path && STAGE_PREFIX.test(event.path)) {
-    event.path = event.path.replace(STAGE_PREFIX, "/");
-    if (event.requestContext?.path) {
-      event.requestContext.path = event.path;
+  const ev = event as unknown as {
+    path?: string;
+    rawPath?: string;
+    requestContext?: Record<string, unknown>;
+  };
+  const pathToCheck = ev.rawPath ?? ev.path;
+  if (typeof pathToCheck === "string" && STAGE_PREFIX.test(pathToCheck)) {
+    const newPath = stripStagePrefix(pathToCheck);
+    (ev as Record<string, unknown>).path = newPath;
+    (ev as Record<string, unknown>).rawPath = newPath;
+    const ctx = ev.requestContext as Record<string, unknown> | undefined;
+    if (ctx) {
+      ctx.path = newPath;
+      ctx.resourcePath = newPath;
+      const http = ctx.http as Record<string, unknown> | undefined;
+      if (http) http.path = newPath;
     }
-    if (event.requestContext?.resourcePath) {
-      event.requestContext.resourcePath = event.path;
-    }
-  }
-  if (event.rawPath && STAGE_PREFIX.test(event.rawPath)) {
-    event.rawPath = event.rawPath.replace(STAGE_PREFIX, "/");
   }
   return honoHandler(event, context);
 };

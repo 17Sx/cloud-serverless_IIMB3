@@ -1959,6 +1959,7 @@ var init_factory = __esm(() => {
 });
 
 // node_modules/@better-auth/core/dist/db/adapter/index.mjs
+var whereOperators;
 var init_adapter = __esm(() => {
   init_get_default_model_name();
   init_get_default_field_name();
@@ -1968,6 +1969,19 @@ var init_adapter = __esm(() => {
   init_get_model_name();
   init_utils();
   init_factory();
+  whereOperators = [
+    "eq",
+    "ne",
+    "lt",
+    "lte",
+    "gt",
+    "gte",
+    "in",
+    "not_in",
+    "contains",
+    "starts_with",
+    "ends_with"
+  ];
 });
 
 // node_modules/@better-auth/memory-adapter/dist/index.mjs
@@ -16618,7 +16632,7 @@ var require_dist_cjs = __commonJS((exports2) => {
 
 // node_modules/@smithy/protocol-http/dist-cjs/index.js
 var require_dist_cjs2 = __commonJS((exports2) => {
-  var types3 = require_dist_cjs();
+  var types4 = require_dist_cjs();
   var getHttpHandlerExtensionConfiguration = (runtimeConfig) => {
     return {
       setHttpHandler(handler) {
@@ -16645,7 +16659,7 @@ var require_dist_cjs2 = __commonJS((exports2) => {
     name;
     kind;
     values;
-    constructor({ name, kind = types3.FieldPosition.HEADER, values: values2 = [] }) {
+    constructor({ name, kind = types4.FieldPosition.HEADER, values: values2 = [] }) {
       this.name = name;
       this.kind = kind;
       this.values = values2;
@@ -16819,8 +16833,8 @@ var require_dist_cjs3 = __commonJS((exports2) => {
 
 // node_modules/@smithy/util-middleware/dist-cjs/index.js
 var require_dist_cjs4 = __commonJS((exports2) => {
-  var types3 = require_dist_cjs();
-  var getSmithyContext = (context) => context[types3.SMITHY_CONTEXT_KEY] || (context[types3.SMITHY_CONTEXT_KEY] = {});
+  var types4 = require_dist_cjs();
+  var getSmithyContext = (context) => context[types4.SMITHY_CONTEXT_KEY] || (context[types4.SMITHY_CONTEXT_KEY] = {});
   var normalizeProvider = (input) => {
     if (typeof input === "function")
       return input;
@@ -17527,7 +17541,7 @@ var require_dist_cjs11 = __commonJS((exports2) => {
     return transformedHeaders;
   };
   var timing = {
-    setTimeout: (cb, ms) => setTimeout(cb, ms),
+    setTimeout: (cb, ms2) => setTimeout(cb, ms2),
     clearTimeout: (timeoutId) => clearTimeout(timeoutId)
   };
   var DEFER_EVENT_LISTENER_TIME$2 = 1000;
@@ -17798,9 +17812,9 @@ or increase socketAcquisitionWarningTimeout=(millis) in the NodeHttpHandler conf
         const queryString = querystringBuilder.buildQueryString(request.query || {});
         let auth2 = undefined;
         if (request.username != null || request.password != null) {
-          const username = request.username ?? "";
+          const username2 = request.username ?? "";
           const password = request.password ?? "";
-          auth2 = `${username}:${password}`;
+          auth2 = `${username2}:${password}`;
         }
         let path2 = request.path;
         if (queryString) {
@@ -18057,9 +18071,9 @@ or increase socketAcquisitionWarningTimeout=(millis) in the NodeHttpHandler conf
         const { hostname: hostname3, method, port, protocol, query } = request;
         let auth2 = "";
         if (request.username != null || request.password != null) {
-          const username = request.username ?? "";
+          const username2 = request.username ?? "";
           const password = request.password ?? "";
-          auth2 = `${username}:${password}@`;
+          auth2 = `${username2}:${password}@`;
         }
         const authority = `${protocol}//${auth2}${hostname3}${port ? `:${port}` : ""}`;
         const requestContext = { destination: new URL(authority) };
@@ -18279,9 +18293,9 @@ var require_dist_cjs12 = __commonJS((exports2) => {
       }
       let auth2 = "";
       if (request.username != null || request.password != null) {
-        const username = request.username ?? "";
+        const username2 = request.username ?? "";
         const password = request.password ?? "";
-        auth2 = `${username}:${password}@`;
+        auth2 = `${username2}:${password}@`;
       }
       const { port, method } = request;
       const url2 = `${request.protocol}//${auth2}${request.hostname}${port ? `:${port}` : ""}${path2}`;
@@ -18913,8 +18927,8 @@ var require_schema = __commonJS((exports2) => {
     namespace;
     traits;
     static assign(instance, values2) {
-      const schema3 = Object.assign(instance, values2);
-      return schema3;
+      const schema11 = Object.assign(instance, values2);
+      return schema11;
     }
     static [Symbol.hasInstance](lhs) {
       const isPrototype = this.prototype.isPrototypeOf(lhs);
@@ -19053,12 +19067,12 @@ var require_schema = __commonJS((exports2) => {
       this.memberName = memberName;
       const traitStack = [];
       let _ref = ref;
-      let schema3 = ref;
+      let schema11 = ref;
       this._isMemberSchema = false;
       while (isMemberSchema(_ref)) {
         traitStack.push(_ref[1]);
         _ref = _ref[0];
-        schema3 = deref(_ref);
+        schema11 = deref(_ref);
         this._isMemberSchema = true;
       }
       if (traitStack.length > 0) {
@@ -19070,20 +19084,20 @@ var require_schema = __commonJS((exports2) => {
       } else {
         this.memberTraits = 0;
       }
-      if (schema3 instanceof NormalizedSchema) {
+      if (schema11 instanceof NormalizedSchema) {
         const computedMemberTraits = this.memberTraits;
-        Object.assign(this, schema3);
-        this.memberTraits = Object.assign({}, computedMemberTraits, schema3.getMemberTraits(), this.getMemberTraits());
+        Object.assign(this, schema11);
+        this.memberTraits = Object.assign({}, computedMemberTraits, schema11.getMemberTraits(), this.getMemberTraits());
         this.normalizedTraits = undefined;
-        this.memberName = memberName ?? schema3.memberName;
+        this.memberName = memberName ?? schema11.memberName;
         return;
       }
-      this.schema = deref(schema3);
+      this.schema = deref(schema11);
       if (isStaticSchema(this.schema)) {
         this.name = `${this.schema[1]}#${this.schema[2]}`;
         this.traits = this.schema[3];
       } else {
-        this.name = this.memberName ?? String(schema3);
+        this.name = this.memberName ?? String(schema11);
         this.traits = 0;
       }
       if (this._isMemberSchema && !memberName) {
@@ -19231,16 +19245,16 @@ var require_schema = __commonJS((exports2) => {
       if (!isDoc && !isMap) {
         throw new Error(`@smithy/core/schema - cannot get key for non-map: ${this.getName(true)}`);
       }
-      const schema3 = this.getSchema();
-      const memberSchema = isDoc ? 15 : schema3[4] ?? 0;
-      return member([memberSchema, 0], "key");
+      const schema11 = this.getSchema();
+      const memberSchema2 = isDoc ? 15 : schema11[4] ?? 0;
+      return member([memberSchema2, 0], "key");
     }
     getValueSchema() {
       const sc = this.getSchema();
       const [isDoc, isMap, isList] = [this.isDocumentSchema(), this.isMapSchema(), this.isListSchema()];
-      const memberSchema = typeof sc === "number" ? 63 & sc : sc && typeof sc === "object" && (isMap || isList) ? sc[3 + sc[0]] : isDoc ? 15 : undefined;
-      if (memberSchema != null) {
-        return member([memberSchema, 0], isMap ? "value" : "member");
+      const memberSchema2 = typeof sc === "number" ? 63 & sc : sc && typeof sc === "object" && (isMap || isList) ? sc[3 + sc[0]] : isDoc ? 15 : undefined;
+      if (memberSchema2 != null) {
+        return member([memberSchema2, 0], isMap ? "value" : "member");
       }
       throw new Error(`@smithy/core/schema - ${this.getName(true)} has no value member.`);
     }
@@ -19248,8 +19262,8 @@ var require_schema = __commonJS((exports2) => {
       const struct2 = this.getSchema();
       if (this.isStructSchema() && struct2[4].includes(memberName)) {
         const i = struct2[4].indexOf(memberName);
-        const memberSchema = struct2[5][i];
-        return member(isMemberSchema(memberSchema) ? memberSchema : [memberSchema, 0], memberName);
+        const memberSchema2 = struct2[5][i];
+        return member(isMemberSchema(memberSchema2) ? memberSchema2 : [memberSchema2, 0], memberName);
       }
       if (this.isDocumentSchema()) {
         return member([15, 0], memberName);
@@ -19267,8 +19281,8 @@ var require_schema = __commonJS((exports2) => {
     }
     getEventStreamMember() {
       if (this.isStructSchema()) {
-        for (const [memberName, memberSchema] of this.structIterator()) {
-          if (memberSchema.isStreaming() && memberSchema.isStructSchema()) {
+        for (const [memberName, memberSchema2] of this.structIterator()) {
+          if (memberSchema2.isStreaming() && memberSchema2.isStructSchema()) {
             return memberName;
           }
         }
@@ -19298,15 +19312,15 @@ var require_schema = __commonJS((exports2) => {
       struct2[anno.it] = it;
     }
   }
-  function member(memberSchema, memberName) {
-    if (memberSchema instanceof NormalizedSchema) {
-      return Object.assign(memberSchema, {
+  function member(memberSchema2, memberName) {
+    if (memberSchema2 instanceof NormalizedSchema) {
+      return Object.assign(memberSchema2, {
         memberName,
         _isMemberSchema: true
       });
     }
     const internalCtorAccess = NormalizedSchema;
-    return new internalCtorAccess(memberSchema, memberName);
+    return new internalCtorAccess(memberSchema2, memberName);
   }
   var isMemberSchema = (sc) => Array.isArray(sc) && sc.length === 2;
   var isStaticSchema = (sc) => Array.isArray(sc) && sc.length >= 5;
@@ -19376,10 +19390,10 @@ var require_schema = __commonJS((exports2) => {
         }
       }
     }
-    register(shapeId, schema3) {
+    register(shapeId, schema11) {
       const qualifiedName = this.normalizeShapeId(shapeId);
       for (const r of [this, TypeRegistry.for(qualifiedName.split("#")[0])]) {
-        r.schemas.set(qualifiedName, schema3);
+        r.schemas.set(qualifiedName, schema11);
       }
     }
     getSchema(shapeId) {
@@ -19633,7 +19647,7 @@ var require_tslib = __commonJS((exports2, module2) => {
       if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
         return Reflect.metadata(metadataKey, metadataValue);
     };
-    __awaiter = function(thisArg, _arguments, P, generator2) {
+    __awaiter = function(thisArg, _arguments, P, generator3) {
       function adopt(value) {
         return value instanceof P ? value : new P(function(resolve) {
           resolve(value);
@@ -19642,14 +19656,14 @@ var require_tslib = __commonJS((exports2, module2) => {
       return new (P || (P = Promise))(function(resolve, reject) {
         function fulfilled(value) {
           try {
-            step(generator2.next(value));
+            step(generator3.next(value));
           } catch (e) {
             reject(e);
           }
         }
         function rejected(value) {
           try {
-            step(generator2["throw"](value));
+            step(generator3["throw"](value));
           } catch (e) {
             reject(e);
           }
@@ -19657,7 +19671,7 @@ var require_tslib = __commonJS((exports2, module2) => {
         function step(result) {
           result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
         }
-        step((generator2 = generator2.apply(thisArg, _arguments || [])).next());
+        step((generator3 = generator3.apply(thisArg, _arguments || [])).next());
       });
     };
     __generator = function(thisArg, body) {
@@ -19818,10 +19832,10 @@ var require_tslib = __commonJS((exports2, module2) => {
     __await = function(v) {
       return this instanceof __await ? (this.v = v, this) : new __await(v);
     };
-    __asyncGenerator = function(thisArg, _arguments, generator2) {
+    __asyncGenerator = function(thisArg, _arguments, generator3) {
       if (!Symbol.asyncIterator)
         throw new TypeError("Symbol.asyncIterator is not defined.");
-      var g = generator2.apply(thisArg, _arguments || []), i, q = [];
+      var g = generator3.apply(thisArg, _arguments || []), i, q = [];
       return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function() {
         return this;
       }, i;
@@ -20575,13 +20589,13 @@ var require_serde = __commonJS((exports2) => {
     if (!matches) {
       throw new TypeError(`Invalid RFC3339 timestamp format ${value}`);
     }
-    const [, yearStr, monthStr, dayStr, hours, minutes, seconds, , ms, offsetStr] = matches;
+    const [, yearStr, monthStr, dayStr, hours, minutes, seconds, , ms2, offsetStr] = matches;
     range(monthStr, 1, 12);
     range(dayStr, 1, 31);
     range(hours, 0, 23);
     range(minutes, 0, 59);
     range(seconds, 0, 60);
-    const date11 = new Date(Date.UTC(Number(yearStr), Number(monthStr) - 1, Number(dayStr), Number(hours), Number(minutes), Number(seconds), Number(ms) ? Math.round(parseFloat(`0.${ms}`) * 1000) : 0));
+    const date11 = new Date(Date.UTC(Number(yearStr), Number(monthStr) - 1, Number(dayStr), Number(hours), Number(minutes), Number(seconds), Number(ms2) ? Math.round(parseFloat(`0.${ms2}`) * 1000) : 0));
     date11.setUTCFullYear(Number(yearStr));
     if (offsetStr.toUpperCase() != "Z") {
       const [, sign2, offsetH, offsetM] = /([+-])(\d\d):(\d\d)/.exec(offsetStr) || [undefined, "+", 0, 0];
@@ -20945,24 +20959,24 @@ var require_event_streams = __commonJS((exports2) => {
       } else {
         const eventSchema = unionSchema.getMemberSchema(unionMember);
         if (eventSchema.isStructSchema()) {
-          for (const [memberName, memberSchema] of eventSchema.structIterator()) {
-            const { eventHeader, eventPayload } = memberSchema.getMergedTraits();
+          for (const [memberName, memberSchema2] of eventSchema.structIterator()) {
+            const { eventHeader, eventPayload } = memberSchema2.getMergedTraits();
             if (eventPayload) {
               explicitPayloadMember = memberName;
             } else if (eventHeader) {
               const value = event[unionMember][memberName];
               let type = "binary";
-              if (memberSchema.isNumericSchema()) {
+              if (memberSchema2.isNumericSchema()) {
                 if ((-2) ** 31 <= value && value <= 2 ** 31 - 1) {
                   type = "integer";
                 } else {
                   type = "long";
                 }
-              } else if (memberSchema.isTimestampSchema()) {
+              } else if (memberSchema2.isTimestampSchema()) {
                 type = "timestamp";
-              } else if (memberSchema.isStringSchema()) {
+              } else if (memberSchema2.isStringSchema()) {
                 type = "string";
-              } else if (memberSchema.isBooleanSchema()) {
+              } else if (memberSchema2.isBooleanSchema()) {
                 type = "boolean";
               }
               if (value != null) {
@@ -21007,7 +21021,7 @@ var require_event_streams = __commonJS((exports2) => {
 // node_modules/@smithy/core/dist-cjs/submodules/protocols/index.js
 var require_protocols = __commonJS((exports2) => {
   var utilStream = require_dist_cjs14();
-  var schema3 = require_schema();
+  var schema11 = require_schema();
   var serde = require_serde();
   var protocolHttp = require_dist_cjs2();
   var utilBase64 = require_dist_cjs8();
@@ -21041,7 +21055,7 @@ var require_protocols = __commonJS((exports2) => {
     constructor(options) {
       super();
       this.options = options;
-      this.compositeErrorRegistry = schema3.TypeRegistry.for(options.defaultNamespace);
+      this.compositeErrorRegistry = schema11.TypeRegistry.for(options.defaultNamespace);
       for (const etr of options.errorTypeRegistries ?? []) {
         this.compositeErrorRegistry.copyFrom(etr);
       }
@@ -21101,8 +21115,8 @@ var require_protocols = __commonJS((exports2) => {
       if (this.serdeContext?.disableHostPrefix) {
         return;
       }
-      const inputNs = schema3.NormalizedSchema.of(operationSchema.input);
-      const opTraits = schema3.translateTraits(operationSchema.traits ?? {});
+      const inputNs = schema11.NormalizedSchema.of(operationSchema.input);
+      const opTraits = schema11.translateTraits(operationSchema.traits ?? {});
       if (opTraits.endpoint) {
         let hostPrefix = opTraits.endpoint?.[0];
         if (typeof hostPrefix === "string") {
@@ -21155,7 +21169,7 @@ var require_protocols = __commonJS((exports2) => {
     getDefaultContentType() {
       throw new Error(`@smithy/core/protocols - ${this.constructor.name} getDefaultContentType() implementation missing.`);
     }
-    async deserializeHttpMessage(schema4, context, response, arg4, arg5) {
+    async deserializeHttpMessage(schema12, context, response, arg4, arg5) {
       return [];
     }
     getEventStreamMarshaller() {
@@ -21176,7 +21190,7 @@ var require_protocols = __commonJS((exports2) => {
       const query = {};
       const headers = {};
       const endpoint = await context.endpoint();
-      const ns = schema3.NormalizedSchema.of(operationSchema?.input);
+      const ns = schema11.NormalizedSchema.of(operationSchema?.input);
       const payloadMemberNames = [];
       const payloadMemberSchemas = [];
       let hasNonHttpBindingMember = false;
@@ -21194,7 +21208,7 @@ var require_protocols = __commonJS((exports2) => {
       if (endpoint) {
         this.updateServiceEndpoint(request, endpoint);
         this.setHostPrefix(request, operationSchema, input);
-        const opTraits = schema3.translateTraits(operationSchema.traits);
+        const opTraits = schema11.translateTraits(operationSchema.traits);
         if (opTraits.http) {
           request.method = opTraits.http[0];
           const [path2, search] = opTraits.http[1].split("?");
@@ -21326,7 +21340,7 @@ var require_protocols = __commonJS((exports2) => {
     }
     async deserializeResponse(operationSchema, context, response) {
       const deserializer = this.deserializer;
-      const ns = schema3.NormalizedSchema.of(operationSchema.output);
+      const ns = schema11.NormalizedSchema.of(operationSchema.output);
       const dataObject = {};
       if (response.statusCode >= 300) {
         const bytes = await collectBody(response.body, context);
@@ -21367,15 +21381,15 @@ var require_protocols = __commonJS((exports2) => {
       }
       let discardResponseBody = true;
       const deserializer = this.deserializer;
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       const nonHttpBindingMembers = [];
-      for (const [memberName, memberSchema] of ns.structIterator()) {
-        const memberTraits = memberSchema.getMemberTraits();
+      for (const [memberName, memberSchema2] of ns.structIterator()) {
+        const memberTraits = memberSchema2.getMemberTraits();
         if (memberTraits.httpPayload) {
           discardResponseBody = false;
-          const isStreaming = memberSchema.isStreaming();
+          const isStreaming = memberSchema2.isStreaming();
           if (isStreaming) {
-            const isEventStream = memberSchema.isStructSchema();
+            const isEventStream = memberSchema2.isStructSchema();
             if (isEventStream) {
               dataObject[memberName] = await this.deserializeEventStream({
                 response,
@@ -21387,15 +21401,15 @@ var require_protocols = __commonJS((exports2) => {
           } else if (response.body) {
             const bytes = await collectBody(response.body, context);
             if (bytes.byteLength > 0) {
-              dataObject[memberName] = await deserializer.read(memberSchema, bytes);
+              dataObject[memberName] = await deserializer.read(memberSchema2, bytes);
             }
           }
         } else if (memberTraits.httpHeader) {
           const key = String(memberTraits.httpHeader).toLowerCase();
           const value = response.headers[key];
           if (value != null) {
-            if (memberSchema.isListSchema()) {
-              const headerListValueSchema = memberSchema.getValueSchema();
+            if (memberSchema2.isListSchema()) {
+              const headerListValueSchema = memberSchema2.getValueSchema();
               headerListValueSchema.getMergedTraits().httpHeader = key;
               let sections;
               if (headerListValueSchema.isTimestampSchema() && headerListValueSchema.getSchema() === 4) {
@@ -21409,14 +21423,14 @@ var require_protocols = __commonJS((exports2) => {
               }
               dataObject[memberName] = list;
             } else {
-              dataObject[memberName] = await deserializer.read(memberSchema, value);
+              dataObject[memberName] = await deserializer.read(memberSchema2, value);
             }
           }
         } else if (memberTraits.httpPrefixHeaders !== undefined) {
           dataObject[memberName] = {};
           for (const [header, value] of Object.entries(response.headers)) {
             if (header.startsWith(memberTraits.httpPrefixHeaders)) {
-              const valueSchema = memberSchema.getValueSchema();
+              const valueSchema = memberSchema2.getValueSchema();
               valueSchema.getMergedTraits().httpHeader = header;
               dataObject[memberName][header.slice(memberTraits.httpPrefixHeaders.length)] = await deserializer.read(valueSchema, value);
             }
@@ -21438,7 +21452,7 @@ var require_protocols = __commonJS((exports2) => {
       const query = {};
       const headers = {};
       const endpoint = await context.endpoint();
-      const ns = schema3.NormalizedSchema.of(operationSchema?.input);
+      const ns = schema11.NormalizedSchema.of(operationSchema?.input);
       const schema$1 = ns.getSchema();
       let payload;
       const request = new protocolHttp.HttpRequest({
@@ -21463,9 +21477,9 @@ var require_protocols = __commonJS((exports2) => {
         if (eventStreamMember) {
           if (_input[eventStreamMember]) {
             const initialRequest = {};
-            for (const [memberName, memberSchema] of ns.structIterator()) {
+            for (const [memberName, memberSchema2] of ns.structIterator()) {
               if (memberName !== eventStreamMember && _input[memberName]) {
-                serializer.write(memberSchema, _input[memberName]);
+                serializer.write(memberSchema2, _input[memberName]);
                 initialRequest[memberName] = serializer.flush();
               }
             }
@@ -21488,7 +21502,7 @@ var require_protocols = __commonJS((exports2) => {
     }
     async deserializeResponse(operationSchema, context, response) {
       const deserializer = this.deserializer;
-      const ns = schema3.NormalizedSchema.of(operationSchema.output);
+      const ns = schema11.NormalizedSchema.of(operationSchema.output);
       const dataObject = {};
       if (response.statusCode >= 300) {
         const bytes = await collectBody(response.body, context);
@@ -21618,7 +21632,7 @@ var require_protocols = __commonJS((exports2) => {
       this.settings = settings;
     }
     read(_schema, data) {
-      const ns = schema3.NormalizedSchema.of(_schema);
+      const ns = schema11.NormalizedSchema.of(_schema);
       if (ns.isListSchema()) {
         return serde.splitHeader(data).map((item) => this.read(ns.getValueSchema(), item));
       }
@@ -21686,7 +21700,7 @@ var require_protocols = __commonJS((exports2) => {
       this.serdeContext = serdeContext;
     }
     read(schema$1, data) {
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       const traits = ns.getMergedTraits();
       const toString2 = this.serdeContext?.utf8Encoder ?? utilUtf8.toUtf8;
       if (traits.httpHeader || traits.httpResponseCode) {
@@ -21718,7 +21732,7 @@ var require_protocols = __commonJS((exports2) => {
       this.settings = settings;
     }
     write(schema$1, value) {
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       switch (typeof value) {
         case "object":
           if (value === null) {
@@ -21809,7 +21823,7 @@ var require_protocols = __commonJS((exports2) => {
       this.stringSerializer.setSerdeContext(serdeContext);
     }
     write(schema$1, value) {
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       const traits = ns.getMergedTraits();
       if (traits.httpHeader || traits.httpLabel || traits.httpQuery) {
         this.stringSerializer.write(ns, value);
@@ -21845,11 +21859,11 @@ var require_protocols = __commonJS((exports2) => {
 
 // node_modules/@smithy/core/dist-cjs/index.js
 var require_dist_cjs18 = __commonJS((exports2) => {
-  var types3 = require_dist_cjs();
+  var types4 = require_dist_cjs();
   var utilMiddleware = require_dist_cjs4();
   var protocolHttp = require_dist_cjs2();
   var protocols = require_protocols();
-  var getSmithyContext = (context) => context[types3.SMITHY_CONTEXT_KEY] || (context[types3.SMITHY_CONTEXT_KEY] = {});
+  var getSmithyContext = (context) => context[types4.SMITHY_CONTEXT_KEY] || (context[types4.SMITHY_CONTEXT_KEY] = {});
   var resolveAuthOptions = (candidateAuthOptions, authSchemePreference) => {
     if (!authSchemePreference || authSchemePreference.length === 0) {
       return candidateAuthOptions;
@@ -22064,9 +22078,9 @@ var require_dist_cjs18 = __commonJS((exports2) => {
         throw new Error("request could not be signed with `apiKey` since the `apiKey` is not defined");
       }
       const clonedRequest = protocolHttp.HttpRequest.clone(httpRequest);
-      if (signingProperties.in === types3.HttpApiKeyAuthLocation.QUERY) {
+      if (signingProperties.in === types4.HttpApiKeyAuthLocation.QUERY) {
         clonedRequest.query[signingProperties.name] = identity.apiKey;
-      } else if (signingProperties.in === types3.HttpApiKeyAuthLocation.HEADER) {
+      } else if (signingProperties.in === types4.HttpApiKeyAuthLocation.HEADER) {
         clonedRequest.headers[signingProperties.name] = signingProperties.scheme ? `${signingProperties.scheme} ${identity.apiKey}` : identity.apiKey;
       } else {
         throw new Error("request can only be signed with `apiKey` locations `query` or `header`, " + "but found: `" + signingProperties.in + "`");
@@ -22889,7 +22903,7 @@ var require_cbor = __commonJS((exports2) => {
   var protocols = require_protocols();
   var protocolHttp = require_dist_cjs2();
   var utilBodyLengthBrowser = require_dist_cjs21();
-  var schema3 = require_schema();
+  var schema11 = require_schema();
   var utilMiddleware = require_dist_cjs4();
   var utilBase64 = require_dist_cjs8();
   var majorUint64 = 0;
@@ -23629,11 +23643,11 @@ var require_cbor = __commonJS((exports2) => {
 
   class CborShapeSerializer extends protocols.SerdeContext {
     value;
-    write(schema4, value) {
-      this.value = this.serialize(schema4, value);
+    write(schema12, value) {
+      this.value = this.serialize(schema12, value);
     }
     serialize(schema$1, source) {
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       if (source == null) {
         if (ns.isIdempotencyToken()) {
           return serde.generateIdempotencyToken();
@@ -23679,8 +23693,8 @@ var require_cbor = __commonJS((exports2) => {
             }
           }
         } else if (ns.isStructSchema()) {
-          for (const [key, memberSchema] of ns.structIterator()) {
-            const value = this.serialize(memberSchema, sourceObject[key]);
+          for (const [key, memberSchema2] of ns.structIterator()) {
+            const value = this.serialize(memberSchema2, sourceObject[key]);
             if (value != null) {
               newObject[key] = value;
             }
@@ -23715,12 +23729,12 @@ var require_cbor = __commonJS((exports2) => {
   }
 
   class CborShapeDeserializer extends protocols.SerdeContext {
-    read(schema4, bytes) {
+    read(schema12, bytes) {
       const data2 = cbor.deserialize(bytes);
-      return this.readValue(schema4, data2);
+      return this.readValue(schema12, data2);
     }
     readValue(_schema, value) {
-      const ns = schema3.NormalizedSchema.of(_schema);
+      const ns = schema11.NormalizedSchema.of(_schema);
       if (ns.isTimestampSchema()) {
         if (typeof value === "number") {
           return serde._parseEpochTimestamp(value);
@@ -23754,9 +23768,9 @@ var require_cbor = __commonJS((exports2) => {
         }
         if (ns.isListSchema()) {
           const newArray = [];
-          const memberSchema = ns.getValueSchema();
+          const memberSchema2 = ns.getValueSchema();
           for (const item of value) {
-            const itemValue = this.readValue(memberSchema, item);
+            const itemValue = this.readValue(memberSchema2, item);
             newArray.push(itemValue);
           }
           return newArray;
@@ -23774,12 +23788,12 @@ var require_cbor = __commonJS((exports2) => {
           if (isUnion) {
             keys = new Set(Object.keys(value).filter((k) => k !== "__type"));
           }
-          for (const [key, memberSchema] of ns.structIterator()) {
+          for (const [key, memberSchema2] of ns.structIterator()) {
             if (isUnion) {
               keys.delete(key);
             }
             if (value[key] != null) {
-              newObject[key] = this.readValue(memberSchema, value[key]);
+              newObject[key] = this.readValue(memberSchema2, value[key]);
             }
           }
           if (isUnion && keys?.size === 1 && Object.keys(newObject).length === 0) {
@@ -23822,7 +23836,7 @@ var require_cbor = __commonJS((exports2) => {
         "smithy-protocol": "rpc-v2-cbor",
         accept: this.getDefaultContentType()
       });
-      if (schema3.deref(operationSchema.input) === "unit") {
+      if (schema11.deref(operationSchema.input) === "unit") {
         delete request.body;
         delete request.headers["content-type"];
       } else {
@@ -23857,7 +23871,7 @@ var require_cbor = __commonJS((exports2) => {
         [namespace] = errorName.split("#");
       }
       const registry3 = this.compositeErrorRegistry;
-      const nsRegistry = schema3.TypeRegistry.for(namespace);
+      const nsRegistry = schema11.TypeRegistry.for(namespace);
       registry3.copyFrom(nsRegistry);
       let errorSchema;
       try {
@@ -23866,7 +23880,7 @@ var require_cbor = __commonJS((exports2) => {
         if (dataObject.Message) {
           dataObject.message = dataObject.Message;
         }
-        const syntheticRegistry = schema3.TypeRegistry.for("smithy.ts.sdk.synthetic." + namespace);
+        const syntheticRegistry = schema11.TypeRegistry.for("smithy.ts.sdk.synthetic." + namespace);
         registry3.copyFrom(syntheticRegistry);
         const baseExceptionSchema = registry3.getBaseException();
         if (baseExceptionSchema) {
@@ -23875,7 +23889,7 @@ var require_cbor = __commonJS((exports2) => {
         }
         throw Object.assign(new Error(errorName), errorMetadata, dataObject);
       }
-      const ns = schema3.NormalizedSchema.of(errorSchema);
+      const ns = schema11.NormalizedSchema.of(errorSchema);
       const ErrorCtor = registry3.getErrorCtor(errorSchema);
       const message2 = dataObject.message ?? dataObject.Message ?? "Unknown";
       const exception = new ErrorCtor(message2);
@@ -24179,8 +24193,8 @@ var require_dist_cjs22 = __commonJS((exports2) => {
 var require_dist_cjs23 = __commonJS((exports2) => {
   var middlewareStack = require_dist_cjs22();
   var protocols = require_protocols();
-  var types3 = require_dist_cjs();
-  var schema3 = require_schema();
+  var types4 = require_dist_cjs();
+  var schema11 = require_schema();
   var serde = require_serde();
 
   class Client {
@@ -24233,7 +24247,7 @@ var require_dist_cjs23 = __commonJS((exports2) => {
     if (data == null) {
       return data;
     }
-    const ns = schema3.NormalizedSchema.of(schema$1);
+    const ns = schema11.NormalizedSchema.of(schema$1);
     if (ns.getMergedTraits().sensitive) {
       return SENSITIVE_STRING$1;
     }
@@ -24278,7 +24292,7 @@ var require_dist_cjs23 = __commonJS((exports2) => {
         commandName,
         inputFilterSensitiveLog,
         outputFilterSensitiveLog,
-        [types3.SMITHY_CONTEXT_KEY]: {
+        [types4.SMITHY_CONTEXT_KEY]: {
           commandInstance: this,
           ...smithyContext
         },
@@ -24527,11 +24541,11 @@ var require_dist_cjs23 = __commonJS((exports2) => {
       warningEmitted = true;
     }
   };
-  var knownAlgorithms = Object.values(types3.AlgorithmId);
+  var knownAlgorithms = Object.values(types4.AlgorithmId);
   var getChecksumConfiguration = (runtimeConfig) => {
     const checksumAlgorithms = [];
-    for (const id2 in types3.AlgorithmId) {
-      const algorithmId = types3.AlgorithmId[id2];
+    for (const id2 in types4.AlgorithmId) {
+      const algorithmId = types4.AlgorithmId[id2];
       if (runtimeConfig[algorithmId] === undefined) {
         continue;
       }
@@ -25969,7 +25983,7 @@ var require_dist_cjs25 = __commonJS((exports2) => {
   var client2 = require_client();
   var signatureV4 = require_dist_cjs20();
   var cbor = require_cbor();
-  var schema3 = require_schema();
+  var schema11 = require_schema();
   var smithyClient = require_dist_cjs23();
   var protocols = require_protocols();
   var serde = require_serde();
@@ -26329,13 +26343,13 @@ More information can be found at: https://a.co/c895JFp`);
         $metadata: metadata,
         $fault: response.statusCode < 500 ? "client" : "server"
       };
-      const registry3 = schema3.TypeRegistry.for(namespace);
+      const registry3 = schema11.TypeRegistry.for(namespace);
       try {
         const errorSchema = getErrorSchema?.(registry3, errorName) ?? registry3.getSchema(errorIdentifier);
         return { errorSchema, errorMetadata };
       } catch (e) {
         dataObject.message = dataObject.message ?? dataObject.Message ?? "UnknownError";
-        const synthetic = schema3.TypeRegistry.for("smithy.ts.sdk.synthetic." + namespace);
+        const synthetic = schema11.TypeRegistry.for("smithy.ts.sdk.synthetic." + namespace);
         const baseExceptionSchema = synthetic.getBaseException();
         if (baseExceptionSchema) {
           const ErrorCtor = synthetic.getErrorCtor(baseExceptionSchema) ?? Error;
@@ -26397,7 +26411,7 @@ More information can be found at: https://a.co/c895JFp`);
       try {
         return registry3.getSchema(errorName);
       } catch (e) {
-        return registry3.find((schema$1) => schema3.NormalizedSchema.of(schema$1).getMergedTraits().awsQueryError?.[0] === errorName);
+        return registry3.find((schema$1) => schema11.NormalizedSchema.of(schema$1).getMergedTraits().awsQueryError?.[0] === errorName);
       }
     }
   }
@@ -26429,9 +26443,9 @@ More information can be found at: https://a.co/c895JFp`);
         return cbor.loadSmithyRpcV2CborErrorCode(response, dataObject) ?? "Unknown";
       })();
       const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorName, this.options.defaultNamespace, response, dataObject, metadata, this.awsQueryCompatible ? this.mixin.findQueryCompatibleError : undefined);
-      const ns = schema3.NormalizedSchema.of(errorSchema);
+      const ns = schema11.NormalizedSchema.of(errorSchema);
       const message2 = dataObject.message ?? dataObject.Message ?? "Unknown";
-      const ErrorCtor = schema3.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
+      const ErrorCtor = schema11.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
       const exception = new ErrorCtor(message2);
       const output = {};
       for (const [name, member] of ns.structIterator()) {
@@ -26604,15 +26618,15 @@ More information can be found at: https://a.co/c895JFp`);
       super();
       this.settings = settings;
     }
-    async read(schema4, data) {
-      return this._read(schema4, typeof data === "string" ? JSON.parse(data, jsonReviver) : await parseJsonBody(data, this.serdeContext));
+    async read(schema12, data) {
+      return this._read(schema12, typeof data === "string" ? JSON.parse(data, jsonReviver) : await parseJsonBody(data, this.serdeContext));
     }
-    readObject(schema4, data) {
-      return this._read(schema4, data);
+    readObject(schema12, data) {
+      return this._read(schema12, data);
     }
     _read(schema$1, value) {
       const isObject5 = value !== null && typeof value === "object";
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       if (isObject5) {
         if (ns.isStructSchema()) {
           const record2 = value;
@@ -26627,17 +26641,17 @@ More information can be found at: https://a.co/c895JFp`);
           if (union4) {
             unionSerde = new UnionSerde(record2, out);
           }
-          for (const [memberName, memberSchema] of ns.structIterator()) {
+          for (const [memberName, memberSchema2] of ns.structIterator()) {
             let fromKey = memberName;
             if (jsonName) {
-              fromKey = memberSchema.getMergedTraits().jsonName ?? fromKey;
+              fromKey = memberSchema2.getMergedTraits().jsonName ?? fromKey;
               nameMap[fromKey] = memberName;
             }
             if (union4) {
               unionSerde.mark(fromKey);
             }
             if (record2[fromKey] != null) {
-              out[memberName] = this._read(memberSchema, record2[fromKey]);
+              out[memberName] = this._read(memberSchema2, record2[fromKey]);
             }
           }
           if (union4) {
@@ -26793,13 +26807,13 @@ More information can be found at: https://a.co/c895JFp`);
       this.settings = settings;
     }
     write(schema$1, value) {
-      this.rootSchema = schema3.NormalizedSchema.of(schema$1);
+      this.rootSchema = schema11.NormalizedSchema.of(schema$1);
       this.buffer = this._write(this.rootSchema, value);
     }
     writeDiscriminatedDocument(schema$1, value) {
       this.write(schema$1, value);
       if (typeof this.buffer === "object") {
-        this.buffer.__type = schema3.NormalizedSchema.of(schema$1).getName(true);
+        this.buffer.__type = schema11.NormalizedSchema.of(schema$1).getName(true);
       }
     }
     flush() {
@@ -26817,7 +26831,7 @@ More information can be found at: https://a.co/c895JFp`);
     }
     _write(schema$1, value, container) {
       const isObject5 = value !== null && typeof value === "object";
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       if (isObject5) {
         if (ns.isStructSchema()) {
           const record2 = value;
@@ -26827,12 +26841,12 @@ More information can be found at: https://a.co/c895JFp`);
           if (jsonName) {
             nameMap = {};
           }
-          for (const [memberName, memberSchema] of ns.structIterator()) {
-            const serializableValue = this._write(memberSchema, record2[memberName], ns);
+          for (const [memberName, memberSchema2] of ns.structIterator()) {
+            const serializableValue = this._write(memberSchema2, record2[memberName], ns);
             if (serializableValue !== undefined) {
               let targetKey = memberName;
               if (jsonName) {
-                targetKey = memberSchema.getMergedTraits().jsonName ?? memberName;
+                targetKey = memberSchema2.getMergedTraits().jsonName ?? memberName;
                 nameMap[memberName] = targetKey;
               }
               out[targetKey] = serializableValue;
@@ -27005,7 +27019,7 @@ More information can be found at: https://a.co/c895JFp`);
       if (this.awsQueryCompatible) {
         request.headers["x-amzn-query-mode"] = "true";
       }
-      if (schema3.deref(operationSchema.input) === "unit" || !request.body) {
+      if (schema11.deref(operationSchema.input) === "unit" || !request.body) {
         request.body = "{}";
       }
       return request;
@@ -27019,9 +27033,9 @@ More information can be found at: https://a.co/c895JFp`);
       }
       const errorIdentifier = loadRestJsonErrorCode(response, dataObject) ?? "Unknown";
       const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata, this.awsQueryCompatible ? this.mixin.findQueryCompatibleError : undefined);
-      const ns = schema3.NormalizedSchema.of(errorSchema);
+      const ns = schema11.NormalizedSchema.of(errorSchema);
       const message2 = dataObject.message ?? dataObject.Message ?? "Unknown";
-      const ErrorCtor = schema3.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
+      const ErrorCtor = schema11.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
       const exception = new ErrorCtor(message2);
       const output = {};
       for (const [name, member] of ns.structIterator()) {
@@ -27112,7 +27126,7 @@ More information can be found at: https://a.co/c895JFp`);
     }
     async serializeRequest(operationSchema, input, context) {
       const request = await super.serializeRequest(operationSchema, input, context);
-      const inputSchema = schema3.NormalizedSchema.of(operationSchema.input);
+      const inputSchema = schema11.NormalizedSchema.of(operationSchema.input);
       if (!request.headers["content-type"]) {
         const contentType = this.mixin.resolveRestContentType(this.getDefaultContentType(), inputSchema);
         if (contentType) {
@@ -27126,7 +27140,7 @@ More information can be found at: https://a.co/c895JFp`);
     }
     async deserializeResponse(operationSchema, context, response) {
       const output = await super.deserializeResponse(operationSchema, context, response);
-      const outputSchema = schema3.NormalizedSchema.of(operationSchema.output);
+      const outputSchema = schema11.NormalizedSchema.of(operationSchema.output);
       for (const [name, member] of outputSchema.structIterator()) {
         if (member.getMemberTraits().httpPayload && !(name in output)) {
           output[name] = null;
@@ -27137,9 +27151,9 @@ More information can be found at: https://a.co/c895JFp`);
     async handleError(operationSchema, context, response, dataObject, metadata) {
       const errorIdentifier = loadRestJsonErrorCode(response, dataObject) ?? "Unknown";
       const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata);
-      const ns = schema3.NormalizedSchema.of(errorSchema);
+      const ns = schema11.NormalizedSchema.of(errorSchema);
       const message2 = dataObject.message ?? dataObject.Message ?? "Unknown";
-      const ErrorCtor = schema3.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
+      const ErrorCtor = schema11.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
       const exception = new ErrorCtor(message2);
       await this.deserializeHttpMessage(errorSchema, context, response, dataObject);
       const output = {};
@@ -27179,7 +27193,7 @@ More information can be found at: https://a.co/c895JFp`);
       this.stringDeserializer.setSerdeContext(serdeContext);
     }
     read(schema$1, bytes, key) {
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       const memberSchemas = ns.getMemberSchemas();
       const isEventPayload = ns.isStructSchema() && ns.isMemberSchema() && !!Object.values(memberSchemas).find((memberNs) => {
         return !!memberNs.getMemberTraits().eventPayload;
@@ -27200,7 +27214,7 @@ More information can be found at: https://a.co/c895JFp`);
       return this.readSchema(schema$1, key ? parsedObject[key] : parsedObject);
     }
     readSchema(_schema, value) {
-      const ns = schema3.NormalizedSchema.of(_schema);
+      const ns = schema11.NormalizedSchema.of(_schema);
       if (ns.isUnitSchema()) {
         return;
       }
@@ -27252,14 +27266,14 @@ More information can be found at: https://a.co/c895JFp`);
           if (union4) {
             unionSerde = new UnionSerde(value, buffer2);
           }
-          for (const [memberName, memberSchema] of ns.structIterator()) {
-            const memberTraits = memberSchema.getMergedTraits();
-            const xmlObjectKey = !memberTraits.httpPayload ? memberSchema.getMemberTraits().xmlName ?? memberName : memberTraits.xmlName ?? memberSchema.getName();
+          for (const [memberName, memberSchema2] of ns.structIterator()) {
+            const memberTraits = memberSchema2.getMergedTraits();
+            const xmlObjectKey = !memberTraits.httpPayload ? memberSchema2.getMemberTraits().xmlName ?? memberName : memberTraits.xmlName ?? memberSchema2.getName();
             if (union4) {
               unionSerde.mark(xmlObjectKey);
             }
             if (value[xmlObjectKey] != null) {
-              buffer2[memberName] = this.readSchema(memberSchema, value[xmlObjectKey]);
+              buffer2[memberName] = this.readSchema(memberSchema2, value[xmlObjectKey]);
             }
           }
           if (union4) {
@@ -27317,7 +27331,7 @@ More information can be found at: https://a.co/c895JFp`);
       if (this.buffer === undefined) {
         this.buffer = "";
       }
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       if (prefix && !prefix.endsWith(".")) {
         prefix += ".";
       }
@@ -27399,7 +27413,7 @@ More information can be found at: https://a.co/c895JFp`);
       } else if (ns.isMapSchema()) {
         if (value && typeof value === "object") {
           const keySchema = ns.getKeySchema();
-          const memberSchema = ns.getValueSchema();
+          const memberSchema2 = ns.getValueSchema();
           const flat = ns.getMergedTraits().xmlFlattened;
           let i = 1;
           for (const [k, v] of Object.entries(value)) {
@@ -27409,11 +27423,11 @@ More information can be found at: https://a.co/c895JFp`);
             const keyTraits = keySchema.getMergedTraits();
             const keySuffix = this.getKey("key", keyTraits.xmlName, keyTraits.ec2QueryName);
             const key = flat ? `${prefix}${i}.${keySuffix}` : `${prefix}entry.${i}.${keySuffix}`;
-            const valTraits = memberSchema.getMergedTraits();
+            const valTraits = memberSchema2.getMergedTraits();
             const valueSuffix = this.getKey("value", valTraits.xmlName, valTraits.ec2QueryName);
             const valueKey = flat ? `${prefix}${i}.${valueSuffix}` : `${prefix}entry.${i}.${valueSuffix}`;
             this.write(keySchema, k, key);
-            this.write(memberSchema, v, valueKey);
+            this.write(memberSchema2, v, valueKey);
             ++i;
           }
         }
@@ -27516,7 +27530,7 @@ More information can be found at: https://a.co/c895JFp`);
       Object.assign(request.headers, {
         "content-type": `application/x-www-form-urlencoded`
       });
-      if (schema3.deref(operationSchema.input) === "unit" || !request.body) {
+      if (schema11.deref(operationSchema.input) === "unit" || !request.body) {
         request.body = "";
       }
       const action = operationSchema.name.split("#")[1] ?? operationSchema.name;
@@ -27528,7 +27542,7 @@ More information can be found at: https://a.co/c895JFp`);
     }
     async deserializeResponse(operationSchema, context, response) {
       const deserializer = this.deserializer;
-      const ns = schema3.NormalizedSchema.of(operationSchema.output);
+      const ns = schema11.NormalizedSchema.of(operationSchema.output);
       const dataObject = {};
       if (response.statusCode >= 300) {
         const bytes2 = await protocols.collectBody(response.body, context);
@@ -27568,8 +27582,8 @@ More information can be found at: https://a.co/c895JFp`);
         Message: message2
       };
       const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, errorData, metadata, this.mixin.findQueryCompatibleError);
-      const ns = schema3.NormalizedSchema.of(errorSchema);
-      const ErrorCtor = schema3.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
+      const ns = schema11.NormalizedSchema.of(errorSchema);
+      const ErrorCtor = schema11.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
       const exception = new ErrorCtor(message2);
       const output = {
         Type: errorData.Error.Type,
@@ -27680,7 +27694,7 @@ More information can be found at: https://a.co/c895JFp`);
       this.settings = settings;
     }
     write(schema$1, value) {
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       if (ns.isStringSchema() && typeof value === "string") {
         this.stringBuffer = value;
       } else if (ns.isBlobSchema()) {
@@ -27721,22 +27735,22 @@ More information can be found at: https://a.co/c895JFp`);
       }
       const structXmlNode = xmlBuilder.XmlNode.of(name);
       const [xmlnsAttr, xmlns] = this.getXmlnsAttribute(ns, parentXmlns);
-      for (const [memberName, memberSchema] of ns.structIterator()) {
+      for (const [memberName, memberSchema2] of ns.structIterator()) {
         const val = value[memberName];
-        if (val != null || memberSchema.isIdempotencyToken()) {
-          if (memberSchema.getMergedTraits().xmlAttribute) {
-            structXmlNode.addAttribute(memberSchema.getMergedTraits().xmlName ?? memberName, this.writeSimple(memberSchema, val));
+        if (val != null || memberSchema2.isIdempotencyToken()) {
+          if (memberSchema2.getMergedTraits().xmlAttribute) {
+            structXmlNode.addAttribute(memberSchema2.getMergedTraits().xmlName ?? memberName, this.writeSimple(memberSchema2, val));
             continue;
           }
-          if (memberSchema.isListSchema()) {
-            this.writeList(memberSchema, val, structXmlNode, xmlns);
-          } else if (memberSchema.isMapSchema()) {
-            this.writeMap(memberSchema, val, structXmlNode, xmlns);
-          } else if (memberSchema.isStructSchema()) {
-            structXmlNode.addChildNode(this.writeStruct(memberSchema, val, xmlns));
+          if (memberSchema2.isListSchema()) {
+            this.writeList(memberSchema2, val, structXmlNode, xmlns);
+          } else if (memberSchema2.isMapSchema()) {
+            this.writeMap(memberSchema2, val, structXmlNode, xmlns);
+          } else if (memberSchema2.isStructSchema()) {
+            structXmlNode.addChildNode(this.writeStruct(memberSchema2, val, xmlns));
           } else {
-            const memberNode = xmlBuilder.XmlNode.of(memberSchema.getMergedTraits().xmlName ?? memberSchema.getMemberName());
-            this.writeSimpleInto(memberSchema, val, memberNode, xmlns);
+            const memberNode = xmlBuilder.XmlNode.of(memberSchema2.getMergedTraits().xmlName ?? memberSchema2.getMemberName());
+            this.writeSimpleInto(memberSchema2, val, memberNode, xmlns);
             structXmlNode.addChildNode(memberNode);
           }
         }
@@ -27866,7 +27880,7 @@ More information can be found at: https://a.co/c895JFp`);
       if (value === null) {
         throw new Error("@aws-sdk/core/protocols - (XML serializer) cannot write null value.");
       }
-      const ns = schema3.NormalizedSchema.of(_schema);
+      const ns = schema11.NormalizedSchema.of(_schema);
       let nodeContents = null;
       if (value && typeof value === "object") {
         if (ns.isBlobSchema()) {
@@ -27916,7 +27930,7 @@ More information can be found at: https://a.co/c895JFp`);
     }
     writeSimpleInto(_schema, value, into, parentXmlns) {
       const nodeContents = this.writeSimple(_schema, value);
-      const ns = schema3.NormalizedSchema.of(_schema);
+      const ns = schema11.NormalizedSchema.of(_schema);
       const content = new xmlBuilder.XmlText(nodeContents);
       const [xmlnsAttr, xmlns] = this.getXmlnsAttribute(ns, parentXmlns);
       if (xmlns) {
@@ -27980,7 +27994,7 @@ More information can be found at: https://a.co/c895JFp`);
     }
     async serializeRequest(operationSchema, input, context) {
       const request = await super.serializeRequest(operationSchema, input, context);
-      const inputSchema = schema3.NormalizedSchema.of(operationSchema.input);
+      const inputSchema = schema11.NormalizedSchema.of(operationSchema.input);
       if (!request.headers["content-type"]) {
         const contentType = this.mixin.resolveRestContentType(this.getDefaultContentType(), inputSchema);
         if (contentType) {
@@ -28009,9 +28023,9 @@ More information can be found at: https://a.co/c895JFp`);
         metadata.requestId = dataObject.RequestId;
       }
       const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata);
-      const ns = schema3.NormalizedSchema.of(errorSchema);
+      const ns = schema11.NormalizedSchema.of(errorSchema);
       const message2 = dataObject.Error?.message ?? dataObject.Error?.Message ?? dataObject.message ?? dataObject.Message ?? "Unknown";
-      const ErrorCtor = schema3.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
+      const ErrorCtor = schema11.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
       const exception = new ErrorCtor(message2);
       await this.deserializeHttpMessage(errorSchema, context, response, dataObject);
       const output = {};
@@ -28134,18 +28148,18 @@ var require_dist_cjs27 = __commonJS((exports2, module2) => {
   });
   module2.exports = __toCommonJS2(src_exports);
   var import_is_array_buffer = require_dist_cjs26();
-  var import_buffer4 = require("buffer");
+  var import_buffer6 = require("buffer");
   var fromArrayBuffer = /* @__PURE__ */ __name((input, offset = 0, length = input.byteLength - offset) => {
     if (!(0, import_is_array_buffer.isArrayBuffer)(input)) {
       throw new TypeError(`The "input" argument must be ArrayBuffer. Received type ${typeof input} (${input})`);
     }
-    return import_buffer4.Buffer.from(input, offset, length);
+    return import_buffer6.Buffer.from(input, offset, length);
   }, "fromArrayBuffer");
   var fromString = /* @__PURE__ */ __name((input, encoding) => {
     if (typeof input !== "string") {
       throw new TypeError(`The "input" argument must be of type string. Received type ${typeof input} (${input})`);
     }
-    return encoding ? import_buffer4.Buffer.from(input, encoding) : import_buffer4.Buffer.from(input);
+    return encoding ? import_buffer6.Buffer.from(input, encoding) : import_buffer6.Buffer.from(input);
   }, "fromString");
 });
 
@@ -30367,7 +30381,7 @@ var require_dist_cjs36 = __commonJS((exports2) => {
 
 // node_modules/@smithy/util-endpoints/dist-cjs/index.js
 var require_dist_cjs37 = __commonJS((exports2) => {
-  var types3 = require_dist_cjs();
+  var types4 = require_dist_cjs();
 
   class EndpointCache {
     capacity;
@@ -30490,8 +30504,8 @@ var require_dist_cjs37 = __commonJS((exports2) => {
   var isSet = (value) => value != null;
   var not2 = (value) => !value;
   var DEFAULT_PORTS = {
-    [types3.EndpointURLScheme.HTTP]: 80,
-    [types3.EndpointURLScheme.HTTPS]: 443
+    [types4.EndpointURLScheme.HTTP]: 80,
+    [types4.EndpointURLScheme.HTTPS]: 443
   };
   var parseURL = (value) => {
     const whatwgURL = (() => {
@@ -30520,7 +30534,7 @@ var require_dist_cjs37 = __commonJS((exports2) => {
       return null;
     }
     const scheme = protocol.slice(0, -1);
-    if (!Object.values(types3.EndpointURLScheme).includes(scheme)) {
+    if (!Object.values(types4.EndpointURLScheme).includes(scheme)) {
       return null;
     }
     const isIp = isIpAddress(hostname3);
@@ -32001,7 +32015,7 @@ var require_dist_cjs45 = __commonJS((exports2) => {
   var getSSOTokenFilepath = require_getSSOTokenFilepath();
   var getSSOTokenFromFile = require_getSSOTokenFromFile();
   var path2 = require("path");
-  var types3 = require_dist_cjs();
+  var types4 = require_dist_cjs();
   var readFile = require_readFile();
   var ENV_PROFILE = "AWS_PROFILE";
   var DEFAULT_PROFILE = "default";
@@ -32012,10 +32026,10 @@ var require_dist_cjs45 = __commonJS((exports2) => {
     if (indexOfSeparator === -1) {
       return false;
     }
-    return Object.values(types3.IniSectionType).includes(key.substring(0, indexOfSeparator));
+    return Object.values(types4.IniSectionType).includes(key.substring(0, indexOfSeparator));
   }).reduce((acc, [key, value]) => {
     const indexOfSeparator = key.indexOf(CONFIG_PREFIX_SEPARATOR);
-    const updatedKey = key.substring(0, indexOfSeparator) === types3.IniSectionType.PROFILE ? key.substring(indexOfSeparator + 1) : key;
+    const updatedKey = key.substring(0, indexOfSeparator) === types4.IniSectionType.PROFILE ? key.substring(indexOfSeparator + 1) : key;
     acc[updatedKey] = value;
     return acc;
   }, {
@@ -32041,7 +32055,7 @@ var require_dist_cjs45 = __commonJS((exports2) => {
         const matches = prefixKeyRegex.exec(sectionName);
         if (matches) {
           const [, prefix, , name] = matches;
-          if (Object.values(types3.IniSectionType).includes(prefix)) {
+          if (Object.values(types4.IniSectionType).includes(prefix)) {
             currentSection = [prefix, name].join(CONFIG_PREFIX_SEPARATOR);
           }
         } else {
@@ -32098,7 +32112,7 @@ var require_dist_cjs45 = __commonJS((exports2) => {
       credentialsFile: parsedFiles[1]
     };
   };
-  var getSsoSessionData = (data) => Object.entries(data).filter(([key]) => key.startsWith(types3.IniSectionType.SSO_SESSION + CONFIG_PREFIX_SEPARATOR)).reduce((acc, [key, value]) => ({ ...acc, [key.substring(key.indexOf(CONFIG_PREFIX_SEPARATOR) + 1)]: value }), {});
+  var getSsoSessionData = (data) => Object.entries(data).filter(([key]) => key.startsWith(types4.IniSectionType.SSO_SESSION + CONFIG_PREFIX_SEPARATOR)).reduce((acc, [key, value]) => ({ ...acc, [key.substring(key.indexOf(CONFIG_PREFIX_SEPARATOR) + 1)]: value }), {});
   var swallowError = () => ({});
   var loadSsoSessionData = async (init2 = {}) => readFile.readFile(init2.configFilepath ?? getConfigFilepath()).then(parseIni).then(getSsoSessionData).catch(swallowError);
   var mergeConfigFiles = (...files) => {
@@ -33580,7 +33594,7 @@ var require_errors = __commonJS((exports2) => {
   }
   exports2.EncryptionTypeMismatch = EncryptionTypeMismatch;
 
-  class InvalidRequest extends S3ServiceException_1.S3ServiceException {
+  class InvalidRequest2 extends S3ServiceException_1.S3ServiceException {
     name = "InvalidRequest";
     $fault = "client";
     constructor(opts) {
@@ -33589,10 +33603,10 @@ var require_errors = __commonJS((exports2) => {
         $fault: "client",
         ...opts
       });
-      Object.setPrototypeOf(this, InvalidRequest.prototype);
+      Object.setPrototypeOf(this, InvalidRequest2.prototype);
     }
   }
-  exports2.InvalidRequest = InvalidRequest;
+  exports2.InvalidRequest = InvalidRequest2;
 
   class InvalidWriteOffset extends S3ServiceException_1.S3ServiceException {
     name = "InvalidWriteOffset";
@@ -40358,7 +40372,7 @@ var require_dist_cjs57 = __commonJS((exports2) => {
 // node_modules/@aws-sdk/core/dist-cjs/submodules/protocols/index.js
 var require_protocols2 = __commonJS((exports2) => {
   var cbor = require_cbor();
-  var schema3 = require_schema();
+  var schema11 = require_schema();
   var smithyClient = require_dist_cjs23();
   var protocols = require_protocols();
   var serde = require_serde();
@@ -40408,13 +40422,13 @@ var require_protocols2 = __commonJS((exports2) => {
         $metadata: metadata,
         $fault: response.statusCode < 500 ? "client" : "server"
       };
-      const registry3 = schema3.TypeRegistry.for(namespace);
+      const registry3 = schema11.TypeRegistry.for(namespace);
       try {
         const errorSchema = getErrorSchema?.(registry3, errorName) ?? registry3.getSchema(errorIdentifier);
         return { errorSchema, errorMetadata };
       } catch (e) {
         dataObject.message = dataObject.message ?? dataObject.Message ?? "UnknownError";
-        const synthetic = schema3.TypeRegistry.for("smithy.ts.sdk.synthetic." + namespace);
+        const synthetic = schema11.TypeRegistry.for("smithy.ts.sdk.synthetic." + namespace);
         const baseExceptionSchema = synthetic.getBaseException();
         if (baseExceptionSchema) {
           const ErrorCtor = synthetic.getErrorCtor(baseExceptionSchema) ?? Error;
@@ -40476,7 +40490,7 @@ var require_protocols2 = __commonJS((exports2) => {
       try {
         return registry3.getSchema(errorName);
       } catch (e) {
-        return registry3.find((schema$1) => schema3.NormalizedSchema.of(schema$1).getMergedTraits().awsQueryError?.[0] === errorName);
+        return registry3.find((schema$1) => schema11.NormalizedSchema.of(schema$1).getMergedTraits().awsQueryError?.[0] === errorName);
       }
     }
   }
@@ -40508,9 +40522,9 @@ var require_protocols2 = __commonJS((exports2) => {
         return cbor.loadSmithyRpcV2CborErrorCode(response, dataObject) ?? "Unknown";
       })();
       const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorName, this.options.defaultNamespace, response, dataObject, metadata, this.awsQueryCompatible ? this.mixin.findQueryCompatibleError : undefined);
-      const ns = schema3.NormalizedSchema.of(errorSchema);
+      const ns = schema11.NormalizedSchema.of(errorSchema);
       const message2 = dataObject.message ?? dataObject.Message ?? "Unknown";
-      const ErrorCtor = schema3.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
+      const ErrorCtor = schema11.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
       const exception = new ErrorCtor(message2);
       const output = {};
       for (const [name, member] of ns.structIterator()) {
@@ -40683,15 +40697,15 @@ var require_protocols2 = __commonJS((exports2) => {
       super();
       this.settings = settings;
     }
-    async read(schema4, data) {
-      return this._read(schema4, typeof data === "string" ? JSON.parse(data, jsonReviver) : await parseJsonBody(data, this.serdeContext));
+    async read(schema12, data) {
+      return this._read(schema12, typeof data === "string" ? JSON.parse(data, jsonReviver) : await parseJsonBody(data, this.serdeContext));
     }
-    readObject(schema4, data) {
-      return this._read(schema4, data);
+    readObject(schema12, data) {
+      return this._read(schema12, data);
     }
     _read(schema$1, value) {
       const isObject5 = value !== null && typeof value === "object";
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       if (isObject5) {
         if (ns.isStructSchema()) {
           const record2 = value;
@@ -40706,17 +40720,17 @@ var require_protocols2 = __commonJS((exports2) => {
           if (union4) {
             unionSerde = new UnionSerde(record2, out);
           }
-          for (const [memberName, memberSchema] of ns.structIterator()) {
+          for (const [memberName, memberSchema2] of ns.structIterator()) {
             let fromKey = memberName;
             if (jsonName) {
-              fromKey = memberSchema.getMergedTraits().jsonName ?? fromKey;
+              fromKey = memberSchema2.getMergedTraits().jsonName ?? fromKey;
               nameMap[fromKey] = memberName;
             }
             if (union4) {
               unionSerde.mark(fromKey);
             }
             if (record2[fromKey] != null) {
-              out[memberName] = this._read(memberSchema, record2[fromKey]);
+              out[memberName] = this._read(memberSchema2, record2[fromKey]);
             }
           }
           if (union4) {
@@ -40872,13 +40886,13 @@ var require_protocols2 = __commonJS((exports2) => {
       this.settings = settings;
     }
     write(schema$1, value) {
-      this.rootSchema = schema3.NormalizedSchema.of(schema$1);
+      this.rootSchema = schema11.NormalizedSchema.of(schema$1);
       this.buffer = this._write(this.rootSchema, value);
     }
     writeDiscriminatedDocument(schema$1, value) {
       this.write(schema$1, value);
       if (typeof this.buffer === "object") {
-        this.buffer.__type = schema3.NormalizedSchema.of(schema$1).getName(true);
+        this.buffer.__type = schema11.NormalizedSchema.of(schema$1).getName(true);
       }
     }
     flush() {
@@ -40896,7 +40910,7 @@ var require_protocols2 = __commonJS((exports2) => {
     }
     _write(schema$1, value, container) {
       const isObject5 = value !== null && typeof value === "object";
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       if (isObject5) {
         if (ns.isStructSchema()) {
           const record2 = value;
@@ -40906,12 +40920,12 @@ var require_protocols2 = __commonJS((exports2) => {
           if (jsonName) {
             nameMap = {};
           }
-          for (const [memberName, memberSchema] of ns.structIterator()) {
-            const serializableValue = this._write(memberSchema, record2[memberName], ns);
+          for (const [memberName, memberSchema2] of ns.structIterator()) {
+            const serializableValue = this._write(memberSchema2, record2[memberName], ns);
             if (serializableValue !== undefined) {
               let targetKey = memberName;
               if (jsonName) {
-                targetKey = memberSchema.getMergedTraits().jsonName ?? memberName;
+                targetKey = memberSchema2.getMergedTraits().jsonName ?? memberName;
                 nameMap[memberName] = targetKey;
               }
               out[targetKey] = serializableValue;
@@ -41084,7 +41098,7 @@ var require_protocols2 = __commonJS((exports2) => {
       if (this.awsQueryCompatible) {
         request.headers["x-amzn-query-mode"] = "true";
       }
-      if (schema3.deref(operationSchema.input) === "unit" || !request.body) {
+      if (schema11.deref(operationSchema.input) === "unit" || !request.body) {
         request.body = "{}";
       }
       return request;
@@ -41098,9 +41112,9 @@ var require_protocols2 = __commonJS((exports2) => {
       }
       const errorIdentifier = loadRestJsonErrorCode(response, dataObject) ?? "Unknown";
       const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata, this.awsQueryCompatible ? this.mixin.findQueryCompatibleError : undefined);
-      const ns = schema3.NormalizedSchema.of(errorSchema);
+      const ns = schema11.NormalizedSchema.of(errorSchema);
       const message2 = dataObject.message ?? dataObject.Message ?? "Unknown";
-      const ErrorCtor = schema3.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
+      const ErrorCtor = schema11.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
       const exception = new ErrorCtor(message2);
       const output = {};
       for (const [name, member] of ns.structIterator()) {
@@ -41191,7 +41205,7 @@ var require_protocols2 = __commonJS((exports2) => {
     }
     async serializeRequest(operationSchema, input, context) {
       const request = await super.serializeRequest(operationSchema, input, context);
-      const inputSchema = schema3.NormalizedSchema.of(operationSchema.input);
+      const inputSchema = schema11.NormalizedSchema.of(operationSchema.input);
       if (!request.headers["content-type"]) {
         const contentType = this.mixin.resolveRestContentType(this.getDefaultContentType(), inputSchema);
         if (contentType) {
@@ -41205,7 +41219,7 @@ var require_protocols2 = __commonJS((exports2) => {
     }
     async deserializeResponse(operationSchema, context, response) {
       const output = await super.deserializeResponse(operationSchema, context, response);
-      const outputSchema = schema3.NormalizedSchema.of(operationSchema.output);
+      const outputSchema = schema11.NormalizedSchema.of(operationSchema.output);
       for (const [name, member] of outputSchema.structIterator()) {
         if (member.getMemberTraits().httpPayload && !(name in output)) {
           output[name] = null;
@@ -41216,9 +41230,9 @@ var require_protocols2 = __commonJS((exports2) => {
     async handleError(operationSchema, context, response, dataObject, metadata) {
       const errorIdentifier = loadRestJsonErrorCode(response, dataObject) ?? "Unknown";
       const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata);
-      const ns = schema3.NormalizedSchema.of(errorSchema);
+      const ns = schema11.NormalizedSchema.of(errorSchema);
       const message2 = dataObject.message ?? dataObject.Message ?? "Unknown";
-      const ErrorCtor = schema3.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
+      const ErrorCtor = schema11.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
       const exception = new ErrorCtor(message2);
       await this.deserializeHttpMessage(errorSchema, context, response, dataObject);
       const output = {};
@@ -41258,7 +41272,7 @@ var require_protocols2 = __commonJS((exports2) => {
       this.stringDeserializer.setSerdeContext(serdeContext);
     }
     read(schema$1, bytes, key) {
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       const memberSchemas = ns.getMemberSchemas();
       const isEventPayload = ns.isStructSchema() && ns.isMemberSchema() && !!Object.values(memberSchemas).find((memberNs) => {
         return !!memberNs.getMemberTraits().eventPayload;
@@ -41279,7 +41293,7 @@ var require_protocols2 = __commonJS((exports2) => {
       return this.readSchema(schema$1, key ? parsedObject[key] : parsedObject);
     }
     readSchema(_schema, value) {
-      const ns = schema3.NormalizedSchema.of(_schema);
+      const ns = schema11.NormalizedSchema.of(_schema);
       if (ns.isUnitSchema()) {
         return;
       }
@@ -41331,14 +41345,14 @@ var require_protocols2 = __commonJS((exports2) => {
           if (union4) {
             unionSerde = new UnionSerde(value, buffer2);
           }
-          for (const [memberName, memberSchema] of ns.structIterator()) {
-            const memberTraits = memberSchema.getMergedTraits();
-            const xmlObjectKey = !memberTraits.httpPayload ? memberSchema.getMemberTraits().xmlName ?? memberName : memberTraits.xmlName ?? memberSchema.getName();
+          for (const [memberName, memberSchema2] of ns.structIterator()) {
+            const memberTraits = memberSchema2.getMergedTraits();
+            const xmlObjectKey = !memberTraits.httpPayload ? memberSchema2.getMemberTraits().xmlName ?? memberName : memberTraits.xmlName ?? memberSchema2.getName();
             if (union4) {
               unionSerde.mark(xmlObjectKey);
             }
             if (value[xmlObjectKey] != null) {
-              buffer2[memberName] = this.readSchema(memberSchema, value[xmlObjectKey]);
+              buffer2[memberName] = this.readSchema(memberSchema2, value[xmlObjectKey]);
             }
           }
           if (union4) {
@@ -41396,7 +41410,7 @@ var require_protocols2 = __commonJS((exports2) => {
       if (this.buffer === undefined) {
         this.buffer = "";
       }
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       if (prefix && !prefix.endsWith(".")) {
         prefix += ".";
       }
@@ -41478,7 +41492,7 @@ var require_protocols2 = __commonJS((exports2) => {
       } else if (ns.isMapSchema()) {
         if (value && typeof value === "object") {
           const keySchema = ns.getKeySchema();
-          const memberSchema = ns.getValueSchema();
+          const memberSchema2 = ns.getValueSchema();
           const flat = ns.getMergedTraits().xmlFlattened;
           let i = 1;
           for (const [k, v] of Object.entries(value)) {
@@ -41488,11 +41502,11 @@ var require_protocols2 = __commonJS((exports2) => {
             const keyTraits = keySchema.getMergedTraits();
             const keySuffix = this.getKey("key", keyTraits.xmlName, keyTraits.ec2QueryName);
             const key = flat ? `${prefix}${i}.${keySuffix}` : `${prefix}entry.${i}.${keySuffix}`;
-            const valTraits = memberSchema.getMergedTraits();
+            const valTraits = memberSchema2.getMergedTraits();
             const valueSuffix = this.getKey("value", valTraits.xmlName, valTraits.ec2QueryName);
             const valueKey = flat ? `${prefix}${i}.${valueSuffix}` : `${prefix}entry.${i}.${valueSuffix}`;
             this.write(keySchema, k, key);
-            this.write(memberSchema, v, valueKey);
+            this.write(memberSchema2, v, valueKey);
             ++i;
           }
         }
@@ -41595,7 +41609,7 @@ var require_protocols2 = __commonJS((exports2) => {
       Object.assign(request.headers, {
         "content-type": `application/x-www-form-urlencoded`
       });
-      if (schema3.deref(operationSchema.input) === "unit" || !request.body) {
+      if (schema11.deref(operationSchema.input) === "unit" || !request.body) {
         request.body = "";
       }
       const action = operationSchema.name.split("#")[1] ?? operationSchema.name;
@@ -41607,7 +41621,7 @@ var require_protocols2 = __commonJS((exports2) => {
     }
     async deserializeResponse(operationSchema, context, response) {
       const deserializer = this.deserializer;
-      const ns = schema3.NormalizedSchema.of(operationSchema.output);
+      const ns = schema11.NormalizedSchema.of(operationSchema.output);
       const dataObject = {};
       if (response.statusCode >= 300) {
         const bytes2 = await protocols.collectBody(response.body, context);
@@ -41647,8 +41661,8 @@ var require_protocols2 = __commonJS((exports2) => {
         Message: message2
       };
       const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, errorData, metadata, this.mixin.findQueryCompatibleError);
-      const ns = schema3.NormalizedSchema.of(errorSchema);
-      const ErrorCtor = schema3.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
+      const ns = schema11.NormalizedSchema.of(errorSchema);
+      const ErrorCtor = schema11.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
       const exception = new ErrorCtor(message2);
       const output = {
         Type: errorData.Error.Type,
@@ -41759,7 +41773,7 @@ var require_protocols2 = __commonJS((exports2) => {
       this.settings = settings;
     }
     write(schema$1, value) {
-      const ns = schema3.NormalizedSchema.of(schema$1);
+      const ns = schema11.NormalizedSchema.of(schema$1);
       if (ns.isStringSchema() && typeof value === "string") {
         this.stringBuffer = value;
       } else if (ns.isBlobSchema()) {
@@ -41800,22 +41814,22 @@ var require_protocols2 = __commonJS((exports2) => {
       }
       const structXmlNode = xmlBuilder.XmlNode.of(name);
       const [xmlnsAttr, xmlns] = this.getXmlnsAttribute(ns, parentXmlns);
-      for (const [memberName, memberSchema] of ns.structIterator()) {
+      for (const [memberName, memberSchema2] of ns.structIterator()) {
         const val = value[memberName];
-        if (val != null || memberSchema.isIdempotencyToken()) {
-          if (memberSchema.getMergedTraits().xmlAttribute) {
-            structXmlNode.addAttribute(memberSchema.getMergedTraits().xmlName ?? memberName, this.writeSimple(memberSchema, val));
+        if (val != null || memberSchema2.isIdempotencyToken()) {
+          if (memberSchema2.getMergedTraits().xmlAttribute) {
+            structXmlNode.addAttribute(memberSchema2.getMergedTraits().xmlName ?? memberName, this.writeSimple(memberSchema2, val));
             continue;
           }
-          if (memberSchema.isListSchema()) {
-            this.writeList(memberSchema, val, structXmlNode, xmlns);
-          } else if (memberSchema.isMapSchema()) {
-            this.writeMap(memberSchema, val, structXmlNode, xmlns);
-          } else if (memberSchema.isStructSchema()) {
-            structXmlNode.addChildNode(this.writeStruct(memberSchema, val, xmlns));
+          if (memberSchema2.isListSchema()) {
+            this.writeList(memberSchema2, val, structXmlNode, xmlns);
+          } else if (memberSchema2.isMapSchema()) {
+            this.writeMap(memberSchema2, val, structXmlNode, xmlns);
+          } else if (memberSchema2.isStructSchema()) {
+            structXmlNode.addChildNode(this.writeStruct(memberSchema2, val, xmlns));
           } else {
-            const memberNode = xmlBuilder.XmlNode.of(memberSchema.getMergedTraits().xmlName ?? memberSchema.getMemberName());
-            this.writeSimpleInto(memberSchema, val, memberNode, xmlns);
+            const memberNode = xmlBuilder.XmlNode.of(memberSchema2.getMergedTraits().xmlName ?? memberSchema2.getMemberName());
+            this.writeSimpleInto(memberSchema2, val, memberNode, xmlns);
             structXmlNode.addChildNode(memberNode);
           }
         }
@@ -41945,7 +41959,7 @@ var require_protocols2 = __commonJS((exports2) => {
       if (value === null) {
         throw new Error("@aws-sdk/core/protocols - (XML serializer) cannot write null value.");
       }
-      const ns = schema3.NormalizedSchema.of(_schema);
+      const ns = schema11.NormalizedSchema.of(_schema);
       let nodeContents = null;
       if (value && typeof value === "object") {
         if (ns.isBlobSchema()) {
@@ -41995,7 +42009,7 @@ var require_protocols2 = __commonJS((exports2) => {
     }
     writeSimpleInto(_schema, value, into, parentXmlns) {
       const nodeContents = this.writeSimple(_schema, value);
-      const ns = schema3.NormalizedSchema.of(_schema);
+      const ns = schema11.NormalizedSchema.of(_schema);
       const content = new xmlBuilder.XmlText(nodeContents);
       const [xmlnsAttr, xmlns] = this.getXmlnsAttribute(ns, parentXmlns);
       if (xmlns) {
@@ -42059,7 +42073,7 @@ var require_protocols2 = __commonJS((exports2) => {
     }
     async serializeRequest(operationSchema, input, context) {
       const request = await super.serializeRequest(operationSchema, input, context);
-      const inputSchema = schema3.NormalizedSchema.of(operationSchema.input);
+      const inputSchema = schema11.NormalizedSchema.of(operationSchema.input);
       if (!request.headers["content-type"]) {
         const contentType = this.mixin.resolveRestContentType(this.getDefaultContentType(), inputSchema);
         if (contentType) {
@@ -42088,9 +42102,9 @@ var require_protocols2 = __commonJS((exports2) => {
         metadata.requestId = dataObject.RequestId;
       }
       const { errorSchema, errorMetadata } = await this.mixin.getErrorSchemaOrThrowBaseException(errorIdentifier, this.options.defaultNamespace, response, dataObject, metadata);
-      const ns = schema3.NormalizedSchema.of(errorSchema);
+      const ns = schema11.NormalizedSchema.of(errorSchema);
       const message2 = dataObject.Error?.message ?? dataObject.Error?.Message ?? dataObject.message ?? dataObject.Message ?? "Unknown";
-      const ErrorCtor = schema3.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
+      const ErrorCtor = schema11.TypeRegistry.for(errorSchema[1]).getErrorCtor(errorSchema) ?? Error;
       const exception = new ErrorCtor(message2);
       await this.deserializeHttpMessage(errorSchema, context, response, dataObject);
       const output = {};
@@ -42837,7 +42851,7 @@ var require_sso_oidc = __commonJS((exports2) => {
   var middlewareUserAgent = require_dist_cjs41();
   var configResolver = require_dist_cjs42();
   var core4 = require_dist_cjs18();
-  var schema3 = require_schema();
+  var schema11 = require_schema();
   var middlewareContentLength = require_dist_cjs44();
   var middlewareEndpoint = require_dist_cjs48();
   var middlewareRetry = require_dist_cjs49();
@@ -42920,7 +42934,7 @@ var require_sso_oidc = __commonJS((exports2) => {
       const _config_7 = httpAuthSchemeProvider.resolveHttpAuthSchemeConfig(_config_6);
       const _config_8 = resolveRuntimeExtensions(_config_7, configuration?.extensions || []);
       this.config = _config_8;
-      this.middlewareStack.use(schema3.getSchemaSerdePlugin(this.config));
+      this.middlewareStack.use(schema11.getSchemaSerdePlugin(this.config));
       this.middlewareStack.use(middlewareUserAgent.getUserAgentPlugin(this.config));
       this.middlewareStack.use(middlewareRetry.getRetryPlugin(this.config));
       this.middlewareStack.use(middlewareContentLength.getContentLengthPlugin(this.config));
@@ -43626,7 +43640,7 @@ var require_sso = __commonJS((exports2) => {
   var middlewareUserAgent = require_dist_cjs41();
   var configResolver = require_dist_cjs42();
   var core4 = require_dist_cjs18();
-  var schema3 = require_schema();
+  var schema11 = require_schema();
   var middlewareContentLength = require_dist_cjs44();
   var middlewareEndpoint = require_dist_cjs48();
   var middlewareRetry = require_dist_cjs49();
@@ -43709,7 +43723,7 @@ var require_sso = __commonJS((exports2) => {
       const _config_7 = httpAuthSchemeProvider.resolveHttpAuthSchemeConfig(_config_6);
       const _config_8 = resolveRuntimeExtensions(_config_7, configuration?.extensions || []);
       this.config = _config_8;
-      this.middlewareStack.use(schema3.getSchemaSerdePlugin(this.config));
+      this.middlewareStack.use(schema11.getSchemaSerdePlugin(this.config));
       this.middlewareStack.use(middlewareUserAgent.getUserAgentPlugin(this.config));
       this.middlewareStack.use(middlewareRetry.getRetryPlugin(this.config));
       this.middlewareStack.use(middlewareContentLength.getContentLengthPlugin(this.config));
@@ -44515,7 +44529,7 @@ var require_signin = __commonJS((exports2) => {
   var middlewareUserAgent = require_dist_cjs41();
   var configResolver = require_dist_cjs42();
   var core4 = require_dist_cjs18();
-  var schema3 = require_schema();
+  var schema11 = require_schema();
   var middlewareContentLength = require_dist_cjs44();
   var middlewareEndpoint = require_dist_cjs48();
   var middlewareRetry = require_dist_cjs49();
@@ -44598,7 +44612,7 @@ var require_signin = __commonJS((exports2) => {
       const _config_7 = httpAuthSchemeProvider.resolveHttpAuthSchemeConfig(_config_6);
       const _config_8 = resolveRuntimeExtensions(_config_7, configuration?.extensions || []);
       this.config = _config_8;
-      this.middlewareStack.use(schema3.getSchemaSerdePlugin(this.config));
+      this.middlewareStack.use(schema11.getSchemaSerdePlugin(this.config));
       this.middlewareStack.use(middlewareUserAgent.getUserAgentPlugin(this.config));
       this.middlewareStack.use(middlewareRetry.getRetryPlugin(this.config));
       this.middlewareStack.use(middlewareContentLength.getContentLengthPlugin(this.config));
@@ -47873,7 +47887,7 @@ var require_dist_cjs74 = __commonJS((exports2) => {
   var middlewareUserAgent = require_dist_cjs41();
   var configResolver = require_dist_cjs42();
   var core4 = require_dist_cjs18();
-  var schema3 = require_schema();
+  var schema11 = require_schema();
   var eventstreamSerdeConfigResolver = require_dist_cjs43();
   var middlewareContentLength = require_dist_cjs44();
   var middlewareEndpoint = require_dist_cjs48();
@@ -47986,7 +48000,7 @@ var require_dist_cjs74 = __commonJS((exports2) => {
       const _config_10 = middlewareSdkS3.resolveS3Config(_config_9, { session: [() => this, CreateSessionCommand] });
       const _config_11 = resolveRuntimeExtensions(_config_10, configuration?.extensions || []);
       this.config = _config_11;
-      this.middlewareStack.use(schema3.getSchemaSerdePlugin(this.config));
+      this.middlewareStack.use(schema11.getSchemaSerdePlugin(this.config));
       this.middlewareStack.use(middlewareUserAgent.getUserAgentPlugin(this.config));
       this.middlewareStack.use(middlewareRetry.getRetryPlugin(this.config));
       this.middlewareStack.use(middlewareContentLength.getContentLengthPlugin(this.config));
@@ -50171,9 +50185,9 @@ var require_dist_cjs75 = __commonJS((exports2) => {
     }
     let auth2 = "";
     if (request.username != null || request.password != null) {
-      const username = request.username ?? "";
+      const username2 = request.username ?? "";
       const password = request.password ?? "";
-      auth2 = `${username}:${password}@`;
+      auth2 = `${username2}:${password}@`;
     }
     let fragment2 = "";
     if (request.fragment) {
@@ -76691,6 +76705,9 @@ function parse9(value) {
     return -result;
   return result;
 }
+function ms(value) {
+  return parse9(value);
+}
 function sec(value) {
   return Math.round(parse9(value) / 1000);
 }
@@ -92708,6 +92725,2031 @@ init_error_codes();
 init_id();
 init_json();
 
+// node_modules/better-auth/dist/plugins/access/access.mjs
+init_error2();
+function role(statements) {
+  return {
+    authorize(request, connector = "AND") {
+      let success2 = false;
+      for (const [requestedResource, requestedActions] of Object.entries(request)) {
+        const allowedActions = statements[requestedResource];
+        if (!allowedActions)
+          return {
+            success: false,
+            error: `You are not allowed to access resource: ${requestedResource}`
+          };
+        if (Array.isArray(requestedActions))
+          success2 = requestedActions.every((requestedAction) => allowedActions.includes(requestedAction));
+        else if (typeof requestedActions === "object") {
+          const actions = requestedActions;
+          if (actions.connector === "OR")
+            success2 = actions.actions.some((requestedAction) => allowedActions.includes(requestedAction));
+          else
+            success2 = actions.actions.every((requestedAction) => allowedActions.includes(requestedAction));
+        } else
+          throw new BetterAuthError("Invalid access control request");
+        if (success2 && connector === "OR")
+          return { success: success2 };
+        if (!success2 && connector === "AND")
+          return {
+            success: false,
+            error: `unauthorized to access resource "${requestedResource}"`
+          };
+      }
+      if (success2)
+        return { success: success2 };
+      return {
+        success: false,
+        error: "Not authorized"
+      };
+    },
+    statements
+  };
+}
+function createAccessControl(s) {
+  return {
+    newRole(statements) {
+      return role(statements);
+    },
+    statements: s
+  };
+}
+
+// node_modules/better-auth/dist/plugins/multi-session/error-codes.mjs
+init_error_codes();
+var MULTI_SESSION_ERROR_CODES = defineErrorCodes({ INVALID_SESSION_TOKEN: "Invalid session token" });
+
+// node_modules/better-auth/dist/plugins/two-factor/error-code.mjs
+init_error_codes();
+var TWO_FACTOR_ERROR_CODES = defineErrorCodes({
+  OTP_NOT_ENABLED: "OTP not enabled",
+  OTP_HAS_EXPIRED: "OTP has expired",
+  TOTP_NOT_ENABLED: "TOTP not enabled",
+  TWO_FACTOR_NOT_ENABLED: "Two factor isn't enabled",
+  BACKUP_CODES_NOT_ENABLED: "Backup codes aren't enabled",
+  INVALID_BACKUP_CODE: "Invalid backup code",
+  INVALID_CODE: "Invalid code",
+  TOO_MANY_ATTEMPTS_REQUEST_NEW_CODE: "Too many attempts. Please request a new code.",
+  INVALID_TWO_FACTOR_COOKIE: "Invalid two factor cookie"
+});
+
+// node_modules/better-auth/dist/plugins/username/error-codes.mjs
+init_error_codes();
+var USERNAME_ERROR_CODES = defineErrorCodes({
+  INVALID_USERNAME_OR_PASSWORD: "Invalid username or password",
+  EMAIL_NOT_VERIFIED: "Email not verified",
+  UNEXPECTED_ERROR: "Unexpected error",
+  USERNAME_IS_ALREADY_TAKEN: "Username is already taken. Please try another.",
+  USERNAME_TOO_SHORT: "Username is too short",
+  USERNAME_TOO_LONG: "Username is too long",
+  INVALID_USERNAME: "Username is invalid",
+  INVALID_DISPLAY_USERNAME: "Display username is invalid"
+});
+
+// node_modules/better-auth/dist/plugins/admin/access/statement.mjs
+var defaultStatements = {
+  user: [
+    "create",
+    "list",
+    "set-role",
+    "ban",
+    "impersonate",
+    "impersonate-admins",
+    "delete",
+    "set-password",
+    "get",
+    "update"
+  ],
+  session: [
+    "list",
+    "revoke",
+    "delete"
+  ]
+};
+var defaultAc = createAccessControl(defaultStatements);
+var adminAc = defaultAc.newRole({
+  user: [
+    "create",
+    "list",
+    "set-role",
+    "ban",
+    "impersonate",
+    "delete",
+    "set-password",
+    "get",
+    "update"
+  ],
+  session: [
+    "list",
+    "revoke",
+    "delete"
+  ]
+});
+var userAc = defaultAc.newRole({
+  user: [],
+  session: []
+});
+var defaultRoles = {
+  admin: adminAc,
+  user: userAc
+};
+
+// node_modules/better-auth/dist/plugins/admin/error-codes.mjs
+init_error_codes();
+var ADMIN_ERROR_CODES = defineErrorCodes({
+  FAILED_TO_CREATE_USER: "Failed to create user",
+  USER_ALREADY_EXISTS: "User already exists.",
+  USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: "User already exists. Use another email.",
+  YOU_CANNOT_BAN_YOURSELF: "You cannot ban yourself",
+  YOU_ARE_NOT_ALLOWED_TO_CHANGE_USERS_ROLE: "You are not allowed to change users role",
+  YOU_ARE_NOT_ALLOWED_TO_CREATE_USERS: "You are not allowed to create users",
+  YOU_ARE_NOT_ALLOWED_TO_LIST_USERS: "You are not allowed to list users",
+  YOU_ARE_NOT_ALLOWED_TO_LIST_USERS_SESSIONS: "You are not allowed to list users sessions",
+  YOU_ARE_NOT_ALLOWED_TO_BAN_USERS: "You are not allowed to ban users",
+  YOU_ARE_NOT_ALLOWED_TO_IMPERSONATE_USERS: "You are not allowed to impersonate users",
+  YOU_ARE_NOT_ALLOWED_TO_REVOKE_USERS_SESSIONS: "You are not allowed to revoke users sessions",
+  YOU_ARE_NOT_ALLOWED_TO_DELETE_USERS: "You are not allowed to delete users",
+  YOU_ARE_NOT_ALLOWED_TO_SET_USERS_PASSWORD: "You are not allowed to set users password",
+  BANNED_USER: "You have been banned from this application",
+  YOU_ARE_NOT_ALLOWED_TO_GET_USER: "You are not allowed to get user",
+  NO_DATA_TO_UPDATE: "No data to update",
+  YOU_ARE_NOT_ALLOWED_TO_UPDATE_USERS: "You are not allowed to update users",
+  YOU_CANNOT_REMOVE_YOURSELF: "You cannot remove yourself",
+  YOU_ARE_NOT_ALLOWED_TO_SET_NON_EXISTENT_VALUE: "You are not allowed to set a non-existent role value",
+  YOU_CANNOT_IMPERSONATE_ADMINS: "You cannot impersonate admins",
+  INVALID_ROLE_TYPE: "Invalid role type"
+});
+
+// node_modules/better-auth/dist/utils/plugin-helper.mjs
+var getEndpointResponse = async (ctx) => {
+  const returned = ctx.context.returned;
+  if (!returned)
+    return null;
+  if (returned instanceof Response) {
+    if (returned.status !== 200)
+      return null;
+    return await returned.clone().json();
+  }
+  if (isAPIError2(returned))
+    return null;
+  return returned;
+};
+
+// node_modules/better-auth/dist/plugins/admin/has-permission.mjs
+var hasPermission = (input) => {
+  if (input.userId && input.options?.adminUserIds?.includes(input.userId))
+    return true;
+  if (!input.permissions)
+    return false;
+  const roles = (input.role || input.options?.defaultRole || "user").split(",");
+  const acRoles = input.options?.roles || defaultRoles;
+  for (const role2 of roles)
+    if (acRoles[role2]?.authorize(input.permissions)?.success)
+      return true;
+  return false;
+};
+
+// node_modules/better-auth/dist/plugins/admin/routes.mjs
+init_error2();
+init_adapter();
+var adminMiddleware = createAuthMiddleware(async (ctx) => {
+  const session = await getSessionFromCtx(ctx);
+  if (!session)
+    throw APIError2.fromStatus("UNAUTHORIZED");
+  return { session };
+});
+function parseRoles(roles) {
+  return Array.isArray(roles) ? roles.join(",") : roles;
+}
+var setRoleBodySchema = object2({
+  userId: exports_coerce2.string().meta({ description: "The user id" }),
+  role: union2([string5().meta({ description: "The role to set. `admin` or `user` by default" }), array2(string5().meta({ description: "The roles to set. `admin` or `user` by default" }))]).meta({ description: "The role to set, this can be a string or an array of strings. Eg: `admin` or `[admin, user]`" })
+});
+var setRole = (opts) => createAuthEndpoint("/admin/set-role", {
+  method: "POST",
+  body: setRoleBodySchema,
+  requireHeaders: true,
+  use: [adminMiddleware],
+  metadata: {
+    openapi: {
+      operationId: "setUserRole",
+      summary: "Set the role of a user",
+      description: "Set the role of a user",
+      responses: { 200: {
+        description: "User role updated",
+        content: { "application/json": { schema: {
+          type: "object",
+          properties: { user: { $ref: "#/components/schemas/User" } }
+        } } }
+      } }
+    },
+    $Infer: { body: {} }
+  }
+}, async (ctx) => {
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: ctx.context.session.user.role,
+    options: opts,
+    permissions: { user: ["set-role"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_CHANGE_USERS_ROLE);
+  const roles = opts.roles;
+  if (roles) {
+    const inputRoles = Array.isArray(ctx.body.role) ? ctx.body.role : [ctx.body.role];
+    for (const role2 of inputRoles)
+      if (!roles[role2])
+        throw APIError2.from("BAD_REQUEST", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_SET_NON_EXISTENT_VALUE);
+  }
+  const updatedUser = await ctx.context.internalAdapter.updateUser(ctx.body.userId, { role: parseRoles(ctx.body.role) });
+  return ctx.json({ user: parseUserOutput(ctx.context.options, updatedUser) });
+});
+var getUserQuerySchema = object2({ id: string5().meta({ description: "The id of the User" }) });
+var getUser = (opts) => createAuthEndpoint("/admin/get-user", {
+  method: "GET",
+  query: getUserQuerySchema,
+  use: [adminMiddleware],
+  metadata: { openapi: {
+    operationId: "getUser",
+    summary: "Get an existing user",
+    description: "Get an existing user",
+    responses: { 200: {
+      description: "User",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { user: { $ref: "#/components/schemas/User" } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const { id: id2 } = ctx.query;
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: ctx.context.session.user.role,
+    options: opts,
+    permissions: { user: ["get"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_GET_USER);
+  const user = await ctx.context.internalAdapter.findUserById(id2);
+  if (!user)
+    throw APIError2.from("NOT_FOUND", BASE_ERROR_CODES.USER_NOT_FOUND);
+  return parseUserOutput(ctx.context.options, user);
+});
+var createUserBodySchema = object2({
+  email: string5().meta({ description: "The email of the user" }),
+  password: string5().optional().meta({ description: "The password of the user. If not provided, the user will be created without a credential account (useful for magic link or social login only users)." }),
+  name: string5().meta({ description: "The name of the user" }),
+  role: union2([string5().meta({ description: "The role of the user" }), array2(string5().meta({ description: "The roles of user" }))]).optional().meta({ description: `A string or array of strings representing the roles to apply to the new user. Eg: "user"` }),
+  data: record(string5(), any()).optional().meta({ description: "Extra fields for the user. Including custom additional fields." })
+});
+var createUser = (opts) => createAuthEndpoint("/admin/create-user", {
+  method: "POST",
+  body: createUserBodySchema,
+  metadata: {
+    openapi: {
+      operationId: "createUser",
+      summary: "Create a new user",
+      description: "Create a new user",
+      responses: { 200: {
+        description: "User created",
+        content: { "application/json": { schema: {
+          type: "object",
+          properties: { user: { $ref: "#/components/schemas/User" } }
+        } } }
+      } }
+    },
+    $Infer: { body: {} }
+  }
+}, async (ctx) => {
+  const session = await getSessionFromCtx(ctx);
+  if (!session && (ctx.request || ctx.headers))
+    throw ctx.error("UNAUTHORIZED");
+  if (session) {
+    if (!hasPermission({
+      userId: session.user.id,
+      role: session.user.role,
+      options: opts,
+      permissions: { user: ["create"] }
+    }))
+      throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_CREATE_USERS);
+  }
+  const email4 = ctx.body.email.toLowerCase();
+  if (!email3().safeParse(email4).success)
+    throw APIError2.from("BAD_REQUEST", BASE_ERROR_CODES.INVALID_EMAIL);
+  if (await ctx.context.internalAdapter.findUserByEmail(email4))
+    throw APIError2.from("BAD_REQUEST", ADMIN_ERROR_CODES.USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL);
+  const user = await ctx.context.internalAdapter.createUser({
+    email: email4,
+    name: ctx.body.name,
+    role: (ctx.body.role && parseRoles(ctx.body.role)) ?? opts?.defaultRole ?? "user",
+    ...ctx.body.data
+  });
+  if (!user)
+    throw APIError2.from("INTERNAL_SERVER_ERROR", ADMIN_ERROR_CODES.FAILED_TO_CREATE_USER);
+  if (ctx.body.password) {
+    const hashedPassword = await ctx.context.password.hash(ctx.body.password);
+    await ctx.context.internalAdapter.linkAccount({
+      accountId: user.id,
+      providerId: "credential",
+      password: hashedPassword,
+      userId: user.id
+    });
+  }
+  return ctx.json({ user: parseUserOutput(ctx.context.options, user) });
+});
+var adminUpdateUserBodySchema = object2({
+  userId: exports_coerce2.string().meta({ description: "The user id" }),
+  data: record(any(), any()).meta({ description: "The user data to update" })
+});
+var adminUpdateUser = (opts) => createAuthEndpoint("/admin/update-user", {
+  method: "POST",
+  body: adminUpdateUserBodySchema,
+  use: [adminMiddleware],
+  metadata: { openapi: {
+    operationId: "updateUser",
+    summary: "Update a user",
+    description: "Update a user's details",
+    responses: { 200: {
+      description: "User updated",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { user: { $ref: "#/components/schemas/User" } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: ctx.context.session.user.role,
+    options: opts,
+    permissions: { user: ["update"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_UPDATE_USERS);
+  if (Object.keys(ctx.body.data).length === 0)
+    throw APIError2.from("BAD_REQUEST", ADMIN_ERROR_CODES.NO_DATA_TO_UPDATE);
+  if (Object.prototype.hasOwnProperty.call(ctx.body.data, "role")) {
+    if (!hasPermission({
+      userId: ctx.context.session.user.id,
+      role: ctx.context.session.user.role,
+      options: opts,
+      permissions: { user: ["set-role"] }
+    }))
+      throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_CHANGE_USERS_ROLE);
+    const roleValue = ctx.body.data.role;
+    const inputRoles = Array.isArray(roleValue) ? roleValue : [roleValue];
+    for (const role2 of inputRoles) {
+      if (typeof role2 !== "string")
+        throw APIError2.from("BAD_REQUEST", ADMIN_ERROR_CODES.INVALID_ROLE_TYPE);
+      if (opts.roles && !opts.roles[role2])
+        throw APIError2.from("BAD_REQUEST", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_SET_NON_EXISTENT_VALUE);
+    }
+    ctx.body.data.role = parseRoles(inputRoles);
+  }
+  const updatedUser = await ctx.context.internalAdapter.updateUser(ctx.body.userId, ctx.body.data);
+  return ctx.json(parseUserOutput(ctx.context.options, updatedUser));
+});
+var listUsersQuerySchema = object2({
+  searchValue: string5().optional().meta({ description: 'The value to search for. Eg: "some name"' }),
+  searchField: _enum3(["email", "name"]).meta({ description: 'The field to search in, defaults to email. Can be `email` or `name`. Eg: "name"' }).optional(),
+  searchOperator: _enum3([
+    "contains",
+    "starts_with",
+    "ends_with"
+  ]).meta({ description: 'The operator to use for the search. Can be `contains`, `starts_with` or `ends_with`. Eg: "contains"' }).optional(),
+  limit: string5().meta({ description: "The number of users to return" }).or(number5()).optional(),
+  offset: string5().meta({ description: "The offset to start from" }).or(number5()).optional(),
+  sortBy: string5().meta({ description: "The field to sort by" }).optional(),
+  sortDirection: _enum3(["asc", "desc"]).meta({ description: "The direction to sort by" }).optional(),
+  filterField: string5().meta({ description: "The field to filter by" }).optional(),
+  filterValue: string5().meta({ description: "The value to filter by" }).or(number5()).or(boolean5()).or(array2(string5())).or(array2(number5())).optional(),
+  filterOperator: _enum3(whereOperators).meta({ description: "The operator to use for the filter" }).optional()
+});
+var listUsers = (opts) => createAuthEndpoint("/admin/list-users", {
+  method: "GET",
+  use: [adminMiddleware],
+  query: listUsersQuerySchema,
+  metadata: { openapi: {
+    operationId: "listUsers",
+    summary: "List users",
+    description: "List users",
+    responses: { 200: {
+      description: "List of users",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: {
+          users: {
+            type: "array",
+            items: { $ref: "#/components/schemas/User" }
+          },
+          total: { type: "number" },
+          limit: { type: "number" },
+          offset: { type: "number" }
+        },
+        required: ["users", "total"]
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const session = ctx.context.session;
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: session.user.role,
+    options: opts,
+    permissions: { user: ["list"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_LIST_USERS);
+  const where = [];
+  if (ctx.query?.searchValue)
+    where.push({
+      field: ctx.query.searchField || "email",
+      operator: ctx.query.searchOperator || "contains",
+      value: ctx.query.searchValue
+    });
+  if (ctx.query?.filterValue !== undefined)
+    where.push({
+      field: ctx.query.filterField || "email",
+      operator: ctx.query.filterOperator || "eq",
+      value: ctx.query.filterValue
+    });
+  try {
+    const users = await ctx.context.internalAdapter.listUsers(Number(ctx.query?.limit) || undefined, Number(ctx.query?.offset) || undefined, ctx.query?.sortBy ? {
+      field: ctx.query.sortBy,
+      direction: ctx.query.sortDirection || "asc"
+    } : undefined, where.length ? where : undefined);
+    const total = await ctx.context.internalAdapter.countTotalUsers(where.length ? where : undefined);
+    return ctx.json({
+      users: users.map((user) => parseUserOutput(ctx.context.options, user)),
+      total,
+      limit: Number(ctx.query?.limit) || undefined,
+      offset: Number(ctx.query?.offset) || undefined
+    });
+  } catch {
+    return ctx.json({
+      users: [],
+      total: 0
+    });
+  }
+});
+var listUserSessionsBodySchema = object2({ userId: exports_coerce2.string().meta({ description: "The user id" }) });
+var listUserSessions = (opts) => createAuthEndpoint("/admin/list-user-sessions", {
+  method: "POST",
+  use: [adminMiddleware],
+  body: listUserSessionsBodySchema,
+  metadata: { openapi: {
+    operationId: "listUserSessions",
+    summary: "List user sessions",
+    description: "List user sessions",
+    responses: { 200: {
+      description: "List of user sessions",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { sessions: {
+          type: "array",
+          items: { $ref: "#/components/schemas/Session" }
+        } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const session = ctx.context.session;
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: session.user.role,
+    options: opts,
+    permissions: { session: ["list"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_LIST_USERS_SESSIONS);
+  const sessions = await ctx.context.internalAdapter.listSessions(ctx.body.userId);
+  return ctx.json({ sessions: sessions.map((s) => parseSessionOutput(ctx.context.options, s)) });
+});
+var unbanUserBodySchema = object2({ userId: exports_coerce2.string().meta({ description: "The user id" }) });
+var unbanUser = (opts) => createAuthEndpoint("/admin/unban-user", {
+  method: "POST",
+  body: unbanUserBodySchema,
+  use: [adminMiddleware],
+  metadata: { openapi: {
+    operationId: "unbanUser",
+    summary: "Unban a user",
+    description: "Unban a user",
+    responses: { 200: {
+      description: "User unbanned",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { user: { $ref: "#/components/schemas/User" } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const session = ctx.context.session;
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: session.user.role,
+    options: opts,
+    permissions: { user: ["ban"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_BAN_USERS);
+  const user = await ctx.context.internalAdapter.updateUser(ctx.body.userId, {
+    banned: false,
+    banExpires: null,
+    banReason: null,
+    updatedAt: /* @__PURE__ */ new Date
+  });
+  return ctx.json({ user: parseUserOutput(ctx.context.options, user) });
+});
+var banUserBodySchema = object2({
+  userId: exports_coerce2.string().meta({ description: "The user id" }),
+  banReason: string5().meta({ description: "The reason for the ban" }).optional(),
+  banExpiresIn: number5().meta({ description: "The number of seconds until the ban expires" }).optional()
+});
+var banUser = (opts) => createAuthEndpoint("/admin/ban-user", {
+  method: "POST",
+  body: banUserBodySchema,
+  use: [adminMiddleware],
+  metadata: { openapi: {
+    operationId: "banUser",
+    summary: "Ban a user",
+    description: "Ban a user",
+    responses: { 200: {
+      description: "User banned",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { user: { $ref: "#/components/schemas/User" } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const session = ctx.context.session;
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: session.user.role,
+    options: opts,
+    permissions: { user: ["ban"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_BAN_USERS);
+  if (!await ctx.context.internalAdapter.findUserById(ctx.body.userId))
+    throw APIError2.from("NOT_FOUND", BASE_ERROR_CODES.USER_NOT_FOUND);
+  if (ctx.body.userId === ctx.context.session.user.id)
+    throw APIError2.from("BAD_REQUEST", ADMIN_ERROR_CODES.YOU_CANNOT_BAN_YOURSELF);
+  const user = await ctx.context.internalAdapter.updateUser(ctx.body.userId, {
+    banned: true,
+    banReason: ctx.body.banReason || opts?.defaultBanReason || "No reason",
+    banExpires: ctx.body.banExpiresIn ? getDate(ctx.body.banExpiresIn, "sec") : opts?.defaultBanExpiresIn ? getDate(opts.defaultBanExpiresIn, "sec") : undefined,
+    updatedAt: /* @__PURE__ */ new Date
+  });
+  await ctx.context.internalAdapter.deleteSessions(ctx.body.userId);
+  return ctx.json({ user: parseUserOutput(ctx.context.options, user) });
+});
+var impersonateUserBodySchema = object2({ userId: exports_coerce2.string().meta({ description: "The user id" }) });
+var impersonateUser = (opts) => createAuthEndpoint("/admin/impersonate-user", {
+  method: "POST",
+  body: impersonateUserBodySchema,
+  use: [adminMiddleware],
+  metadata: { openapi: {
+    operationId: "impersonateUser",
+    summary: "Impersonate a user",
+    description: "Impersonate a user",
+    responses: { 200: {
+      description: "Impersonation session created",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: {
+          session: { $ref: "#/components/schemas/Session" },
+          user: { $ref: "#/components/schemas/User" }
+        }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: ctx.context.session.user.role,
+    options: opts,
+    permissions: { user: ["impersonate"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_IMPERSONATE_USERS);
+  const targetUser = await ctx.context.internalAdapter.findUserById(ctx.body.userId);
+  if (!targetUser)
+    throw APIError2.from("NOT_FOUND", BASE_ERROR_CODES.USER_NOT_FOUND);
+  const adminRoles = (Array.isArray(opts.adminRoles) ? opts.adminRoles : opts.adminRoles?.split(",") || []).map((role2) => role2.trim());
+  if ((targetUser.role || opts.defaultRole || "user").split(",").some((role2) => adminRoles.includes(role2)) || !!opts.adminUserIds?.includes(targetUser.id)) {
+    if (!(opts.allowImpersonatingAdmins === true || hasPermission({
+      userId: ctx.context.session.user.id,
+      role: ctx.context.session.user.role,
+      options: opts,
+      permissions: { user: ["impersonate-admins"] }
+    })))
+      throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_CANNOT_IMPERSONATE_ADMINS);
+  }
+  const session = await ctx.context.internalAdapter.createSession(targetUser.id, true, {
+    impersonatedBy: ctx.context.session.user.id,
+    expiresAt: opts?.impersonationSessionDuration ? getDate(opts.impersonationSessionDuration, "sec") : getDate(3600, "sec")
+  }, true);
+  if (!session)
+    throw APIError2.from("INTERNAL_SERVER_ERROR", ADMIN_ERROR_CODES.FAILED_TO_CREATE_USER);
+  const authCookies = ctx.context.authCookies;
+  deleteSessionCookie(ctx);
+  const dontRememberMeCookie = await ctx.getSignedCookie(ctx.context.authCookies.dontRememberToken.name, ctx.context.secret);
+  const adminCookieProp = ctx.context.createAuthCookie("admin_session");
+  await ctx.setSignedCookie(adminCookieProp.name, `${ctx.context.session.session.token}:${dontRememberMeCookie || ""}`, ctx.context.secret, authCookies.sessionToken.attributes);
+  await setSessionCookie(ctx, {
+    session,
+    user: targetUser
+  }, true);
+  return ctx.json({
+    session,
+    user: parseUserOutput(ctx.context.options, targetUser)
+  });
+});
+var stopImpersonating = () => createAuthEndpoint("/admin/stop-impersonating", {
+  method: "POST",
+  requireHeaders: true
+}, async (ctx) => {
+  const session = await getSessionFromCtx(ctx);
+  if (!session)
+    throw APIError2.fromStatus("UNAUTHORIZED");
+  if (!session.session.impersonatedBy)
+    throw APIError2.fromStatus("BAD_REQUEST", { message: "You are not impersonating anyone" });
+  const user = await ctx.context.internalAdapter.findUserById(session.session.impersonatedBy);
+  if (!user)
+    throw APIError2.fromStatus("INTERNAL_SERVER_ERROR", { message: "Failed to find user" });
+  const adminSessionCookie = ctx.context.createAuthCookie("admin_session");
+  const adminCookie = await ctx.getSignedCookie(adminSessionCookie.name, ctx.context.secret);
+  if (!adminCookie)
+    throw APIError2.fromStatus("INTERNAL_SERVER_ERROR", { message: "Failed to find admin session" });
+  const [adminSessionToken, dontRememberMeCookie] = adminCookie?.split(":");
+  const adminSession = await ctx.context.internalAdapter.findSession(adminSessionToken);
+  if (!adminSession || adminSession.session.userId !== user.id)
+    throw APIError2.fromStatus("INTERNAL_SERVER_ERROR", { message: "Failed to find admin session" });
+  await ctx.context.internalAdapter.deleteSession(session.session.token);
+  await setSessionCookie(ctx, adminSession, !!dontRememberMeCookie);
+  expireCookie(ctx, adminSessionCookie);
+  return ctx.json({
+    session: parseSessionOutput(ctx.context.options, adminSession.session),
+    user: parseUserOutput(ctx.context.options, adminSession.user)
+  });
+});
+var revokeUserSessionBodySchema = object2({ sessionToken: string5().meta({ description: "The session token" }) });
+var revokeUserSession = (opts) => createAuthEndpoint("/admin/revoke-user-session", {
+  method: "POST",
+  body: revokeUserSessionBodySchema,
+  use: [adminMiddleware],
+  metadata: { openapi: {
+    operationId: "revokeUserSession",
+    summary: "Revoke a user session",
+    description: "Revoke a user session",
+    responses: { 200: {
+      description: "Session revoked",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { success: { type: "boolean" } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const session = ctx.context.session;
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: session.user.role,
+    options: opts,
+    permissions: { session: ["revoke"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_REVOKE_USERS_SESSIONS);
+  await ctx.context.internalAdapter.deleteSession(ctx.body.sessionToken);
+  return ctx.json({ success: true });
+});
+var revokeUserSessionsBodySchema = object2({ userId: exports_coerce2.string().meta({ description: "The user id" }) });
+var revokeUserSessions = (opts) => createAuthEndpoint("/admin/revoke-user-sessions", {
+  method: "POST",
+  body: revokeUserSessionsBodySchema,
+  use: [adminMiddleware],
+  metadata: { openapi: {
+    operationId: "revokeUserSessions",
+    summary: "Revoke all user sessions",
+    description: "Revoke all user sessions",
+    responses: { 200: {
+      description: "Sessions revoked",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { success: { type: "boolean" } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const session = ctx.context.session;
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: session.user.role,
+    options: opts,
+    permissions: { session: ["revoke"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_REVOKE_USERS_SESSIONS);
+  await ctx.context.internalAdapter.deleteSessions(ctx.body.userId);
+  return ctx.json({ success: true });
+});
+var removeUserBodySchema = object2({ userId: exports_coerce2.string().meta({ description: "The user id" }) });
+var removeUser = (opts) => createAuthEndpoint("/admin/remove-user", {
+  method: "POST",
+  body: removeUserBodySchema,
+  use: [adminMiddleware],
+  metadata: { openapi: {
+    operationId: "removeUser",
+    summary: "Remove a user",
+    description: "Delete a user and all their sessions and accounts. Cannot be undone.",
+    responses: { 200: {
+      description: "User removed",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { success: { type: "boolean" } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const session = ctx.context.session;
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: session.user.role,
+    options: opts,
+    permissions: { user: ["delete"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_DELETE_USERS);
+  if (ctx.body.userId === ctx.context.session.user.id)
+    throw APIError2.from("BAD_REQUEST", ADMIN_ERROR_CODES.YOU_CANNOT_REMOVE_YOURSELF);
+  if (!await ctx.context.internalAdapter.findUserById(ctx.body.userId))
+    throw APIError2.from("NOT_FOUND", BASE_ERROR_CODES.USER_NOT_FOUND);
+  await ctx.context.internalAdapter.deleteUser(ctx.body.userId);
+  return ctx.json({ success: true });
+});
+var setUserPasswordBodySchema = object2({
+  newPassword: string5().nonempty("newPassword cannot be empty").meta({ description: "The new password" }),
+  userId: exports_coerce2.string().nonempty("userId cannot be empty").meta({ description: "The user id" })
+});
+var setUserPassword = (opts) => createAuthEndpoint("/admin/set-user-password", {
+  method: "POST",
+  body: setUserPasswordBodySchema,
+  use: [adminMiddleware],
+  metadata: { openapi: {
+    operationId: "setUserPassword",
+    summary: "Set a user's password",
+    description: "Set a user's password",
+    responses: { 200: {
+      description: "Password set",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { status: { type: "boolean" } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  if (!hasPermission({
+    userId: ctx.context.session.user.id,
+    role: ctx.context.session.user.role,
+    options: opts,
+    permissions: { user: ["set-password"] }
+  }))
+    throw APIError2.from("FORBIDDEN", ADMIN_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_SET_USERS_PASSWORD);
+  const { newPassword, userId } = ctx.body;
+  const minPasswordLength = ctx.context.password.config.minPasswordLength;
+  if (newPassword.length < minPasswordLength) {
+    ctx.context.logger.error("Password is too short");
+    throw APIError2.from("BAD_REQUEST", BASE_ERROR_CODES.PASSWORD_TOO_SHORT);
+  }
+  const maxPasswordLength = ctx.context.password.config.maxPasswordLength;
+  if (newPassword.length > maxPasswordLength) {
+    ctx.context.logger.error("Password is too long");
+    throw APIError2.from("BAD_REQUEST", BASE_ERROR_CODES.PASSWORD_TOO_LONG);
+  }
+  const hashedPassword = await ctx.context.password.hash(newPassword);
+  await ctx.context.internalAdapter.updatePassword(userId, hashedPassword);
+  return ctx.json({ status: true });
+});
+var userHasPermissionBodySchema = object2({
+  userId: exports_coerce2.string().optional().meta({ description: `The user id. Eg: "user-id"` }),
+  role: string5().optional().meta({ description: `The role to check permission for. Eg: "admin"` })
+}).and(union2([object2({
+  permission: record(string5(), array2(string5())),
+  permissions: _undefined5()
+}), object2({
+  permission: _undefined5(),
+  permissions: record(string5(), array2(string5()))
+})]));
+var userHasPermission = (opts) => {
+  return createAuthEndpoint("/admin/has-permission", {
+    method: "POST",
+    body: userHasPermissionBodySchema,
+    metadata: {
+      openapi: {
+        description: "Check if the user has permission",
+        requestBody: { content: { "application/json": { schema: {
+          type: "object",
+          properties: { permissions: {
+            type: "object",
+            description: "The permission to check"
+          } },
+          required: ["permissions"]
+        } } } },
+        responses: { "200": {
+          description: "Success",
+          content: { "application/json": { schema: {
+            type: "object",
+            properties: {
+              error: { type: "string" },
+              success: { type: "boolean" }
+            },
+            required: ["success"]
+          } } }
+        } }
+      },
+      $Infer: { body: {} }
+    }
+  }, async (ctx) => {
+    if (!ctx.body?.permissions)
+      throw new APIError2("BAD_REQUEST", { message: "invalid permission check. no permission(s) were passed." });
+    const session = await getSessionFromCtx(ctx);
+    if (!session && (ctx.request || ctx.headers))
+      throw new APIError2("UNAUTHORIZED");
+    if (!session && !ctx.body.userId && !ctx.body.role)
+      throw new APIError2("BAD_REQUEST", { message: "user id or role is required" });
+    const user = session?.user || (ctx.body.role ? {
+      id: ctx.body.userId || "",
+      role: ctx.body.role
+    } : null) || (ctx.body.userId ? await ctx.context.internalAdapter.findUserById(ctx.body.userId) : null);
+    if (!user)
+      throw new APIError2("BAD_REQUEST", { message: "user not found" });
+    const result = hasPermission({
+      userId: user.id,
+      role: user.role,
+      options: opts,
+      permissions: ctx.body.permissions
+    });
+    return ctx.json({
+      error: null,
+      success: result
+    });
+  });
+};
+
+// node_modules/better-auth/dist/plugins/admin/schema.mjs
+var schema3 = {
+  user: { fields: {
+    role: {
+      type: "string",
+      required: false,
+      input: false
+    },
+    banned: {
+      type: "boolean",
+      defaultValue: false,
+      required: false,
+      input: false
+    },
+    banReason: {
+      type: "string",
+      required: false,
+      input: false
+    },
+    banExpires: {
+      type: "date",
+      required: false,
+      input: false
+    }
+  } },
+  session: { fields: { impersonatedBy: {
+    type: "string",
+    required: false
+  } } }
+};
+
+// node_modules/better-auth/dist/plugins/admin/admin.mjs
+init_error2();
+var admin = (options) => {
+  const opts = {
+    ...options || {},
+    defaultRole: options?.defaultRole ?? "user",
+    adminRoles: options?.adminRoles ?? ["admin"],
+    bannedUserMessage: options?.bannedUserMessage ?? "You have been banned from this application. Please contact support if you believe this is an error."
+  };
+  if (options?.adminRoles) {
+    const invalidRoles = (Array.isArray(options.adminRoles) ? options.adminRoles : [...options.adminRoles.split(",")]).filter((role2) => !Object.keys(options?.roles || defaultRoles).map((r) => r.toLowerCase()).includes(role2.toLowerCase()));
+    if (invalidRoles.length > 0)
+      throw new BetterAuthError(`Invalid admin roles: ${invalidRoles.join(", ")}. Admin roles must be defined in the 'roles' configuration.`);
+  }
+  return {
+    id: "admin",
+    init() {
+      return { options: { databaseHooks: {
+        user: { create: { async before(user) {
+          return { data: {
+            role: options?.defaultRole ?? "user",
+            ...user
+          } };
+        } } },
+        session: { create: { async before(session, ctx) {
+          if (!ctx)
+            return;
+          const user = await ctx.context.internalAdapter.findUserById(session.userId);
+          if (user?.banned) {
+            if (user.banExpires && new Date(user.banExpires).getTime() < Date.now()) {
+              await ctx.context.internalAdapter.updateUser(session.userId, {
+                banned: false,
+                banReason: null,
+                banExpires: null
+              });
+              return;
+            }
+            if (ctx && (ctx.path.startsWith("/callback") || ctx.path.startsWith("/oauth2/callback"))) {
+              const redirectURI = ctx.context.options.onAPIError?.errorURL || `${ctx.context.baseURL}/error`;
+              throw ctx.redirect(`${redirectURI}?error=banned&error_description=${opts.bannedUserMessage}`);
+            }
+            throw APIError2.from("FORBIDDEN", {
+              message: opts.bannedUserMessage,
+              code: "BANNED_USER"
+            });
+          }
+        } } }
+      } } };
+    },
+    hooks: { after: [{
+      matcher(context) {
+        return context.path === "/list-sessions";
+      },
+      handler: createAuthMiddleware(async (ctx) => {
+        const response = await getEndpointResponse(ctx);
+        if (!response)
+          return;
+        const newJson = response.filter((session) => {
+          return !session.impersonatedBy;
+        });
+        return ctx.json(newJson);
+      })
+    }] },
+    endpoints: {
+      setRole: setRole(opts),
+      getUser: getUser(opts),
+      createUser: createUser(opts),
+      adminUpdateUser: adminUpdateUser(opts),
+      listUsers: listUsers(opts),
+      listUserSessions: listUserSessions(opts),
+      unbanUser: unbanUser(opts),
+      banUser: banUser(opts),
+      impersonateUser: impersonateUser(opts),
+      stopImpersonating: stopImpersonating(),
+      revokeUserSession: revokeUserSession(opts),
+      revokeUserSessions: revokeUserSessions(opts),
+      removeUser: removeUser(opts),
+      setUserPassword: setUserPassword(opts),
+      userHasPermission: userHasPermission(opts)
+    },
+    $ERROR_CODES: ADMIN_ERROR_CODES,
+    schema: mergeSchema(schema3, opts.schema),
+    options
+  };
+};
+
+// node_modules/better-auth/dist/plugins/anonymous/error-codes.mjs
+init_error_codes();
+var ANONYMOUS_ERROR_CODES = defineErrorCodes({
+  INVALID_EMAIL_FORMAT: "Email was not generated in a valid format",
+  FAILED_TO_CREATE_USER: "Failed to create user",
+  COULD_NOT_CREATE_SESSION: "Could not create session",
+  ANONYMOUS_USERS_CANNOT_SIGN_IN_AGAIN_ANONYMOUSLY: "Anonymous users cannot sign in again anonymously",
+  FAILED_TO_DELETE_ANONYMOUS_USER: "Failed to delete anonymous user",
+  USER_IS_NOT_ANONYMOUS: "User is not anonymous",
+  DELETE_ANONYMOUS_USER_DISABLED: "Deleting anonymous users is disabled"
+});
+
+// node_modules/better-auth/dist/plugins/anonymous/index.mjs
+init_id();
+
+// node_modules/better-auth/dist/plugins/captcha/constants.mjs
+var Providers = {
+  CLOUDFLARE_TURNSTILE: "cloudflare-turnstile",
+  GOOGLE_RECAPTCHA: "google-recaptcha",
+  HCAPTCHA: "hcaptcha",
+  CAPTCHAFOX: "captchafox"
+};
+var siteVerifyMap = {
+  [Providers.CLOUDFLARE_TURNSTILE]: "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+  [Providers.GOOGLE_RECAPTCHA]: "https://www.google.com/recaptcha/api/siteverify",
+  [Providers.HCAPTCHA]: "https://api.hcaptcha.com/siteverify",
+  [Providers.CAPTCHAFOX]: "https://api.captchafox.com/siteverify"
+};
+
+// node_modules/better-auth/dist/plugins/captcha/error-codes.mjs
+init_error_codes();
+var EXTERNAL_ERROR_CODES = defineErrorCodes({
+  VERIFICATION_FAILED: "Captcha verification failed",
+  MISSING_RESPONSE: "Missing CAPTCHA response",
+  UNKNOWN_ERROR: "Something went wrong"
+});
+var INTERNAL_ERROR_CODES = defineErrorCodes({
+  MISSING_SECRET_KEY: "Missing secret key",
+  SERVICE_UNAVAILABLE: "CAPTCHA service unavailable"
+});
+
+// node_modules/better-auth/dist/plugins/custom-session/index.mjs
+var getSessionQuerySchema2 = optional2(object2({
+  disableCookieCache: boolean5().meta({ description: "Disable cookie cache and fetch session from database" }).or(string5().transform((v) => v === "true")).optional(),
+  disableRefresh: boolean5().meta({ description: "Disable session refresh. Useful for checking session status, without updating the session" }).optional()
+}));
+
+// node_modules/better-auth/dist/plugins/device-authorization/error-codes.mjs
+init_error_codes();
+var DEVICE_AUTHORIZATION_ERROR_CODES = defineErrorCodes({
+  INVALID_DEVICE_CODE: "Invalid device code",
+  EXPIRED_DEVICE_CODE: "Device code has expired",
+  EXPIRED_USER_CODE: "User code has expired",
+  AUTHORIZATION_PENDING: "Authorization pending",
+  ACCESS_DENIED: "Access denied",
+  INVALID_USER_CODE: "Invalid user code",
+  DEVICE_CODE_ALREADY_PROCESSED: "Device code already processed",
+  POLLING_TOO_FREQUENTLY: "Polling too frequently",
+  USER_NOT_FOUND: "User not found",
+  FAILED_TO_CREATE_SESSION: "Failed to create session",
+  INVALID_DEVICE_CODE_STATUS: "Invalid device code status",
+  AUTHENTICATION_REQUIRED: "Authentication required"
+});
+
+// node_modules/better-auth/dist/plugins/device-authorization/routes.mjs
+init_error2();
+var deviceCodeBodySchema = object2({
+  client_id: string5().meta({ description: "The client ID of the application" }),
+  scope: string5().meta({ description: "Space-separated list of scopes" }).optional()
+});
+var deviceCodeErrorSchema = object2({
+  error: _enum3(["invalid_request", "invalid_client"]).meta({ description: "Error code" }),
+  error_description: string5().meta({ description: "Detailed error description" })
+});
+var deviceTokenBodySchema = object2({
+  grant_type: literal("urn:ietf:params:oauth:grant-type:device_code").meta({ description: "The grant type for device flow" }),
+  device_code: string5().meta({ description: "The device verification code" }),
+  client_id: string5().meta({ description: "The client ID of the application" })
+});
+var deviceTokenErrorSchema = object2({
+  error: _enum3([
+    "authorization_pending",
+    "slow_down",
+    "expired_token",
+    "access_denied",
+    "invalid_request",
+    "invalid_grant"
+  ]).meta({ description: "Error code" }),
+  error_description: string5().meta({ description: "Detailed error description" })
+});
+var deviceVerify = createAuthEndpoint("/device", {
+  method: "GET",
+  query: object2({ user_code: string5().meta({ description: "The user code to verify" }) }),
+  error: object2({
+    error: _enum3(["invalid_request"]).meta({ description: "Error code" }),
+    error_description: string5().meta({ description: "Detailed error description" })
+  }),
+  metadata: { openapi: {
+    description: "Verify user code and get device authorization status",
+    responses: { 200: {
+      description: "Device authorization status",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: {
+          user_code: {
+            type: "string",
+            description: "The user code to verify"
+          },
+          status: {
+            type: "string",
+            enum: [
+              "pending",
+              "approved",
+              "denied"
+            ],
+            description: "Current status of the device authorization"
+          }
+        }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const { user_code } = ctx.query;
+  const cleanUserCode = user_code.replace(/-/g, "");
+  const deviceCodeRecord = await ctx.context.adapter.findOne({
+    model: "deviceCode",
+    where: [{
+      field: "userCode",
+      value: cleanUserCode
+    }]
+  });
+  if (!deviceCodeRecord)
+    throw new APIError2("BAD_REQUEST", {
+      error: "invalid_request",
+      error_description: DEVICE_AUTHORIZATION_ERROR_CODES.INVALID_USER_CODE.message
+    });
+  if (deviceCodeRecord.expiresAt < /* @__PURE__ */ new Date)
+    throw new APIError2("BAD_REQUEST", {
+      error: "expired_token",
+      error_description: DEVICE_AUTHORIZATION_ERROR_CODES.EXPIRED_USER_CODE.message
+    });
+  return ctx.json({
+    user_code,
+    status: deviceCodeRecord.status
+  });
+});
+var deviceApprove = createAuthEndpoint("/device/approve", {
+  method: "POST",
+  body: object2({ userCode: string5().meta({ description: "The user code to approve" }) }),
+  error: object2({
+    error: _enum3([
+      "invalid_request",
+      "expired_token",
+      "device_code_already_processed",
+      "unauthorized",
+      "access_denied"
+    ]).meta({ description: "Error code" }),
+    error_description: string5().meta({ description: "Detailed error description" })
+  }),
+  requireHeaders: true,
+  metadata: { openapi: {
+    description: "Approve device authorization",
+    responses: { 200: {
+      description: "Success",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { success: { type: "boolean" } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const session = await getSessionFromCtx(ctx);
+  if (!session)
+    throw new APIError2("UNAUTHORIZED", {
+      error: "unauthorized",
+      error_description: DEVICE_AUTHORIZATION_ERROR_CODES.AUTHENTICATION_REQUIRED.message
+    });
+  const { userCode } = ctx.body;
+  const cleanUserCode = userCode.replace(/-/g, "");
+  const deviceCodeRecord = await ctx.context.adapter.findOne({
+    model: "deviceCode",
+    where: [{
+      field: "userCode",
+      value: cleanUserCode
+    }]
+  });
+  if (!deviceCodeRecord)
+    throw new APIError2("BAD_REQUEST", {
+      error: "invalid_request",
+      error_description: DEVICE_AUTHORIZATION_ERROR_CODES.INVALID_USER_CODE.message
+    });
+  if (deviceCodeRecord.expiresAt < /* @__PURE__ */ new Date)
+    throw new APIError2("BAD_REQUEST", {
+      error: "expired_token",
+      error_description: DEVICE_AUTHORIZATION_ERROR_CODES.EXPIRED_USER_CODE.message
+    });
+  if (deviceCodeRecord.status !== "pending")
+    throw new APIError2("BAD_REQUEST", {
+      error: "invalid_request",
+      error_description: DEVICE_AUTHORIZATION_ERROR_CODES.DEVICE_CODE_ALREADY_PROCESSED.message
+    });
+  if (deviceCodeRecord.userId && deviceCodeRecord.userId !== session.user.id)
+    throw new APIError2("FORBIDDEN", {
+      error: "access_denied",
+      error_description: "You are not authorized to approve this device authorization"
+    });
+  await ctx.context.adapter.update({
+    model: "deviceCode",
+    where: [{
+      field: "id",
+      value: deviceCodeRecord.id
+    }],
+    update: {
+      status: "approved",
+      userId: session.user.id
+    }
+  });
+  return ctx.json({ success: true });
+});
+var deviceDeny = createAuthEndpoint("/device/deny", {
+  method: "POST",
+  body: object2({ userCode: string5().meta({ description: "The user code to deny" }) }),
+  error: object2({
+    error: _enum3([
+      "invalid_request",
+      "expired_token",
+      "unauthorized",
+      "access_denied"
+    ]).meta({ description: "Error code" }),
+    error_description: string5().meta({ description: "Detailed error description" })
+  }),
+  requireHeaders: true,
+  metadata: { openapi: {
+    description: "Deny device authorization",
+    responses: { 200: {
+      description: "Success",
+      content: { "application/json": { schema: {
+        type: "object",
+        properties: { success: { type: "boolean" } }
+      } } }
+    } }
+  } }
+}, async (ctx) => {
+  const session = await getSessionFromCtx(ctx);
+  if (!session)
+    throw new APIError2("UNAUTHORIZED", {
+      error: "unauthorized",
+      error_description: DEVICE_AUTHORIZATION_ERROR_CODES.AUTHENTICATION_REQUIRED.message
+    });
+  const { userCode } = ctx.body;
+  const cleanUserCode = userCode.replace(/-/g, "");
+  const deviceCodeRecord = await ctx.context.adapter.findOne({
+    model: "deviceCode",
+    where: [{
+      field: "userCode",
+      value: cleanUserCode
+    }]
+  });
+  if (!deviceCodeRecord)
+    throw new APIError2("BAD_REQUEST", {
+      error: "invalid_request",
+      error_description: DEVICE_AUTHORIZATION_ERROR_CODES.INVALID_USER_CODE.message
+    });
+  if (deviceCodeRecord.expiresAt < /* @__PURE__ */ new Date)
+    throw new APIError2("BAD_REQUEST", {
+      error: "expired_token",
+      error_description: DEVICE_AUTHORIZATION_ERROR_CODES.EXPIRED_USER_CODE.message
+    });
+  if (deviceCodeRecord.status !== "pending")
+    throw new APIError2("BAD_REQUEST", {
+      error: "invalid_request",
+      error_description: DEVICE_AUTHORIZATION_ERROR_CODES.DEVICE_CODE_ALREADY_PROCESSED.message
+    });
+  if (deviceCodeRecord.userId && deviceCodeRecord.userId !== session.user.id)
+    throw new APIError2("FORBIDDEN", {
+      error: "access_denied",
+      error_description: "You are not authorized to deny this device authorization"
+    });
+  await ctx.context.adapter.update({
+    model: "deviceCode",
+    where: [{
+      field: "id",
+      value: deviceCodeRecord.id
+    }],
+    update: {
+      status: "denied",
+      userId: deviceCodeRecord.userId || session.user.id
+    }
+  });
+  return ctx.json({ success: true });
+});
+
+// node_modules/better-auth/dist/plugins/device-authorization/schema.mjs
+object2({
+  id: string5(),
+  deviceCode: string5(),
+  userCode: string5(),
+  userId: string5().optional(),
+  expiresAt: date7(),
+  status: string5(),
+  lastPolledAt: date7().optional(),
+  pollingInterval: number5().optional(),
+  clientId: string5().optional(),
+  scope: string5().optional()
+});
+
+// node_modules/better-auth/dist/plugins/device-authorization/index.mjs
+var timeStringSchema = custom((val) => {
+  if (typeof val !== "string")
+    return false;
+  try {
+    ms(val);
+    return true;
+  } catch {
+    return false;
+  }
+}, { message: "Invalid time string format. Use formats like '30m', '5s', '1h', etc." });
+var deviceAuthorizationOptionsSchema = object2({
+  expiresIn: timeStringSchema.default("30m").describe("Time in seconds until the device code expires. Use formats like '30m', '5s', '1h', etc."),
+  interval: timeStringSchema.default("5s").describe("Time in seconds between polling attempts. Use formats like '30m', '5s', '1h', etc."),
+  deviceCodeLength: number5().int().positive().default(40).describe("Length of the device code to be generated. Default is 40 characters."),
+  userCodeLength: number5().int().positive().default(8).describe("Length of the user code to be generated. Default is 8 characters."),
+  generateDeviceCode: custom((val) => typeof val === "function", { message: "generateDeviceCode must be a function that returns a string or a promise that resolves to a string." }).optional().describe("Function to generate a device code. If not provided, a default random string generator will be used."),
+  generateUserCode: custom((val) => typeof val === "function", { message: "generateUserCode must be a function that returns a string or a promise that resolves to a string." }).optional().describe("Function to generate a user code. If not provided, a default random string generator will be used."),
+  validateClient: custom((val) => typeof val === "function", { message: "validateClient must be a function that returns a boolean or a promise that resolves to a boolean." }).optional().describe("Function to validate the client ID. If not provided, no validation will be performed."),
+  onDeviceAuthRequest: custom((val) => typeof val === "function", { message: "onDeviceAuthRequest must be a function that returns void or a promise that resolves to void." }).optional().describe("Function to handle device authorization requests. If not provided, no additional actions will be taken."),
+  verificationUri: string5().optional().describe("The URI where users verify their device code. Can be an absolute URL (https://example.com/device) or relative path (/custom-path). This will be returned as verification_uri in the device code response. If not provided, defaults to /device."),
+  schema: custom(() => true)
+});
+
+// node_modules/better-auth/dist/plugins/email-otp/error-codes.mjs
+init_error_codes();
+var EMAIL_OTP_ERROR_CODES = defineErrorCodes({
+  OTP_EXPIRED: "OTP expired",
+  INVALID_OTP: "Invalid OTP",
+  TOO_MANY_ATTEMPTS: "Too many attempts"
+});
+
+// node_modules/better-auth/dist/plugins/email-otp/routes.mjs
+init_error2();
+var types2 = [
+  "email-verification",
+  "sign-in",
+  "forget-password",
+  "change-email"
+];
+var sendVerificationOTPBodySchema = object2({
+  email: string5({}).meta({ description: "Email address to send the OTP" }),
+  type: _enum3(types2).meta({ description: "Type of the OTP" })
+});
+var createVerificationOTPBodySchema = object2({
+  email: string5({}).meta({ description: "Email address to send the OTP" }),
+  type: _enum3(types2).meta({
+    required: true,
+    description: "Type of the OTP"
+  })
+});
+var getVerificationOTPBodySchema = object2({
+  email: string5({}).meta({ description: "Email address the OTP was sent to" }),
+  type: _enum3(types2).meta({
+    required: true,
+    description: "Type of the OTP"
+  })
+});
+var checkVerificationOTPBodySchema = object2({
+  email: string5().meta({ description: "Email address the OTP was sent to" }),
+  type: _enum3(types2).meta({
+    required: true,
+    description: "Type of the OTP"
+  }),
+  otp: string5().meta({
+    required: true,
+    description: "OTP to verify"
+  })
+});
+var verifyEmailOTPBodySchema = object2({
+  email: string5({}).meta({ description: "Email address to verify" }),
+  otp: string5().meta({
+    required: true,
+    description: "OTP to verify"
+  })
+});
+var signInEmailOTPBodySchema = object2({
+  email: string5({}).meta({ description: "Email address to sign in" }),
+  otp: string5().meta({
+    required: true,
+    description: "OTP sent to the email"
+  }),
+  name: string5().meta({ description: 'User display name. Only used if the user is registering for the first time. Eg: "my-name"' }).optional(),
+  image: string5().meta({ description: "User profile image URL. Only used if the user is registering for the first time." }).optional()
+}).and(record(string5(), any()));
+var requestPasswordResetEmailOTPBodySchema = object2({ email: string5().meta({ description: "Email address to send the OTP" }) });
+var forgetPasswordEmailOTPBodySchema = object2({ email: string5().meta({ description: "Email address to send the OTP" }) });
+var resetPasswordEmailOTPBodySchema = object2({
+  email: string5().meta({ description: "Email address to reset the password" }),
+  otp: string5().meta({ description: "OTP sent to the email" }),
+  password: string5().meta({ description: "New password" })
+});
+var requestEmailChangeEmailOTPBodySchema = object2({
+  newEmail: string5().meta({ description: "New email address to send the OTP" }),
+  otp: string5().optional().meta({ description: "OTP sent to the current email. This is required if changeEmail.verifyCurrentEmail option is set to true" })
+});
+var changeEmailEmailOTPBodySchema = object2({
+  newEmail: string5().meta({ description: "New email address to verify and change to" }),
+  otp: string5().meta({ description: "OTP sent to the new email" })
+});
+
+// node_modules/better-auth/dist/plugins/generic-oauth/error-codes.mjs
+init_error_codes();
+var GENERIC_OAUTH_ERROR_CODES = defineErrorCodes({
+  INVALID_OAUTH_CONFIGURATION: "Invalid OAuth configuration",
+  TOKEN_URL_NOT_FOUND: "Invalid OAuth configuration. Token URL not found.",
+  PROVIDER_CONFIG_NOT_FOUND: "No config found for provider",
+  PROVIDER_ID_REQUIRED: "Provider ID is required",
+  INVALID_OAUTH_CONFIG: "Invalid OAuth configuration.",
+  SESSION_REQUIRED: "Session is required",
+  ISSUER_MISMATCH: "OAuth issuer mismatch. The authorization server issuer does not match the expected value (RFC 9207).",
+  ISSUER_MISSING: "OAuth issuer parameter missing. The authorization server did not include the required iss parameter (RFC 9207)."
+});
+
+// node_modules/better-auth/dist/plugins/generic-oauth/routes.mjs
+init_error2();
+var signInWithOAuth2BodySchema = object2({
+  providerId: string5().meta({ description: "The provider ID for the OAuth provider" }),
+  callbackURL: string5().meta({ description: "The URL to redirect to after sign in" }).optional(),
+  errorCallbackURL: string5().meta({ description: "The URL to redirect to if an error occurs" }).optional(),
+  newUserCallbackURL: string5().meta({ description: 'The URL to redirect to after login if the user is new. Eg: "/welcome"' }).optional(),
+  disableRedirect: boolean5().meta({ description: "Disable redirect" }).optional(),
+  scopes: array2(string5()).meta({ description: "Scopes to be passed to the provider authorization request." }).optional(),
+  requestSignUp: boolean5().meta({ description: "Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider. Eg: false" }).optional(),
+  additionalData: record(string5(), any()).optional()
+});
+var OAuth2CallbackQuerySchema = object2({
+  code: string5().meta({ description: "The OAuth2 code" }).optional(),
+  error: string5().meta({ description: "The error message, if any" }).optional(),
+  error_description: string5().meta({ description: "The error description, if any" }).optional(),
+  state: string5().meta({ description: "The state parameter from the OAuth2 request" }).optional(),
+  iss: string5().meta({ description: "The issuer identifier" }).optional()
+});
+var OAuth2LinkAccountBodySchema = object2({
+  providerId: string5(),
+  callbackURL: string5(),
+  scopes: array2(string5()).meta({ description: "Additional scopes to request when linking the account" }).optional(),
+  errorCallbackURL: string5().meta({ description: "The URL to redirect to if there is an error during the link process" }).optional()
+});
+
+// node_modules/better-auth/dist/plugins/generic-oauth/index.mjs
+init_error2();
+
+// node_modules/better-auth/dist/plugins/haveibeenpwned/index.mjs
+init_error_codes();
+var ERROR_CODES = defineErrorCodes({ PASSWORD_COMPROMISED: "The password you entered has been compromised. Please choose a different password." });
+
+// node_modules/better-auth/dist/plugins/jwt/sign.mjs
+init_error2();
+
+// node_modules/better-auth/dist/plugins/jwt/index.mjs
+init_error2();
+var signJWTBodySchema = object2({
+  payload: record(string5(), any()),
+  overrideOptions: record(string5(), any()).optional()
+});
+var verifyJWTBodySchema = object2({
+  token: string5(),
+  issuer: string5().optional()
+});
+
+// node_modules/better-auth/dist/plugins/magic-link/index.mjs
+var signInMagicLinkBodySchema = object2({
+  email: email3().meta({ description: "Email address to send the magic link" }),
+  name: string5().meta({ description: 'User display name. Only used if the user is registering for the first time. Eg: "my-name"' }).optional(),
+  callbackURL: string5().meta({ description: "URL to redirect after magic link verification" }).optional(),
+  newUserCallbackURL: string5().meta({ description: "URL to redirect after new user signup. Only used if the user is registering for the first time." }).optional(),
+  errorCallbackURL: string5().meta({ description: "URL to redirect after error." }).optional()
+});
+var magicLinkVerifyQuerySchema = object2({
+  token: string5().meta({ description: "Verification token" }),
+  callbackURL: string5().meta({ description: 'URL to redirect after magic link verification, if not provided the user will be redirected to the root URL. Eg: "/dashboard"' }).optional(),
+  errorCallbackURL: string5().meta({ description: "URL to redirect after error." }).optional(),
+  newUserCallbackURL: string5().meta({ description: "URL to redirect after new user signup. Only used if the user is registering for the first time." }).optional()
+});
+
+// node_modules/better-auth/dist/plugins/oidc-provider/error.mjs
+init_error2();
+
+// node_modules/better-auth/dist/plugins/oidc-provider/authorize.mjs
+init_error2();
+
+// node_modules/better-auth/dist/plugins/oidc-provider/schema.mjs
+object2({
+  clientId: string5(),
+  clientSecret: string5().optional(),
+  type: _enum3([
+    "web",
+    "native",
+    "user-agent-based",
+    "public"
+  ]),
+  name: string5(),
+  icon: string5().optional(),
+  metadata: string5().optional(),
+  disabled: boolean5().optional().default(false),
+  redirectUrls: string5(),
+  userId: string5().optional(),
+  createdAt: date7(),
+  updatedAt: date7()
+});
+
+// node_modules/better-auth/dist/plugins/oidc-provider/index.mjs
+var oAuthConsentBodySchema = object2({
+  accept: boolean5(),
+  consent_code: string5().optional().nullish()
+});
+var oAuth2TokenBodySchema = record(any(), any());
+var registerOAuthApplicationBodySchema = object2({
+  redirect_uris: array2(string5()).meta({ description: 'A list of redirect URIs. Eg: ["https://client.example.com/callback"]' }),
+  token_endpoint_auth_method: _enum3([
+    "none",
+    "client_secret_basic",
+    "client_secret_post"
+  ]).meta({ description: 'The authentication method for the token endpoint. Eg: "client_secret_basic"' }).default("client_secret_basic").optional(),
+  grant_types: array2(_enum3([
+    "authorization_code",
+    "implicit",
+    "password",
+    "client_credentials",
+    "refresh_token",
+    "urn:ietf:params:oauth:grant-type:jwt-bearer",
+    "urn:ietf:params:oauth:grant-type:saml2-bearer"
+  ])).meta({ description: 'The grant types supported by the application. Eg: ["authorization_code"]' }).default(["authorization_code"]).optional(),
+  response_types: array2(_enum3(["code", "token"])).meta({ description: 'The response types supported by the application. Eg: ["code"]' }).default(["code"]).optional(),
+  client_name: string5().meta({ description: 'The name of the application. Eg: "My App"' }).optional(),
+  client_uri: string5().meta({ description: 'The URI of the application. Eg: "https://client.example.com"' }).optional(),
+  logo_uri: string5().meta({ description: 'The URI of the application logo. Eg: "https://client.example.com/logo.png"' }).optional(),
+  scope: string5().meta({ description: 'The scopes supported by the application. Separated by spaces. Eg: "profile email"' }).optional(),
+  contacts: array2(string5()).meta({ description: 'The contact information for the application. Eg: ["admin@example.com"]' }).optional(),
+  tos_uri: string5().meta({ description: 'The URI of the application terms of service. Eg: "https://client.example.com/tos"' }).optional(),
+  policy_uri: string5().meta({ description: 'The URI of the application privacy policy. Eg: "https://client.example.com/policy"' }).optional(),
+  jwks_uri: string5().meta({ description: 'The URI of the application JWKS. Eg: "https://client.example.com/jwks"' }).optional(),
+  jwks: record(any(), any()).meta({ description: 'The JWKS of the application. Eg: {"keys": [{"kty": "RSA", "alg": "RS256", "use": "sig", "n": "...", "e": "..."}]}' }).optional(),
+  metadata: record(any(), any()).meta({ description: 'The metadata of the application. Eg: {"key": "value"}' }).optional(),
+  software_id: string5().meta({ description: 'The software ID of the application. Eg: "my-software"' }).optional(),
+  software_version: string5().meta({ description: 'The software version of the application. Eg: "1.0.0"' }).optional(),
+  software_statement: string5().meta({ description: "The software statement of the application." }).optional()
+});
+
+// node_modules/better-auth/dist/plugins/mcp/authorize.mjs
+init_error2();
+
+// node_modules/better-auth/dist/plugins/mcp/index.mjs
+init_env();
+init_json();
+var registerMcpClientBodySchema = object2({
+  redirect_uris: array2(string5()),
+  token_endpoint_auth_method: _enum3([
+    "none",
+    "client_secret_basic",
+    "client_secret_post"
+  ]).default("client_secret_basic").optional(),
+  grant_types: array2(_enum3([
+    "authorization_code",
+    "implicit",
+    "password",
+    "client_credentials",
+    "refresh_token",
+    "urn:ietf:params:oauth:grant-type:jwt-bearer",
+    "urn:ietf:params:oauth:grant-type:saml2-bearer"
+  ])).default(["authorization_code"]).optional(),
+  response_types: array2(_enum3(["code", "token"])).default(["code"]).optional(),
+  client_name: string5().optional(),
+  client_uri: string5().optional(),
+  logo_uri: string5().optional(),
+  scope: string5().optional(),
+  contacts: array2(string5()).optional(),
+  tos_uri: string5().optional(),
+  policy_uri: string5().optional(),
+  jwks_uri: string5().optional(),
+  jwks: record(string5(), any()).optional(),
+  metadata: record(any(), any()).optional(),
+  software_id: string5().optional(),
+  software_version: string5().optional(),
+  software_statement: string5().optional()
+});
+var mcpOAuthTokenBodySchema = record(any(), any());
+
+// node_modules/better-auth/dist/plugins/multi-session/index.mjs
+var setActiveSessionBodySchema = object2({ sessionToken: string5().meta({ description: "The session token to set as active" }) });
+var revokeDeviceSessionBodySchema = object2({ sessionToken: string5().meta({ description: "The session token to revoke" }) });
+
+// node_modules/better-auth/dist/client/parser.mjs
+var SPECIAL_VALUES = {
+  true: true,
+  false: false,
+  null: null,
+  undefined: undefined,
+  nan: NaN,
+  infinity: Number.POSITIVE_INFINITY,
+  "-infinity": Number.NEGATIVE_INFINITY
+};
+
+// node_modules/better-auth/dist/plugins/oauth-proxy/utils.mjs
+init_env();
+
+// node_modules/better-auth/dist/plugins/oauth-proxy/index.mjs
+var oauthProxyQuerySchema = object2({
+  callbackURL: string5().meta({ description: "The URL to redirect to after the proxy" }),
+  profile: string5().optional().meta({ description: "Encrypted OAuth profile data" })
+});
+var oauthCallbackQuerySchema = object2({
+  code: string5().optional(),
+  error: string5().optional()
+});
+
+// node_modules/better-auth/dist/plugins/one-tap/index.mjs
+var oneTapCallbackBodySchema = object2({ idToken: string5().meta({ description: "Google ID token, which the client obtains from the One Tap API" }) });
+
+// node_modules/better-auth/dist/plugins/one-time-token/index.mjs
+var verifyOneTimeTokenBodySchema = object2({ token: string5().meta({ description: 'The token to verify. Eg: "some-token"' }) });
+
+// node_modules/better-auth/dist/plugins/open-api/generator.mjs
+var allowedType = new Set([
+  "string",
+  "number",
+  "boolean",
+  "array",
+  "object"
+]);
+
+// node_modules/better-auth/dist/plugins/organization/adapter.mjs
+init_error2();
+
+// node_modules/better-auth/dist/plugins/organization/access/statement.mjs
+var defaultStatements2 = {
+  organization: ["update", "delete"],
+  member: [
+    "create",
+    "update",
+    "delete"
+  ],
+  invitation: ["create", "cancel"],
+  team: [
+    "create",
+    "update",
+    "delete"
+  ],
+  ac: [
+    "create",
+    "read",
+    "update",
+    "delete"
+  ]
+};
+var defaultAc2 = createAccessControl(defaultStatements2);
+var adminAc2 = defaultAc2.newRole({
+  organization: ["update"],
+  invitation: ["create", "cancel"],
+  member: [
+    "create",
+    "update",
+    "delete"
+  ],
+  team: [
+    "create",
+    "update",
+    "delete"
+  ],
+  ac: [
+    "create",
+    "read",
+    "update",
+    "delete"
+  ]
+});
+var ownerAc = defaultAc2.newRole({
+  organization: ["update", "delete"],
+  member: [
+    "create",
+    "update",
+    "delete"
+  ],
+  invitation: ["create", "cancel"],
+  team: [
+    "create",
+    "update",
+    "delete"
+  ],
+  ac: [
+    "create",
+    "read",
+    "update",
+    "delete"
+  ]
+});
+var memberAc = defaultAc2.newRole({
+  organization: [],
+  member: [],
+  invitation: [],
+  team: [],
+  ac: ["read"]
+});
+
+// node_modules/better-auth/dist/plugins/organization/error-codes.mjs
+init_error_codes();
+var ORGANIZATION_ERROR_CODES = defineErrorCodes({
+  YOU_ARE_NOT_ALLOWED_TO_CREATE_A_NEW_ORGANIZATION: "You are not allowed to create a new organization",
+  YOU_HAVE_REACHED_THE_MAXIMUM_NUMBER_OF_ORGANIZATIONS: "You have reached the maximum number of organizations",
+  ORGANIZATION_ALREADY_EXISTS: "Organization already exists",
+  ORGANIZATION_SLUG_ALREADY_TAKEN: "Organization slug already taken",
+  ORGANIZATION_NOT_FOUND: "Organization not found",
+  USER_IS_NOT_A_MEMBER_OF_THE_ORGANIZATION: "User is not a member of the organization",
+  YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION: "You are not allowed to update this organization",
+  YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_ORGANIZATION: "You are not allowed to delete this organization",
+  NO_ACTIVE_ORGANIZATION: "No active organization",
+  USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION: "User is already a member of this organization",
+  MEMBER_NOT_FOUND: "Member not found",
+  ROLE_NOT_FOUND: "Role not found",
+  YOU_ARE_NOT_ALLOWED_TO_CREATE_A_NEW_TEAM: "You are not allowed to create a new team",
+  TEAM_ALREADY_EXISTS: "Team already exists",
+  TEAM_NOT_FOUND: "Team not found",
+  YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER: "You cannot leave the organization as the only owner",
+  YOU_CANNOT_LEAVE_THE_ORGANIZATION_WITHOUT_AN_OWNER: "You cannot leave the organization without an owner",
+  YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_MEMBER: "You are not allowed to delete this member",
+  YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_ORGANIZATION: "You are not allowed to invite users to this organization",
+  USER_IS_ALREADY_INVITED_TO_THIS_ORGANIZATION: "User is already invited to this organization",
+  INVITATION_NOT_FOUND: "Invitation not found",
+  YOU_ARE_NOT_THE_RECIPIENT_OF_THE_INVITATION: "You are not the recipient of the invitation",
+  EMAIL_VERIFICATION_REQUIRED_BEFORE_ACCEPTING_OR_REJECTING_INVITATION: "Email verification required before accepting or rejecting invitation",
+  YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_INVITATION: "You are not allowed to cancel this invitation",
+  INVITER_IS_NO_LONGER_A_MEMBER_OF_THE_ORGANIZATION: "Inviter is no longer a member of the organization",
+  YOU_ARE_NOT_ALLOWED_TO_INVITE_USER_WITH_THIS_ROLE: "You are not allowed to invite a user with this role",
+  FAILED_TO_RETRIEVE_INVITATION: "Failed to retrieve invitation",
+  YOU_HAVE_REACHED_THE_MAXIMUM_NUMBER_OF_TEAMS: "You have reached the maximum number of teams",
+  UNABLE_TO_REMOVE_LAST_TEAM: "Unable to remove last team",
+  YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER: "You are not allowed to update this member",
+  ORGANIZATION_MEMBERSHIP_LIMIT_REACHED: "Organization membership limit reached",
+  YOU_ARE_NOT_ALLOWED_TO_CREATE_TEAMS_IN_THIS_ORGANIZATION: "You are not allowed to create teams in this organization",
+  YOU_ARE_NOT_ALLOWED_TO_DELETE_TEAMS_IN_THIS_ORGANIZATION: "You are not allowed to delete teams in this organization",
+  YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_TEAM: "You are not allowed to update this team",
+  YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_TEAM: "You are not allowed to delete this team",
+  INVITATION_LIMIT_REACHED: "Invitation limit reached",
+  TEAM_MEMBER_LIMIT_REACHED: "Team member limit reached",
+  USER_IS_NOT_A_MEMBER_OF_THE_TEAM: "User is not a member of the team",
+  YOU_CAN_NOT_ACCESS_THE_MEMBERS_OF_THIS_TEAM: "You are not allowed to list the members of this team",
+  YOU_DO_NOT_HAVE_AN_ACTIVE_TEAM: "You do not have an active team",
+  YOU_ARE_NOT_ALLOWED_TO_CREATE_A_NEW_TEAM_MEMBER: "You are not allowed to create a new member",
+  YOU_ARE_NOT_ALLOWED_TO_REMOVE_A_TEAM_MEMBER: "You are not allowed to remove a team member",
+  YOU_ARE_NOT_ALLOWED_TO_ACCESS_THIS_ORGANIZATION: "You are not allowed to access this organization as an owner",
+  YOU_ARE_NOT_A_MEMBER_OF_THIS_ORGANIZATION: "You are not a member of this organization",
+  MISSING_AC_INSTANCE: "Dynamic Access Control requires a pre-defined ac instance on the server auth plugin. Read server logs for more information",
+  YOU_MUST_BE_IN_AN_ORGANIZATION_TO_CREATE_A_ROLE: "You must be in an organization to create a role",
+  YOU_ARE_NOT_ALLOWED_TO_CREATE_A_ROLE: "You are not allowed to create a role",
+  YOU_ARE_NOT_ALLOWED_TO_UPDATE_A_ROLE: "You are not allowed to update a role",
+  YOU_ARE_NOT_ALLOWED_TO_DELETE_A_ROLE: "You are not allowed to delete a role",
+  YOU_ARE_NOT_ALLOWED_TO_READ_A_ROLE: "You are not allowed to read a role",
+  YOU_ARE_NOT_ALLOWED_TO_LIST_A_ROLE: "You are not allowed to list a role",
+  YOU_ARE_NOT_ALLOWED_TO_GET_A_ROLE: "You are not allowed to get a role",
+  TOO_MANY_ROLES: "This organization has too many roles",
+  INVALID_RESOURCE: "The provided permission includes an invalid resource",
+  ROLE_NAME_IS_ALREADY_TAKEN: "That role name is already taken",
+  CANNOT_DELETE_A_PRE_DEFINED_ROLE: "Cannot delete a pre-defined role",
+  ROLE_IS_ASSIGNED_TO_MEMBERS: "Cannot delete a role that is assigned to members. Please reassign the members to a different role first"
+});
+
+// node_modules/better-auth/dist/plugins/organization/call.mjs
+var orgMiddleware = createAuthMiddleware(async () => {
+  return {};
+});
+var orgSessionMiddleware = createAuthMiddleware({ use: [sessionMiddleware] }, async (ctx) => {
+  return { session: ctx.context.session };
+});
+
+// node_modules/better-auth/dist/plugins/organization/routes/crud-access-control.mjs
+init_error2();
+var DEFAULT_MAXIMUM_ROLES_PER_ORGANIZATION = Number.POSITIVE_INFINITY;
+var baseCreateOrgRoleSchema = object2({
+  organizationId: string5().optional().meta({ description: "The id of the organization to create the role in. If not provided, the user's active organization will be used." }),
+  role: string5().meta({ description: "The name of the role to create" }),
+  permission: record(string5(), array2(string5())).meta({ description: "The permission to assign to the role" })
+});
+var deleteOrgRoleBodySchema = object2({ organizationId: string5().optional().meta({ description: "The id of the organization to create the role in. If not provided, the user's active organization will be used." }) }).and(union2([object2({ roleName: string5().nonempty().meta({ description: "The name of the role to delete" }) }), object2({ roleId: string5().nonempty().meta({ description: "The id of the role to delete" }) })]));
+var listOrgRolesQuerySchema = object2({ organizationId: string5().optional().meta({ description: "The id of the organization to list roles for. If not provided, the user's active organization will be used." }) }).optional();
+var getOrgRoleQuerySchema = object2({ organizationId: string5().optional().meta({ description: "The id of the organization to read a role for. If not provided, the user's active organization will be used." }) }).and(union2([object2({ roleName: string5().nonempty().meta({ description: "The name of the role to read" }) }), object2({ roleId: string5().nonempty().meta({ description: "The id of the role to read" }) })])).optional();
+var roleNameOrIdSchema = union2([object2({ roleName: string5().nonempty().meta({ description: "The name of the role to update" }) }), object2({ roleId: string5().nonempty().meta({ description: "The id of the role to update" }) })]);
+
+// node_modules/better-auth/dist/plugins/organization/routes/crud-invites.mjs
+init_error2();
+var baseInvitationSchema = object2({
+  email: string5().meta({ description: "The email address of the user to invite" }),
+  role: union2([string5().meta({ description: "The role to assign to the user" }), array2(string5().meta({ description: "The roles to assign to the user" }))]).meta({ description: 'The role(s) to assign to the user. It can be `admin`, `member`, owner. Eg: "member"' }),
+  organizationId: string5().meta({ description: "The organization ID to invite the user to" }).optional(),
+  resend: boolean5().meta({ description: "Resend the invitation email, if the user is already invited. Eg: true" }).optional(),
+  teamId: union2([string5().meta({ description: "The team ID to invite the user to" }).optional(), array2(string5()).meta({ description: "The team IDs to invite the user to" }).optional()])
+});
+var acceptInvitationBodySchema = object2({ invitationId: string5().meta({ description: "The ID of the invitation to accept" }) });
+var rejectInvitationBodySchema = object2({ invitationId: string5().meta({ description: "The ID of the invitation to reject" }) });
+var cancelInvitationBodySchema = object2({ invitationId: string5().meta({ description: "The ID of the invitation to cancel" }) });
+var getInvitationQuerySchema = object2({ id: string5().meta({ description: "The ID of the invitation to get" }) });
+var listInvitationQuerySchema = object2({ organizationId: string5().meta({ description: "The ID of the organization to list invitations for" }).optional() }).optional();
+
+// node_modules/better-auth/dist/plugins/organization/routes/crud-members.mjs
+init_error2();
+init_adapter();
+var baseMemberSchema = object2({
+  userId: exports_coerce2.string().meta({ description: 'The user Id which represents the user to be added as a member. If `null` is provided, then it\'s expected to provide session headers. Eg: "user-id"' }),
+  role: union2([string5(), array2(string5())]).meta({ description: 'The role(s) to assign to the new member. Eg: ["admin", "sale"]' }),
+  organizationId: string5().meta({ description: `An optional organization ID to pass. If not provided, will default to the user's active organization. Eg: "org-id"` }).optional(),
+  teamId: string5().meta({ description: 'An optional team ID to add the member to. Eg: "team-id"' }).optional()
+});
+var removeMemberBodySchema = object2({
+  memberIdOrEmail: string5().meta({ description: "The ID or email of the member to remove" }),
+  organizationId: string5().meta({ description: 'The ID of the organization to remove the member from. If not provided, the active organization will be used. Eg: "org-id"' }).optional()
+});
+var updateMemberRoleBodySchema = object2({
+  role: union2([string5(), array2(string5())]).meta({ description: 'The new role to be applied. This can be a string or array of strings representing the roles. Eg: ["admin", "sale"]' }),
+  memberId: string5().meta({ description: 'The member id to apply the role update to. Eg: "member-id"' }),
+  organizationId: string5().meta({ description: 'An optional organization ID which the member is a part of to apply the role update. If not provided, you must provide session headers to get the active organization. Eg: "organization-id"' }).optional()
+});
+var leaveOrganizationBodySchema = object2({ organizationId: string5().meta({ description: 'The organization Id for the member to leave. Eg: "organization-id"' }) });
+var getActiveMemberRoleQuerySchema = object2({
+  userId: string5().meta({ description: "The user ID to get the role for. If not provided, will default to the current user's" }).optional(),
+  organizationId: string5().meta({ description: `The organization ID to list members for. If not provided, will default to the user's active organization. Eg: "organization-id"` }).optional(),
+  organizationSlug: string5().meta({ description: `The organization slug to list members for. If not provided, will default to the user's active organization. Eg: "organization-slug"` }).optional()
+}).optional();
+
+// node_modules/better-auth/dist/plugins/organization/routes/crud-org.mjs
+init_error2();
+var baseOrganizationSchema = object2({
+  name: string5().min(1).meta({ description: "The name of the organization" }),
+  slug: string5().min(1).meta({ description: "The slug of the organization" }),
+  userId: exports_coerce2.string().meta({ description: 'The user id of the organization creator. If not provided, the current user will be used. Should only be used by admins or when called by the server. server-only. Eg: "user-id"' }).optional(),
+  logo: string5().meta({ description: "The logo of the organization" }).optional(),
+  metadata: record(string5(), any()).meta({ description: "The metadata of the organization" }).optional(),
+  keepCurrentActiveOrganization: boolean5().meta({ description: "Whether to keep the current active organization active after creating a new one. Eg: true" }).optional()
+});
+var checkOrganizationSlugBodySchema = object2({ slug: string5().meta({ description: 'The organization slug to check. Eg: "my-org"' }) });
+var baseUpdateOrganizationSchema = object2({
+  name: string5().min(1).meta({ description: "The name of the organization" }).optional(),
+  slug: string5().min(1).meta({ description: "The slug of the organization" }).optional(),
+  logo: string5().meta({ description: "The logo of the organization" }).optional(),
+  metadata: record(string5(), any()).meta({ description: "The metadata of the organization" }).optional()
+});
+var deleteOrganizationBodySchema = object2({ organizationId: string5().meta({ description: "The organization id to delete" }) });
+var getFullOrganizationQuerySchema = optional2(object2({
+  organizationId: string5().meta({ description: "The organization id to get" }).optional(),
+  organizationSlug: string5().meta({ description: "The organization slug to get" }).optional(),
+  membersLimit: number5().or(string5().transform((val) => parseInt(val))).meta({ description: "The limit of members to get. By default, it uses the membershipLimit option." }).optional()
+}));
+var setActiveOrganizationBodySchema = object2({
+  organizationId: string5().meta({ description: 'The organization id to set as active. It can be null to unset the active organization. Eg: "org-id"' }).nullable().optional(),
+  organizationSlug: string5().meta({ description: 'The organization slug to set as active. It can be null to unset the active organization if organizationId is not provided. Eg: "org-slug"' }).optional()
+});
+
+// node_modules/better-auth/dist/plugins/organization/schema.mjs
+init_id();
+var roleSchema = string5();
+var invitationStatus = _enum3([
+  "pending",
+  "accepted",
+  "rejected",
+  "canceled"
+]).default("pending");
+var organizationSchema = object2({
+  id: string5().default(generateId),
+  name: string5(),
+  slug: string5(),
+  logo: string5().nullish().optional(),
+  metadata: record(string5(), unknown2()).or(string5().transform((v) => JSON.parse(v))).optional(),
+  createdAt: date7()
+});
+var memberSchema = object2({
+  id: string5().default(generateId),
+  organizationId: string5(),
+  userId: exports_coerce2.string(),
+  role: roleSchema,
+  createdAt: date7().default(() => /* @__PURE__ */ new Date)
+});
+var invitationSchema = object2({
+  id: string5().default(generateId),
+  organizationId: string5(),
+  email: string5(),
+  role: roleSchema,
+  status: invitationStatus,
+  teamId: string5().nullish(),
+  inviterId: string5(),
+  expiresAt: date7(),
+  createdAt: date7().default(() => /* @__PURE__ */ new Date)
+});
+var teamSchema = object2({
+  id: string5().default(generateId),
+  name: string5().min(1),
+  organizationId: string5(),
+  createdAt: date7(),
+  updatedAt: date7().optional()
+});
+var teamMemberSchema = object2({
+  id: string5().default(generateId),
+  teamId: string5(),
+  userId: string5(),
+  createdAt: date7().default(() => /* @__PURE__ */ new Date)
+});
+var organizationRoleSchema = object2({
+  id: string5().default(generateId),
+  organizationId: string5(),
+  role: string5(),
+  permission: record(string5(), array2(string5())),
+  createdAt: date7().default(() => /* @__PURE__ */ new Date),
+  updatedAt: date7().optional()
+});
+var defaultRoles3 = [
+  "admin",
+  "member",
+  "owner"
+];
+var defaultRolesSchema = union2([_enum3(defaultRoles3), array2(_enum3(defaultRoles3))]);
+
+// node_modules/better-auth/dist/plugins/organization/routes/crud-team.mjs
+init_error2();
+var teamBaseSchema = object2({
+  name: string5().meta({ description: 'The name of the team. Eg: "my-team"' }),
+  organizationId: string5().meta({ description: 'The organization ID which the team will be created in. Defaults to the active organization. Eg: "organization-id"' }).optional()
+});
+var removeTeamBodySchema = object2({
+  teamId: string5().meta({ description: `The team ID of the team to remove. Eg: "team-id"` }),
+  organizationId: string5().meta({ description: `The organization ID which the team falls under. If not provided, it will default to the user's active organization. Eg: "organization-id"` }).optional()
+});
+var listOrganizationTeamsQuerySchema = optional2(object2({ organizationId: string5().meta({ description: `The organization ID which the teams are under to list. Defaults to the users active organization. Eg: "organization-id"` }).optional() }));
+var setActiveTeamBodySchema = object2({ teamId: string5().meta({ description: "The team id to set as active. It can be null to unset the active team" }).nullable().optional() });
+var listTeamMembersQuerySchema = optional2(object2({ teamId: string5().optional().meta({ description: "The team whose members we should return. If this is not provided the members of the current active team get returned." }) }));
+var addTeamMemberBodySchema = object2({
+  teamId: string5().meta({ description: "The team the user should be a member of." }),
+  userId: exports_coerce2.string().meta({ description: "The user Id which represents the user to be added as a member." })
+});
+var removeTeamMemberBodySchema = object2({
+  teamId: string5().meta({ description: "The team the user should be removed from." }),
+  userId: exports_coerce2.string().meta({ description: "The user which should be removed from the team." })
+});
+
+// node_modules/better-auth/dist/plugins/organization/organization.mjs
+init_error2();
+var createHasPermissionBodySchema = object2({ organizationId: string5().optional() }).and(union2([object2({
+  permission: record(string5(), array2(string5())),
+  permissions: _undefined5()
+}), object2({
+  permission: _undefined5(),
+  permissions: record(string5(), array2(string5()))
+})]));
+
+// node_modules/better-auth/dist/plugins/phone-number/error-codes.mjs
+init_error_codes();
+var PHONE_NUMBER_ERROR_CODES = defineErrorCodes({
+  INVALID_PHONE_NUMBER: "Invalid phone number",
+  PHONE_NUMBER_EXIST: "Phone number already exists",
+  PHONE_NUMBER_NOT_EXIST: "phone number isn't registered",
+  INVALID_PHONE_NUMBER_OR_PASSWORD: "Invalid phone number or password",
+  UNEXPECTED_ERROR: "Unexpected error",
+  OTP_NOT_FOUND: "OTP not found",
+  OTP_EXPIRED: "OTP expired",
+  INVALID_OTP: "Invalid OTP",
+  PHONE_NUMBER_NOT_VERIFIED: "Phone number not verified",
+  PHONE_NUMBER_CANNOT_BE_UPDATED: "Phone number cannot be updated",
+  SEND_OTP_NOT_IMPLEMENTED: "sendOTP not implemented",
+  TOO_MANY_ATTEMPTS: "Too many attempts"
+});
+
+// node_modules/better-auth/dist/plugins/phone-number/routes.mjs
+init_error2();
+var signInPhoneNumberBodySchema = object2({
+  phoneNumber: string5().meta({ description: 'Phone number to sign in. Eg: "+1234567890"' }),
+  password: string5().meta({ description: "Password to use for sign in." }),
+  rememberMe: boolean5().meta({ description: "Remember the session. Eg: true" }).optional()
+});
+var sendPhoneNumberOTPBodySchema = object2({ phoneNumber: string5().meta({ description: 'Phone number to send OTP. Eg: "+1234567890"' }) });
+var verifyPhoneNumberBodySchema = object2({
+  phoneNumber: string5().meta({ description: 'Phone number to verify. Eg: "+1234567890"' }),
+  code: string5().meta({ description: 'OTP code. Eg: "123456"' }),
+  disableSession: boolean5().meta({ description: "Disable session creation after verification. Eg: false" }).optional(),
+  updatePhoneNumber: boolean5().meta({ description: "Check if there is a session and update the phone number. Eg: true" }).optional()
+}).and(record(string5(), any()));
+var requestPasswordResetPhoneNumberBodySchema = object2({ phoneNumber: string5() });
+var resetPasswordPhoneNumberBodySchema = object2({
+  otp: string5().meta({ description: 'The one time password to reset the password. Eg: "123456"' }),
+  phoneNumber: string5().meta({ description: 'The phone number to the account which intends to reset the password for. Eg: "+1234567890"' }),
+  newPassword: string5().meta({ description: `The new password. Eg: "new-and-secure-password"` })
+});
+
+// node_modules/better-auth/dist/plugins/phone-number/index.mjs
+init_error2();
+
+// node_modules/better-auth/dist/plugins/siwe/index.mjs
+var getSiweNonceBodySchema = object2({
+  walletAddress: string5().regex(/^0[xX][a-fA-F0-9]{40}$/i).length(42),
+  chainId: number5().int().positive().optional().default(1)
+});
+
+// node_modules/better-auth/dist/plugins/two-factor/constant.mjs
+var TRUST_DEVICE_COOKIE_MAX_AGE = 720 * 60 * 60;
+
+// node_modules/better-auth/dist/plugins/two-factor/verify-two-factor.mjs
+init_error2();
+
+// node_modules/better-auth/dist/plugins/two-factor/backup-codes/index.mjs
+init_error2();
+init_json();
+var verifyBackupCodeBodySchema = object2({
+  code: string5().meta({ description: `A backup code to verify. Eg: "123456"` }),
+  disableSession: boolean5().meta({ description: "If true, the session cookie will not be set." }).optional(),
+  trustDevice: boolean5().meta({ description: "If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. Eg: true" }).optional()
+});
+var viewBackupCodesBodySchema = object2({ userId: exports_coerce2.string().meta({ description: `The user ID to view all backup codes. Eg: "user-id"` }) });
+var generateBackupCodesBodySchema = object2({ password: string5().meta({ description: "The users password." }) });
+
+// node_modules/better-auth/dist/plugins/two-factor/otp/index.mjs
+init_error2();
+var verifyOTPBodySchema = object2({
+  code: string5().meta({ description: 'The otp code to verify. Eg: "012345"' }),
+  trustDevice: boolean5().optional().meta({ description: "If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. Eg: true" })
+});
+var send2FaOTPBodySchema = object2({ trustDevice: boolean5().optional().meta({ description: "If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. Eg: true" }) }).optional();
+
+// node_modules/better-auth/dist/plugins/two-factor/totp/index.mjs
+init_error2();
+var generateTOTPBodySchema = object2({ secret: string5().meta({ description: "The secret to generate the TOTP code" }) });
+var getTOTPURIBodySchema = object2({ password: string5().meta({ description: "User password" }) });
+var verifyTOTPBodySchema = object2({
+  code: string5().meta({ description: 'The otp code to verify. Eg: "012345"' }),
+  trustDevice: boolean5().meta({ description: "If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. Eg: true" }).optional()
+});
+
+// node_modules/better-auth/dist/plugins/two-factor/index.mjs
+init_error2();
+var enableTwoFactorBodySchema = object2({
+  password: string5().meta({ description: "User password" }),
+  issuer: string5().meta({ description: "Custom issuer for the TOTP URI" }).optional()
+});
+var disableTwoFactorBodySchema = object2({ password: string5().meta({ description: "User password" }) });
+
+// node_modules/better-auth/dist/plugins/username/index.mjs
+init_error2();
+var signInUsernameBodySchema = object2({
+  username: string5().meta({ description: "The username of the user" }),
+  password: string5().meta({ description: "The password of the user" }),
+  rememberMe: boolean5().meta({ description: "Remember the user session" }).optional(),
+  callbackURL: string5().meta({ description: "The URL to redirect to after email verification" }).optional()
+});
+var isUsernameAvailableBodySchema = object2({ username: string5().meta({ description: "The username to check" }) });
+
 // node_modules/@better-auth/drizzle-adapter/dist/index.mjs
 init_adapter();
 init_env();
@@ -93167,11 +95209,11 @@ class PgEnumColumn extends PgColumn {
 function pgEnum(enumName, values) {
   return pgEnumWithSchema(enumName, values, undefined);
 }
-function pgEnumWithSchema(enumName, values, schema3) {
+function pgEnumWithSchema(enumName, values, schema11) {
   const enumInstance = Object.assign((name) => new PgEnumColumnBuilder(name ?? "", enumInstance), {
     enumName,
     enumValues: values,
-    schema: schema3,
+    schema: schema11,
     [isPgEnumSym]: true
   });
   return enumInstance;
@@ -93259,9 +95301,9 @@ class Table {
   [IsAlias] = false;
   [IsDrizzleTable] = true;
   [ExtraConfigBuilder] = undefined;
-  constructor(name, schema3, baseName) {
+  constructor(name, schema11, baseName) {
     this[TableName] = this[OriginalName] = name;
-    this[Schema] = schema3;
+    this[Schema] = schema11;
     this[BaseName] = baseName;
   }
 }
@@ -93620,11 +95662,11 @@ class View {
   static [entityKind] = "View";
   [ViewBaseConfig];
   [IsDrizzleView] = true;
-  constructor({ name: name2, schema: schema3, selectedFields, query }) {
+  constructor({ name: name2, schema: schema11, selectedFields, query }) {
     this[ViewBaseConfig] = {
       name: name2,
       originalName: name2,
-      schema: schema3,
+      schema: schema11,
       selectedFields,
       query,
       isExisting: !query,
@@ -94591,7 +96633,7 @@ class PgLineABC extends PgColumn {
     return `{${value.a},${value.b},${value.c}}`;
   }
 }
-function line2(a, b) {
+function line3(a, b) {
   const { name, config: config4 } = getColumnNameAndConfig(a, b);
   if (!config4?.mode || config4.mode === "tuple") {
     return new PgLineBuilder(name);
@@ -95238,7 +97280,7 @@ function getPgColumnBuilders() {
     interval,
     json: json3,
     jsonb,
-    line: line2,
+    line: line3,
     macaddr,
     macaddr8,
     numeric,
@@ -95274,8 +97316,8 @@ class PgTable extends Table {
   [EnableRLS] = false;
   [Table.Symbol.ExtraConfigBuilder] = undefined;
 }
-function pgTableWithSchema(name, columns, extraConfig, schema3, baseName = name) {
-  const rawTable = new PgTable(name, schema3, baseName);
+function pgTableWithSchema(name, columns, extraConfig, schema11, baseName = name) {
+  const rawTable = new PgTable(name, schema11, baseName);
   const parsedColumns = typeof columns === "function" ? columns(getPgColumnBuilders()) : columns;
   const builtColumns = Object.fromEntries(Object.entries(parsedColumns).map(([name2, colBuilderBase]) => {
     const colBuilder = colBuilderBase;
@@ -95415,14 +97457,14 @@ function getOrderByOperators() {
     desc
   };
 }
-function extractTablesRelationalConfig(schema3, configHelpers) {
-  if (Object.keys(schema3).length === 1 && "default" in schema3 && !is(schema3["default"], Table)) {
-    schema3 = schema3["default"];
+function extractTablesRelationalConfig(schema11, configHelpers) {
+  if (Object.keys(schema11).length === 1 && "default" in schema11 && !is(schema11["default"], Table)) {
+    schema11 = schema11["default"];
   }
   const tableNamesMap = {};
   const relationsBuffer = {};
   const tablesConfig = {};
-  for (const [key, value] of Object.entries(schema3)) {
+  for (const [key, value] of Object.entries(schema11)) {
     if (is(value, Table)) {
       const dbName = getTableUniqueName(value);
       const bufferedRelations = relationsBuffer[dbName];
@@ -95490,7 +97532,7 @@ function createMany(sourceTable) {
     return new Many(sourceTable, referencedTable, config4);
   };
 }
-function normalizeRelation(schema3, tableNamesMap, relation) {
+function normalizeRelation(schema11, tableNamesMap, relation) {
   if (is(relation, One) && relation.config) {
     return {
       fields: relation.config.fields,
@@ -95501,7 +97543,7 @@ function normalizeRelation(schema3, tableNamesMap, relation) {
   if (!referencedTableTsName) {
     throw new Error(`Table "${relation.referencedTable[Table.Symbol.Name]}" not found in schema`);
   }
-  const referencedTableConfig = schema3[referencedTableTsName];
+  const referencedTableConfig = schema11[referencedTableTsName];
   if (!referencedTableConfig) {
     throw new Error(`Table "${referencedTableTsName}" not found in schema`);
   }
@@ -95570,11 +97612,11 @@ function count(expression2) {
 var drizzleAdapter = (db3, config4) => {
   let lazyOptions = null;
   const createCustomAdapter = (db4) => ({ getFieldName, getDefaultFieldName, options }) => {
-    function getSchema2(model) {
-      const schema3 = config4.schema || db4._.fullSchema;
-      if (!schema3)
+    function getSchema3(model) {
+      const schema11 = config4.schema || db4._.fullSchema;
+      if (!schema11)
         throw new BetterAuthError("Drizzle adapter failed to initialize. Schema not found. Please provide a schema object in the adapter options object.");
-      const schemaModel = schema3[model];
+      const schemaModel = schema11[model];
       if (!schemaModel)
         throw new BetterAuthError(`[# Drizzle Adapter]: The model "${model}" was not found in the schema object. Please pass the schema directly to the adapter options.`);
       return schemaModel;
@@ -95583,7 +97625,7 @@ var drizzleAdapter = (db3, config4) => {
       if (config4.provider !== "mysql")
         return (await builder.returning())[0];
       await builder.execute();
-      const schemaModel = getSchema2(model);
+      const schemaModel = getSchema3(model);
       const builderVal = builder.config?.values;
       if (where?.length) {
         const clause = convertWhereClause(where.map((w) => {
@@ -95609,7 +97651,7 @@ var drizzleAdapter = (db3, config4) => {
       }
     };
     function convertWhereClause(where, model) {
-      const schemaModel = getSchema2(model);
+      const schemaModel = getSchema3(model);
       if (!where)
         return [];
       if (where.length === 1) {
@@ -95725,8 +97767,8 @@ var drizzleAdapter = (db3, config4) => {
         clause.push(orClause);
       return clause;
     }
-    function checkMissingFields(schema3, model, values) {
-      if (!schema3)
+    function checkMissingFields(schema11, model, values) {
+      if (!schema11)
         throw new BetterAuthError("Drizzle adapter failed to initialize. Drizzle Schema not found. Please provide a schema object in the adapter options object.");
       for (const key in values) {
         let fieldName;
@@ -95738,7 +97780,7 @@ var drizzleAdapter = (db3, config4) => {
         } catch {
           fieldName = key;
         }
-        if (!schema3[fieldName])
+        if (!schema11[fieldName])
           throw new BetterAuthError(`The field "${key}" does not exist in the "${model}" Drizzle schema. Please update your drizzle schema or re-generate using "npx auth@latest generate".`);
       }
     }
@@ -95765,12 +97807,12 @@ var drizzleAdapter = (db3, config4) => {
     }
     return {
       async create({ model, data: values }) {
-        const schemaModel = getSchema2(model);
+        const schemaModel = getSchema3(model);
         checkMissingFields(schemaModel, model, values);
         return await withReturning(model, db4.insert(schemaModel).values(values), values);
       },
       async findOne({ model, where, select, join }) {
-        const schemaModel = getSchema2(model);
+        const schemaModel = getSchema3(model);
         const clause = convertWhereClause(where, model);
         if (options.experimental?.joins) {
           const queryModel = getQueryModel(model);
@@ -95828,7 +97870,7 @@ var drizzleAdapter = (db3, config4) => {
         return res[0];
       },
       async findMany({ model, where, sortBy, limit, select, offset, join }) {
-        const schemaModel = getSchema2(model);
+        const schemaModel = getSchema3(model);
         const clause = where ? convertWhereClause(where, model) : [];
         const sortFn = sortBy?.direction === "desc" ? desc : asc;
         if (options.experimental?.joins) {
@@ -95907,27 +97949,27 @@ var drizzleAdapter = (db3, config4) => {
         return await builder.where(...clause);
       },
       async count({ model, where }) {
-        const schemaModel = getSchema2(model);
+        const schemaModel = getSchema3(model);
         const clause = where ? convertWhereClause(where, model) : [];
         return (await db4.select({ count: count() }).from(schemaModel).where(...clause))[0].count;
       },
       async update({ model, where, update: values }) {
-        const schemaModel = getSchema2(model);
+        const schemaModel = getSchema3(model);
         const clause = convertWhereClause(where, model);
         return await withReturning(model, db4.update(schemaModel).set(values).where(...clause), values, where);
       },
       async updateMany({ model, where, update: values }) {
-        const schemaModel = getSchema2(model);
+        const schemaModel = getSchema3(model);
         const clause = convertWhereClause(where, model);
         return await db4.update(schemaModel).set(values).where(...clause);
       },
       async delete({ model, where }) {
-        const schemaModel = getSchema2(model);
+        const schemaModel = getSchema3(model);
         const clause = convertWhereClause(where, model);
         return await db4.delete(schemaModel).where(...clause);
       },
       async deleteMany({ model, where }) {
-        const schemaModel = getSchema2(model);
+        const schemaModel = getSchema3(model);
         const clause = convertWhereClause(where, model);
         const res = await db4.delete(schemaModel).where(...clause);
         let count2 = 0;
@@ -96167,7 +98209,7 @@ function notSupported(x) {
 }
 
 // node_modules/postgres/src/types.js
-var types2 = {
+var types3 = {
   string: {
     to: 25,
     from: null,
@@ -96239,44 +98281,44 @@ class Builder extends NotTagged {
     this.first = first;
     this.rest = rest;
   }
-  build(before, parameters, types3, options) {
+  build(before, parameters, types4, options) {
     const keyword = builders.map(([x, fn]) => ({ fn, i: before.search(x) })).sort((a, b) => a.i - b.i).pop();
-    return keyword.i === -1 ? escapeIdentifiers(this.first, options) : keyword.fn(this.first, this.rest, parameters, types3, options);
+    return keyword.i === -1 ? escapeIdentifiers(this.first, options) : keyword.fn(this.first, this.rest, parameters, types4, options);
   }
 }
-function handleValue(x, parameters, types3, options) {
+function handleValue(x, parameters, types4, options) {
   let value = x instanceof Parameter ? x.value : x;
   if (value === undefined) {
     x instanceof Parameter ? x.value = options.transform.undefined : value = x = options.transform.undefined;
     if (value === undefined)
       throw Errors.generic("UNDEFINED_VALUE", "Undefined values are not allowed");
   }
-  return "$" + types3.push(x instanceof Parameter ? (parameters.push(x.value), x.array ? x.array[x.type || inferType(x.value)] || x.type || firstIsString(x.value) : x.type) : (parameters.push(x), inferType(x)));
+  return "$" + types4.push(x instanceof Parameter ? (parameters.push(x.value), x.array ? x.array[x.type || inferType(x.value)] || x.type || firstIsString(x.value) : x.type) : (parameters.push(x), inferType(x)));
 }
-var defaultHandlers = typeHandlers(types2);
-function stringify(q, string7, value, parameters, types3, options) {
+var defaultHandlers = typeHandlers(types3);
+function stringify(q, string7, value, parameters, types4, options) {
   for (let i = 1;i < q.strings.length; i++) {
-    string7 += stringifyValue(string7, value, parameters, types3, options) + q.strings[i];
+    string7 += stringifyValue(string7, value, parameters, types4, options) + q.strings[i];
     value = q.args[i];
   }
   return string7;
 }
-function stringifyValue(string7, value, parameters, types3, o) {
-  return value instanceof Builder ? value.build(string7, parameters, types3, o) : value instanceof Query ? fragment(value, parameters, types3, o) : value instanceof Identifier ? value.value : value && value[0] instanceof Query ? value.reduce((acc, x) => acc + " " + fragment(x, parameters, types3, o), "") : handleValue(value, parameters, types3, o);
+function stringifyValue(string7, value, parameters, types4, o) {
+  return value instanceof Builder ? value.build(string7, parameters, types4, o) : value instanceof Query ? fragment(value, parameters, types4, o) : value instanceof Identifier ? value.value : value && value[0] instanceof Query ? value.reduce((acc, x) => acc + " " + fragment(x, parameters, types4, o), "") : handleValue(value, parameters, types4, o);
 }
-function fragment(q, parameters, types3, options) {
+function fragment(q, parameters, types4, options) {
   q.fragment = true;
-  return stringify(q, q.strings[0], q.args[0], parameters, types3, options);
+  return stringify(q, q.strings[0], q.args[0], parameters, types4, options);
 }
-function valuesBuilder(first, parameters, types3, columns, options) {
-  return first.map((row) => "(" + columns.map((column) => stringifyValue("values", row[column], parameters, types3, options)).join(",") + ")").join(",");
+function valuesBuilder(first, parameters, types4, columns, options) {
+  return first.map((row) => "(" + columns.map((column) => stringifyValue("values", row[column], parameters, types4, options)).join(",") + ")").join(",");
 }
-function values(first, rest, parameters, types3, options) {
+function values(first, rest, parameters, types4, options) {
   const multi = Array.isArray(first[0]);
   const columns = rest.length ? rest.flat() : Object.keys(multi ? first[0] : first);
-  return valuesBuilder(multi ? first : [first], parameters, types3, columns, options);
+  return valuesBuilder(multi ? first : [first], parameters, types4, columns, options);
 }
-function select(first, rest, parameters, types3, options) {
+function select(first, rest, parameters, types4, options) {
   typeof first === "string" && (first = [first].concat(rest));
   if (Array.isArray(first))
     return escapeIdentifiers(first, options);
@@ -96284,7 +98326,7 @@ function select(first, rest, parameters, types3, options) {
   const columns = rest.length ? rest.flat() : Object.keys(first);
   return columns.map((x) => {
     value = first[x];
-    return (value instanceof Query ? fragment(value, parameters, types3, options) : value instanceof Identifier ? value.value : handleValue(value, parameters, types3, options)) + " as " + escapeIdentifier(options.transform.column.to ? options.transform.column.to(x) : x);
+    return (value instanceof Query ? fragment(value, parameters, types4, options) : value instanceof Identifier ? value.value : handleValue(value, parameters, types4, options)) + " as " + escapeIdentifier(options.transform.column.to ? options.transform.column.to(x) : x);
   }).join(",");
 }
 var builders = Object.entries({
@@ -96297,12 +98339,12 @@ var builders = Object.entries({
   as: select,
   returning: select,
   "\\(": select,
-  update(first, rest, parameters, types3, options) {
-    return (rest.length ? rest.flat() : Object.keys(first)).map((x) => escapeIdentifier(options.transform.column.to ? options.transform.column.to(x) : x) + "=" + stringifyValue("values", first[x], parameters, types3, options));
+  update(first, rest, parameters, types4, options) {
+    return (rest.length ? rest.flat() : Object.keys(first)).map((x) => escapeIdentifier(options.transform.column.to ? options.transform.column.to(x) : x) + "=" + stringifyValue("values", first[x], parameters, types4, options));
   },
-  insert(first, rest, parameters, types3, options) {
+  insert(first, rest, parameters, types4, options) {
     const columns = rest.length ? rest.flat() : Object.keys(Array.isArray(first) ? first[0] : first);
-    return "(" + escapeIdentifiers(columns, options) + ")values" + valuesBuilder(Array.isArray(first) ? first : [first], parameters, types3, columns, options);
+    return "(" + escapeIdentifiers(columns, options) + ")values" + valuesBuilder(Array.isArray(first) ? first : [first], parameters, types4, columns, options);
   }
 }).map(([x, fn]) => [new RegExp("((?:^|[\\s(])" + x + "(?:$|[\\s(]))(?![\\s\\S]*\\1)", "i"), fn]);
 function notTagged() {
@@ -96315,19 +98357,19 @@ function firstIsString(x) {
     return firstIsString(x[0]);
   return typeof x === "string" ? 1009 : 0;
 }
-var mergeUserTypes = function(types3) {
-  const user = typeHandlers(types3 || {});
+var mergeUserTypes = function(types4) {
+  const user = typeHandlers(types4 || {});
   return {
     serializers: Object.assign({}, serializers, user.serializers),
     parsers: Object.assign({}, parsers, user.parsers)
   };
 };
-function typeHandlers(types3) {
-  return Object.keys(types3).reduce((acc, k) => {
-    types3[k].from && [].concat(types3[k].from).forEach((x) => acc.parsers[x] = types3[k].parse);
-    if (types3[k].serialize) {
-      acc.serializers[types3[k].to] = types3[k].serialize;
-      types3[k].from && [].concat(types3[k].from).forEach((x) => acc.serializers[x] = types3[k].serialize);
+function typeHandlers(types4) {
+  return Object.keys(types4).reduce((acc, k) => {
+    types4[k].from && [].concat(types4[k].from).forEach((x) => acc.parsers[x] = types4[k].parse);
+    if (types4[k].serialize) {
+      acc.serializers[types4[k].to] = types4[k].serialize;
+      types4[k].from && [].concat(types4[k].from).forEach((x) => acc.serializers[x] = types4[k].serialize);
     }
     return acc;
   }, { parsers: {}, serializers: {} });
@@ -96450,7 +98492,7 @@ kebab.column.to = fromKebab;
 // node_modules/postgres/src/connection.js
 var import_net = __toESM(require("net"));
 var import_tls = __toESM(require("tls"));
-var import_crypto9 = __toESM(require("crypto"));
+var import_crypto29 = __toESM(require("crypto"));
 var import_stream = __toESM(require("stream"));
 var import_perf_hooks = require("perf_hooks");
 
@@ -96708,18 +98750,18 @@ function Connection(options, queues = {}, { onopen = noop4, onend = noop4, onclo
     ]);
   }
   function build(q) {
-    const parameters = [], types3 = [];
-    const string7 = stringify(q, q.strings[0], q.args[0], parameters, types3, options);
-    !q.tagged && q.args.forEach((x) => handleValue(x, parameters, types3, options));
+    const parameters = [], types4 = [];
+    const string7 = stringify(q, q.strings[0], q.args[0], parameters, types4, options);
+    !q.tagged && q.args.forEach((x) => handleValue(x, parameters, types4, options));
     q.prepare = options.prepare && ("prepare" in q.options ? q.options.prepare : true);
     q.string = string7;
-    q.signature = q.prepare && types3 + string7;
+    q.signature = q.prepare && types4 + string7;
     q.onlyDescribe && delete statements[q.signature];
     q.parameters = q.parameters || parameters;
     q.prepared = q.prepare && q.signature in statements;
     q.describeFirst = q.onlyDescribe || parameters.length && !q.prepared;
-    q.statement = q.prepared ? statements[q.signature] : { string: string7, types: types3, name: q.prepare ? statementId + statementCount++ : "" };
-    typeof options.debug === "function" && options.debug(id2, string7, parameters, types3);
+    q.statement = q.prepared ? statements[q.signature] : { string: string7, types: types4, name: q.prepare ? statementId + statementCount++ : "" };
+    typeof options.debug === "function" && options.debug(id2, string7, parameters, types4);
   }
   function write(x, fn) {
     chunk = chunk ? Buffer.concat([chunk, x]) : Buffer.from(x);
@@ -97031,14 +99073,14 @@ function Connection(options, queues = {}, { onopen = noop4, onend = noop4, onclo
     write(bytes_default().p().str(payload).z(1).end());
   }
   async function SASL() {
-    nonce = (await import_crypto9.default.randomBytes(18)).toString("base64");
+    nonce = (await import_crypto29.default.randomBytes(18)).toString("base64");
     bytes_default().p().str("SCRAM-SHA-256" + bytes_default.N);
     const i = bytes_default.i;
     write(bytes_default.inc(4).str("n,,n=*,r=" + nonce).i32(bytes_default.i - i - 4, i).end());
   }
   async function SASLContinue(x) {
     const res = x.toString("utf8", 9).split(",").reduce((acc, x2) => (acc[x2[0]] = x2.slice(2), acc), {});
-    const saltedPassword = await import_crypto9.default.pbkdf2Sync(await Pass(), Buffer.from(res.s, "base64"), parseInt(res.i), 32, "sha256");
+    const saltedPassword = await import_crypto29.default.pbkdf2Sync(await Pass(), Buffer.from(res.s, "base64"), parseInt(res.i), 32, "sha256");
     const clientKey = await hmac2(saltedPassword, "Client Key");
     const auth = "n=*,r=" + nonce + "," + "r=" + res.r + ",s=" + res.s + ",i=" + res.i + ",c=biws,r=" + res.r;
     serverSignature = (await hmac2(await hmac2(saltedPassword, "Server Key"), auth)).toString("base64");
@@ -97066,7 +99108,7 @@ function Connection(options, queues = {}, { onopen = noop4, onend = noop4, onclo
   }
   async function fetchArrayTypes() {
     needsTypes = false;
-    const types3 = await new Query([`
+    const types4 = await new Query([`
       select b.oid, b.typarray
       from pg_catalog.pg_type a
       left join pg_catalog.pg_type b on b.oid = a.typelem
@@ -97074,7 +99116,7 @@ function Connection(options, queues = {}, { onopen = noop4, onend = noop4, onclo
       group by b.oid, b.typarray
       order by b.oid
     `], [], execute);
-    types3.forEach(({ oid, typarray }) => addArrayType(oid, typarray));
+    types4.forEach(({ oid, typarray }) => addArrayType(oid, typarray));
   }
   function addArrayType(oid, typarray) {
     if (!!options.parsers[typarray] && !!options.serializers[typarray])
@@ -97205,13 +99247,13 @@ function Connection(options, queues = {}, { onopen = noop4, onend = noop4, onclo
   function UnknownAuth(x, type) {
     console.error("Postgres.js : Unknown Auth:", type);
   }
-  function Bind(parameters, types3, statement = "", portal = "") {
+  function Bind(parameters, types4, statement = "", portal = "") {
     let prev, type;
     bytes_default().B().str(portal + bytes_default.N).str(statement + bytes_default.N).i16(0).i16(parameters.length);
     parameters.forEach((x, i) => {
       if (x === null)
         return bytes_default.i32(4294967295);
-      type = types3[i];
+      type = types4[i];
       parameters[i] = x = type in options.serializers ? options.serializers[type](x) : "" + x;
       prev = bytes_default.i;
       bytes_default.inc(4).str(x).i32(bytes_default.i - prev - 4, prev);
@@ -97219,9 +99261,9 @@ function Connection(options, queues = {}, { onopen = noop4, onend = noop4, onclo
     bytes_default.i16(0);
     return bytes_default.end();
   }
-  function Parse(str, parameters, types3, name = "") {
+  function Parse(str, parameters, types4, name = "") {
     bytes_default().P().str(name + bytes_default.N).str(str + bytes_default.N).i16(parameters.length);
-    parameters.forEach((x, i) => bytes_default.i32(types3[i] || 0));
+    parameters.forEach((x, i) => bytes_default.i32(types4[i] || 0));
     return bytes_default.end();
   }
   function Describe(x, name = "") {
@@ -97259,13 +99301,13 @@ function parseError(x) {
   return error51;
 }
 function md5(x) {
-  return import_crypto9.default.createHash("md5").update(x).digest("hex");
+  return import_crypto29.default.createHash("md5").update(x).digest("hex");
 }
 function hmac2(key, x) {
-  return import_crypto9.default.createHmac("sha256", key).update(x).digest();
+  return import_crypto29.default.createHmac("sha256", key).update(x).digest();
 }
 function sha2562(x) {
-  return import_crypto9.default.createHash("sha256").update(x).digest();
+  return import_crypto29.default.createHash("sha256").update(x).digest();
 }
 function xor2(a, b2) {
   const length = Math.max(a.length, b2.length);
@@ -98026,18 +100068,18 @@ class CasingCache {
   getColumnCasing(column) {
     if (!column.keyAsName)
       return column.name;
-    const schema3 = column.table[Table.Symbol.Schema] ?? "public";
+    const schema11 = column.table[Table.Symbol.Schema] ?? "public";
     const tableName = column.table[Table.Symbol.OriginalName];
-    const key = `${schema3}.${tableName}.${column.name}`;
+    const key = `${schema11}.${tableName}.${column.name}`;
     if (!this.cache[key]) {
       this.cacheTable(column.table);
     }
     return this.cache[key];
   }
   cacheTable(table) {
-    const schema3 = table[Table.Symbol.Schema] ?? "public";
+    const schema11 = table[Table.Symbol.Schema] ?? "public";
     const tableName = table[Table.Symbol.OriginalName];
-    const tableKey = `${schema3}.${tableName}`;
+    const tableKey = `${schema11}.${tableName}`;
     if (!this.cachedTables[tableKey]) {
       for (const column of Object.values(table[Table.Symbol.Columns])) {
         const columnKey = `${tableKey}.${column.name}`;
@@ -98408,7 +100450,7 @@ class PgDialect {
   }
   buildRelationalQueryWithoutPK({
     fullSchema,
-    schema: schema3,
+    schema: schema11,
     tableNamesMap,
     table,
     tableConfig,
@@ -98502,17 +100544,17 @@ class PgDialect {
         queryConfig: selectedRelationConfigValue,
         relation
       } of selectedRelations) {
-        const normalizedRelation = normalizeRelation(schema3, tableNamesMap, relation);
+        const normalizedRelation = normalizeRelation(schema11, tableNamesMap, relation);
         const relationTableName = getTableUniqueName(relation.referencedTable);
         const relationTableTsName = tableNamesMap[relationTableName];
         const relationTableAlias = `${tableAlias}_${selectedRelationTsKey}`;
         const joinOn2 = and(...normalizedRelation.fields.map((field2, i) => eq(aliasedTableColumn(normalizedRelation.references[i], relationTableAlias), aliasedTableColumn(field2, tableAlias))));
         const builtRelation = this.buildRelationalQueryWithoutPK({
           fullSchema,
-          schema: schema3,
+          schema: schema11,
           tableNamesMap,
           table: fullSchema[relationTableTsName],
-          tableConfig: schema3[relationTableTsName],
+          tableConfig: schema11[relationTableTsName],
           queryConfig: is(relation, One) ? selectedRelationConfigValue === true ? { limit: 1 } : { ...selectedRelationConfigValue, limit: 1 } : selectedRelationConfigValue,
           tableAlias: relationTableAlias,
           joinOn: joinOn2,
@@ -99387,9 +101429,9 @@ class PgCountBuilder extends SQL {
 
 // node_modules/drizzle-orm/pg-core/query-builders/query.js
 class RelationalQueryBuilder {
-  constructor(fullSchema, schema3, tableNamesMap, table, tableConfig, dialect2, session) {
+  constructor(fullSchema, schema11, tableNamesMap, table, tableConfig, dialect2, session) {
     this.fullSchema = fullSchema;
-    this.schema = schema3;
+    this.schema = schema11;
     this.tableNamesMap = tableNamesMap;
     this.table = table;
     this.tableConfig = tableConfig;
@@ -99406,10 +101448,10 @@ class RelationalQueryBuilder {
 }
 
 class PgRelationalQuery extends QueryPromise {
-  constructor(fullSchema, schema3, tableNamesMap, table, tableConfig, dialect2, session, config4, mode) {
+  constructor(fullSchema, schema11, tableNamesMap, table, tableConfig, dialect2, session, config4, mode) {
     super();
     this.fullSchema = fullSchema;
-    this.schema = schema3;
+    this.schema = schema11;
     this.tableNamesMap = tableNamesMap;
     this.table = table;
     this.tableConfig = tableConfig;
@@ -99497,13 +101539,13 @@ class PgRaw extends QueryPromise {
 
 // node_modules/drizzle-orm/pg-core/db.js
 class PgDatabase {
-  constructor(dialect2, session, schema3) {
+  constructor(dialect2, session, schema11) {
     this.dialect = dialect2;
     this.session = session;
-    this._ = schema3 ? {
-      schema: schema3.schema,
-      fullSchema: schema3.fullSchema,
-      tableNamesMap: schema3.tableNamesMap,
+    this._ = schema11 ? {
+      schema: schema11.schema,
+      fullSchema: schema11.fullSchema,
+      tableNamesMap: schema11.tableNamesMap,
       session
     } : {
       schema: undefined,
@@ -99514,7 +101556,7 @@ class PgDatabase {
     this.query = {};
     if (this._.schema) {
       for (const [tableName, columns] of Object.entries(this._.schema)) {
-        this.query[tableName] = new RelationalQueryBuilder(schema3.fullSchema, this._.schema, this._.tableNamesMap, schema3.fullSchema[tableName], columns, dialect2, session);
+        this.query[tableName] = new RelationalQueryBuilder(schema11.fullSchema, this._.schema, this._.tableNamesMap, schema11.fullSchema[tableName], columns, dialect2, session);
       }
     }
   }
@@ -99745,9 +101787,9 @@ class PgSession {
 }
 
 class PgTransaction extends PgDatabase {
-  constructor(dialect2, session, schema3, nestedIndex = 0) {
-    super(dialect2, session, schema3);
-    this.schema = schema3;
+  constructor(dialect2, session, schema11, nestedIndex = 0) {
+    super(dialect2, session, schema11);
+    this.schema = schema11;
     this.nestedIndex = nestedIndex;
   }
   static [entityKind] = "PgTransaction";
@@ -99834,10 +101876,10 @@ class PostgresJsPreparedQuery extends PgPreparedQuery {
 }
 
 class PostgresJsSession extends PgSession {
-  constructor(client, dialect2, schema3, options = {}) {
+  constructor(client, dialect2, schema11, options = {}) {
     super(dialect2);
     this.client = client;
-    this.schema = schema3;
+    this.schema = schema11;
     this.options = options;
     this.logger = options.logger ?? new NoopLogger;
   }
@@ -99866,8 +101908,8 @@ class PostgresJsSession extends PgSession {
 }
 
 class PostgresJsTransaction extends PgTransaction {
-  constructor(dialect2, session, schema3, nestedIndex = 0) {
-    super(dialect2, session, schema3, nestedIndex);
+  constructor(dialect2, session, schema11, nestedIndex = 0) {
+    super(dialect2, session, schema11, nestedIndex);
     this.session = session;
   }
   static [entityKind] = "PostgresJsTransaction";
@@ -99899,17 +101941,17 @@ function construct(client, config4 = {}) {
   } else if (config4.logger !== false) {
     logger3 = config4.logger;
   }
-  let schema3;
+  let schema11;
   if (config4.schema) {
     const tablesConfig = extractTablesRelationalConfig(config4.schema, createTableRelationsHelpers);
-    schema3 = {
+    schema11 = {
       fullSchema: config4.schema,
       schema: tablesConfig.tables,
       tableNamesMap: tablesConfig.tableNamesMap
     };
   }
-  const session = new PostgresJsSession(client, dialect2, schema3, { logger: logger3 });
-  const db3 = new PostgresJsDatabase(dialect2, session, schema3);
+  const session = new PostgresJsSession(client, dialect2, schema11, { logger: logger3 });
+  const db3 = new PostgresJsDatabase(dialect2, session, schema11);
   db3.$client = client;
   return db3;
 }
@@ -100127,6 +102169,8 @@ var auth = betterAuth({
     provider: "pg",
     schema: exports_auth_schema
   }),
+  basePath: "/api/auth",
+  plugins: [admin()],
   advanced: {
     disableOriginCheck: process.env.TRUSTED_ORIGINS === "*"
   },
@@ -100335,14 +102379,14 @@ var validator = (target, validationFunc) => {
 };
 
 // node_modules/@hono/zod-validator/dist/index.js
-var zValidator = (target, schema3, hook) => validator(target, async (value, c) => {
+var zValidator = (target, schema11, hook) => validator(target, async (value, c) => {
   let validatorValue = value;
-  if (target === "header" && schema3 instanceof ZodObject3) {
-    const schemaKeys = Object.keys(schema3.shape);
+  if (target === "header" && schema11 instanceof ZodObject3) {
+    const schemaKeys = Object.keys(schema11.shape);
     const caseInsensitiveKeymap = Object.fromEntries(schemaKeys.map((key) => [key.toLowerCase(), key]));
     validatorValue = Object.fromEntries(Object.entries(value).map(([key, value2]) => [caseInsensitiveKeymap[key] || key, value2]));
   }
-  const result = await schema3.safeParseAsync(validatorValue);
+  const result = await schema11.safeParseAsync(validatorValue);
   if (hook) {
     const hookResult = await hook({ data: validatorValue, ...result, target }, c);
     if (hookResult) {
@@ -100760,7 +102804,17 @@ app.use("*", cors({
   allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
 }));
 app.use("*", logger());
-app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", (c) => auth.handler(c.req.raw));
+var AUTH_STAGE_PREFIX = /^\/(dev|prd|staging)\//;
+app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
+  const url2 = new URL(c.req.url);
+  url2.pathname = url2.pathname.replace(AUTH_STAGE_PREFIX, "/");
+  const req = new Request(url2.toString(), {
+    method: c.req.method,
+    headers: c.req.raw.headers,
+    body: c.req.method !== "GET" && c.req.method !== "HEAD" ? c.req.raw.body : undefined
+  });
+  return auth.handler(req);
+});
 app.route("/api/users", usersRoutes);
 app.route("/api/teams", teamsRoutes);
 app.route("/api/invitations", invitationsRoutes);
@@ -100769,7 +102823,29 @@ app.route("/api/tasks", tasksRoutes);
 app.route("/api/assets", assetsRoutes);
 app.route("/api/admin", adminRoutes);
 app.get("/api/health", (c) => c.json({ status: "ok" }));
-var handler = handle(app);
+var honoHandler = handle(app);
+var STAGE_PREFIX = /^\/(dev|prd|staging)\//;
+function stripStagePrefix(path2) {
+  return path2.replace(STAGE_PREFIX, "/");
+}
+var handler = async (event, context) => {
+  const ev = event;
+  const pathToCheck = ev.rawPath ?? ev.path;
+  if (typeof pathToCheck === "string" && STAGE_PREFIX.test(pathToCheck)) {
+    const newPath = stripStagePrefix(pathToCheck);
+    ev.path = newPath;
+    ev.rawPath = newPath;
+    const ctx = ev.requestContext;
+    if (ctx) {
+      ctx.path = newPath;
+      ctx.resourcePath = newPath;
+      const http = ctx.http;
+      if (http)
+        http.path = newPath;
+    }
+  }
+  return honoHandler(event, context);
+};
 if (!process.env.AWS_LAMBDA_FUNCTION_NAME) {
   const port = Number(process.env.PORT ?? 3001);
   const server = Bun.serve({
