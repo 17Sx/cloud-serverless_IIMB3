@@ -15,8 +15,9 @@ Required environment variables:
 import os
 import sys
 import subprocess
-import zipfile
 import tempfile
+import time
+import zipfile
 
 from dotenv import load_dotenv
 
@@ -80,6 +81,13 @@ def deploy(env: str) -> None:
             FunctionName=function_name,
             ZipFile=f.read(),
         )
+
+    time.sleep(10)
+
+    lambda_client.update_function_configuration(
+        FunctionName=function_name,
+        Timeout=30,
+    )
 
     os.unlink(zip_path)
     print(f"\nAPI deployed to Lambda '{function_name}' ({env})!")

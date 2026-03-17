@@ -102174,7 +102174,12 @@ var auth = betterAuth({
   baseURL: (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(/\/(dev|prd)\/?$/, ""),
   plugins: [admin()],
   advanced: {
-    disableOriginCheck: process.env.TRUSTED_ORIGINS === "*"
+    disableOriginCheck: process.env.TRUSTED_ORIGINS === "*",
+    disableCSRFCheck: process.env.TRUSTED_ORIGINS === "*",
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true
+    }
   },
   emailAndPassword: {
     enabled: true

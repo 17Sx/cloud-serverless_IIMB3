@@ -17,6 +17,11 @@ export const auth = betterAuth({
   plugins: [admin()],
   advanced: {
     disableOriginCheck: process.env.TRUSTED_ORIGINS === "*",
+    disableCSRFCheck: process.env.TRUSTED_ORIGINS === "*",
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+    },
   },
   emailAndPassword: {
     enabled: true,
