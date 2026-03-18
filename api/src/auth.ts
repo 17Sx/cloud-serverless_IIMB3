@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { createAuthMiddleware } from "better-auth/api";
 import { admin } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
@@ -57,4 +58,27 @@ export const auth = betterAuth({
       : (process.env.TRUSTED_ORIGINS ?? "http://localhost:3000")
           .split(",")
           .map((o) => o.trim()),
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      const path = ctx.path ?? "";
+      if (path.includes("sign-in/social")) {
+        const provider = (ctx.body as { provider?: string })?.provider ?? ctx.query?.provider ?? "?";
+        console.log(`[auth] Social sign-in init: provider=${provider}`);
+      }
+      if (path.includes("callback/google")) {
+        console.log("[auth] Google OAuth callback received");
+      }
+      if (path.includes("callback/github")) {
+        console.log("[auth] GitHub OAuth callback received");
+      }
+    }),
+    after: createAuthMiddleware(async (ctx) => {
+      const path = ctx.path ?? "";
+      const newSession = ctx.context?.newSession;
+      if ((path.includes("callback/google") || path.includes("callback/github")) && newSession) {
+        const provider = path.includes("google") ? "Google" : "GitHub";
+        console.log(`[auth] Social sign-in success: provider=${provider}, userId=${newSession.user.id}, email=${newSession.user.email}`);
+      }
+    }),
+  },
 });

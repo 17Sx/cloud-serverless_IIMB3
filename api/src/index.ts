@@ -46,6 +46,10 @@ app.use(
 app.use("*", logger());
 
 app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
+  const path = new URL(c.req.url).pathname;
+  if (path.includes("sign-in/social") || path.includes("callback/google") || path.includes("callback/github")) {
+    console.log(`[auth] ${c.req.method} ${path}`);
+  }
   const hasBody = c.req.method !== "GET" && c.req.method !== "HEAD";
   let body: ArrayBuffer | undefined;
   if (hasBody && c.req.raw.body) {
