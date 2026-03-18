@@ -84,9 +84,27 @@ def deploy(env: str) -> None:
 
     time.sleep(10)
 
+    suffix = env.upper()
+    oauth_sources = [
+        ("OAUTH_GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_ID"),
+        ("OAUTH_GOOGLE_CLIENT_SECRET", "GOOGLE_CLIENT_SECRET"),
+        (f"OAUTH_GITHUB_CLIENT_ID_{suffix}", "GITHUB_CLIENT_ID"),
+        (f"OAUTH_GITHUB_CLIENT_SECRET_{suffix}", "GITHUB_CLIENT_SECRET"),
+    ]
+    config = lambda_client.get_function_configuration(FunctionName=function_name)
+    env_vars = dict(config.get("Environment", {}).get("Variables", {}) or {})
+    for src_key, dest_key in oauth_sources:
+        val = os.environ.get(src_key) or os.environ.get(dest_key) or ""
+        if not val and "GITHUB" in src_key:
+            val = os.environ.get("OAUTH_GITHUB_CLIENT_ID" if "ID" in src_key else "OAUTH_GITHUB_CLIENT_SECRET") or ""
+        val = val.strip()
+        if val:
+            env_vars[dest_key] = val
+
     lambda_client.update_function_configuration(
         FunctionName=function_name,
         Timeout=30,
+        Environment={"Variables": env_vars},
     )
 
     os.unlink(zip_path)
