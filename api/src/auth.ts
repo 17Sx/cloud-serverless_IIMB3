@@ -5,16 +5,16 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
 import * as authSchema from "../auth-schema";
 
+const betterAuthUrl = process.env.BETTER_AUTH_URL ?? "http://localhost:3001";
+const oauthCallbackBase = process.env.OAUTH_CALLBACK_BASE_URL ?? betterAuthUrl;
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: authSchema,
   }),
   basePath: "/api/auth",
-  baseURL: (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(
-    /\/(dev|prd)\/?$/,
-    "",
-  ),
+  baseURL: betterAuthUrl,
   plugins: [admin()],
   advanced: {
     disableOriginCheck: process.env.TRUSTED_ORIGINS === "*",
@@ -34,6 +34,7 @@ export const auth = betterAuth({
           clientSecret:
             process.env.GOOGLE_CLIENT_SECRET ||
             process.env.OAUTH_GOOGLE_CLIENT_SECRET!,
+          redirectURI: `${oauthCallbackBase}/api/auth/callback/google`,
         },
       }),
     ...((process.env.GITHUB_CLIENT_ID || process.env.OAUTH_GITHUB_CLIENT_ID) &&
@@ -45,6 +46,7 @@ export const auth = betterAuth({
           clientSecret:
             process.env.GITHUB_CLIENT_SECRET ||
             process.env.OAUTH_GITHUB_CLIENT_SECRET!,
+          redirectURI: `${oauthCallbackBase}/api/auth/callback/github`,
         },
       }),
   },
