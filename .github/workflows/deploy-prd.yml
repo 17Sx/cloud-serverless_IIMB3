@@ -56,6 +56,11 @@ jobs:
           NEXT_PUBLIC_USER_SITE_URL: ${{ secrets.NEXT_PUBLIC_USER_SITE_URL }}
         run: python scripts/deploy.py prd
 
+      - name: Run migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PRD }}
+        run: python scripts/migrate.py prd
+
       - name: Deploy API to prd
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

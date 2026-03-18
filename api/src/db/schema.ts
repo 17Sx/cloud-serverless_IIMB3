@@ -127,3 +127,12 @@ export const taskAssets = pgTable("task_assets", {
 export const taskAssetsRelations = relations(taskAssets, ({ one }) => ({
   task: one(tasks, { fields: [taskAssets.taskId], references: [tasks.id] }),
 }));
+
+// ── Backups ──
+
+export const backups = pgTable("backups", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  s3Key: text("s3_key").notNull(),
+  filename: text("filename").notNull(),
+});
