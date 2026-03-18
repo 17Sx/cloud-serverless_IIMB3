@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import {
   S3Client,
   PutObjectCommand,
@@ -8,31 +8,14 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { db } from "../db";
-import { taskAssets, tasks, projects, teamMembers } from "../db/schema";
+import { taskAssets } from "../db/schema";
 import { requireAuth } from "../middleware/auth";
+import { verifyTaskAccess } from "../domain/verify-task-access";
 
 export const assetsRoutes = new Hono();
 
 const s3 = new S3Client({ region: process.env.AWS_REGION ?? "eu-west-3" });
 const bucket = process.env.S3_ASSETS_BUCKET ?? "";
-
-async function verifyTaskAccess(userId: string, taskId: string) {
-  const task = await db.query.tasks.findFirst({ where: eq(tasks.id, taskId) });
-  if (!task) return null;
-
-  const project = await db.query.projects.findFirst({
-    where: eq(projects.id, task.projectId),
-  });
-  if (!project) return null;
-
-  const member = await db.query.teamMembers.findFirst({
-    where: and(
-      eq(teamMembers.teamId, project.teamId),
-      eq(teamMembers.userId, userId)
-    ),
-  });
-  return member ? task : null;
-}
 
 // POST /api/assets/upload-url — get a presigned upload URL
 assetsRoutes.post("/upload-url", requireAuth, async (c) => {
@@ -47,7 +30,7 @@ assetsRoutes.post("/upload-url", requireAuth, async (c) => {
     return c.json({ error: "Forbidden" }, 403);
   }
 
-  const s3Key = `tasks/${taskId}/${Date.now()}-${filename}`;
+  const s3Key = `assets/tasks/${taskId}/${Date.now()}-${filename}`;
 
   const url = await getSignedUrl(
     s3,

@@ -136,13 +136,13 @@ def deploy(env: str) -> None:
         print(f"ERROR: Missing environment variables: {', '.join(missing)}")
         sys.exit(1)
 
-    # Step 1: npm ci
+    # Step 1: Install dependencies (bun install)
     print("\n[1/5] Installing dependencies...")
-    run(["npm", "ci"], cwd=CODE_DIR)
+    run(["bun", "install"], cwd=CODE_DIR)
 
-    # Step 2: npm run build
+    # Step 2: bun run build
     print("\n[2/5] Building Next.js (static export)...")
-    run(["npm", "run", "build"], cwd=CODE_DIR)
+    run(["bun", "run", "build"], cwd=CODE_DIR)
 
     if not os.path.isdir(OUT_DIR):
         print(f"ERROR: Build output directory not found: {OUT_DIR}")

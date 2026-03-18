@@ -28,6 +28,7 @@ import boto3
 VALID_ENVS = ("dev", "prd")
 API_DIR = os.path.join(os.path.dirname(__file__), "..", "api")
 DIST_DIR = os.path.join(API_DIR, "dist")
+EMAILS_DIR = os.path.join(os.path.dirname(__file__), "..", "emails")
 
 
 def run(cmd: list[str], cwd: str | None = None) -> None:
@@ -38,7 +39,7 @@ def run(cmd: list[str], cwd: str | None = None) -> None:
         sys.exit(result.returncode)
 
 
-def create_zip(source_dir: str) -> str:
+def create_zip(source_dir: str, emails_dir: str) -> str:
     tmp = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
     with zipfile.ZipFile(tmp.name, "w", zipfile.ZIP_DEFLATED) as zf:
         for root, _, files in os.walk(source_dir):
@@ -46,6 +47,13 @@ def create_zip(source_dir: str) -> str:
                 filepath = os.path.join(root, f)
                 arcname = os.path.relpath(filepath, source_dir)
                 zf.write(filepath, arcname)
+        # Inclure les templates email dans le zip (emails/invitation.html → /var/task/emails/)
+        if os.path.isdir(emails_dir):
+            for root, _, files in os.walk(emails_dir):
+                for f in files:
+                    filepath = os.path.join(root, f)
+                    arcname = os.path.join("emails", os.path.relpath(filepath, emails_dir))
+                    zf.write(filepath, arcname)
     return tmp.name
 
 
@@ -68,7 +76,7 @@ def deploy(env: str) -> None:
 
     # Step 2: Package
     print("\n[2/3] Creating deployment package...")
-    zip_path = create_zip(DIST_DIR)
+    zip_path = create_zip(DIST_DIR, EMAILS_DIR)
     zip_size = os.path.getsize(zip_path) / (1024 * 1024)
     print(f"  Package: {zip_path} ({zip_size:.1f} MB)")
 
@@ -84,9 +92,43 @@ def deploy(env: str) -> None:
 
     time.sleep(10)
 
+    suffix = env.upper()
+    oauth_sources = [
+        ("OAUTH_GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_ID"),
+        ("OAUTH_GOOGLE_CLIENT_SECRET", "GOOGLE_CLIENT_SECRET"),
+        (f"OAUTH_GITHUB_CLIENT_ID_{suffix}", "GITHUB_CLIENT_ID"),
+        (f"OAUTH_GITHUB_CLIENT_SECRET_{suffix}", "GITHUB_CLIENT_SECRET"),
+    ]
+    config = lambda_client.get_function_configuration(FunctionName=function_name)
+    env_vars = dict(config.get("Environment", {}).get("Variables", {}) or {})
+    for src_key, dest_key in oauth_sources:
+        val = os.environ.get(src_key) or os.environ.get(dest_key) or ""
+        if not val and "GITHUB" in src_key:
+            val = os.environ.get("OAUTH_GITHUB_CLIENT_ID" if "ID" in src_key else "OAUTH_GITHUB_CLIENT_SECRET") or ""
+        val = val.strip()
+        if val:
+            env_vars[dest_key] = val
+
+    direct_env_keys = [
+        f"BETTER_AUTH_URL_{suffix}",
+        f"BETTER_AUTH_SECRET_{suffix}",
+        f"TRUSTED_ORIGINS_{suffix}",
+    ]
+    dest_map = {
+        f"BETTER_AUTH_URL_{suffix}": "BETTER_AUTH_URL",
+        f"BETTER_AUTH_SECRET_{suffix}": "BETTER_AUTH_SECRET",
+        f"TRUSTED_ORIGINS_{suffix}": "TRUSTED_ORIGINS",
+    }
+    for src_key in direct_env_keys:
+        dest_key = dest_map[src_key]
+        val = (os.environ.get(src_key) or os.environ.get(dest_key) or "").strip()
+        if val:
+            env_vars[dest_key] = val
+
     lambda_client.update_function_configuration(
         FunctionName=function_name,
         Timeout=30,
+        Environment={"Variables": env_vars},
     )
 
     os.unlink(zip_path)
@@ -101,7 +143,7 @@ def main() -> None:
     env = sys.argv[1]
     print(f"=== Deploying API to {env.upper()} ===")
     deploy(env)
-
+    
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,18 @@
+import { config } from "dotenv";
+import path from "path";
+
+// Charger .env racine en dev local (credentials AWS, S3_ASSETS_BUCKET, etc.)
+config({ path: path.resolve(process.cwd(), "../.env") });
+
+// Validation des variables critiques en dev local
+if (!process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  const required = ["DATABASE_URL", "S3_ASSETS_BUCKET"];
+  const missing = required.filter((k) => !process.env[k]);
+  if (missing.length) {
+    console.warn(`[api] Warning: missing env: ${missing.join(", ")}`);
+  }
+}
+
 import { Hono } from "hono";
 import { handle } from "hono/aws-lambda";
 import { cors } from "hono/cors";
@@ -30,13 +45,22 @@ app.use(
 
 app.use("*", logger());
 
+const authBaseUrl = (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(/\/$/, "");
+
 app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
+  const url = new URL(c.req.url);
+  const path = url.pathname;
+  if (path.includes("sign-in/social") || path.includes("callback/google") || path.includes("callback/github")) {
+    console.log(`[auth] ${c.req.method} ${path}`);
+  }
+  const authUrl = authBaseUrl + path + url.search;
+
   const hasBody = c.req.method !== "GET" && c.req.method !== "HEAD";
   let body: ArrayBuffer | undefined;
   if (hasBody && c.req.raw.body) {
     body = await c.req.arrayBuffer();
   }
-  const req = new Request(c.req.url, {
+  const req = new Request(authUrl, {
     method: c.req.method,
     headers: c.req.raw.headers,
     body,

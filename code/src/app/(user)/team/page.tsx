@@ -34,6 +34,9 @@ function TeamDetailPage() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [projectName, setProjectName] = useState("");
   const [message, setMessage] = useState("");
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
+  const [editProjectName, setEditProjectName] = useState("");
+  const [editProjectDesc, setEditProjectDesc] = useState("");
   const didLoad = useRef(false);
 
   async function loadData() {
@@ -70,6 +73,42 @@ function TeamDetailPage() {
     await api.post("/api/projects", { teamId, name: projectName });
     setProjectName("");
     loadData();
+  };
+
+  const startEditProject = (project: Project) => {
+    setEditingProjectId(project.id);
+    setEditProjectName(project.name);
+    setEditProjectDesc(project.description ?? "");
+  };
+
+  const cancelEditProject = () => {
+    setEditingProjectId(null);
+    setEditProjectName("");
+    setEditProjectDesc("");
+  };
+
+  const saveEditProject = async (projectId: string) => {
+    if (!editProjectName.trim()) return;
+    try {
+      await api.patch(`/api/projects/${projectId}`, {
+        name: editProjectName.trim(),
+        description: editProjectDesc.trim() || undefined,
+      });
+      setEditingProjectId(null);
+      loadData();
+    } catch (err: unknown) {
+      setMessage(err instanceof Error ? err.message : "Erreur lors de la modification");
+    }
+  };
+
+  const deleteProject = async (projectId: string) => {
+    if (!confirm("Voulez-vous vraiment supprimer ce projet ?")) return;
+    try {
+      await api.delete(`/api/projects/${projectId}`);
+      loadData();
+    } catch (err: unknown) {
+      setMessage(err instanceof Error ? err.message : "Erreur lors de la suppression");
+    }
   };
 
   if (!teamId) {
@@ -138,16 +177,69 @@ function TeamDetailPage() {
           ) : (
             <div className="grid gap-3">
               {projects.map((p) => (
-                <Link
+                <div
                   key={p.id}
-                  href={`/project?id=${p.id}`}
-                  className="rounded-lg border border-zinc-200 p-4 transition hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
+                  className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
                 >
-                  <h3 className="font-medium text-zinc-900 dark:text-zinc-100">{p.name}</h3>
-                  {p.description && (
-                    <p className="mt-1 text-sm text-zinc-500">{p.description}</p>
+                  {editingProjectId === p.id ? (
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={editProjectName}
+                        onChange={(e) => setEditProjectName(e.target.value)}
+                        placeholder="Nom du projet"
+                        className="block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                      />
+                      <input
+                        type="text"
+                        value={editProjectDesc}
+                        onChange={(e) => setEditProjectDesc(e.target.value)}
+                        placeholder="Description (optionnel)"
+                        className="block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => saveEditProject(p.id)}
+                          className="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                        >
+                          Enregistrer
+                        </button>
+                        <button
+                          onClick={cancelEditProject}
+                          className="rounded-md bg-zinc-100 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <Link
+                        href={`/project?id=${p.id}`}
+                        className="flex-1 transition hover:opacity-80"
+                      >
+                        <h3 className="font-medium text-zinc-900 dark:text-zinc-100">{p.name}</h3>
+                        {p.description && (
+                          <p className="mt-1 text-sm text-zinc-500">{p.description}</p>
+                        )}
+                      </Link>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => startEditProject(p)}
+                          className="rounded px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          onClick={() => deleteProject(p.id)}
+                          className="rounded px-2 py-1 text-xs text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </div>
                   )}
-                </Link>
+                </div>
               ))}
             </div>
           )}

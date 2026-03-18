@@ -7,6 +7,7 @@ import {
   pgEnum,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import { user } from "../../auth-schema";
 
 export const invitationStatusEnum = pgEnum("invitation_status", [
   "pending",
@@ -49,6 +50,7 @@ export const teamMembers = pgTable("team_members", {
 
 export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
   team: one(teams, { fields: [teamMembers.teamId], references: [teams.id] }),
+  user: one(user, { fields: [teamMembers.userId], references: [user.id] }),
 }));
 
 // ── Invitations ──
@@ -125,3 +127,12 @@ export const taskAssets = pgTable("task_assets", {
 export const taskAssetsRelations = relations(taskAssets, ({ one }) => ({
   task: one(tasks, { fields: [taskAssets.taskId], references: [tasks.id] }),
 }));
+
+// ── Backups ──
+
+export const backups = pgTable("backups", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  s3Key: text("s3_key").notNull(),
+  filename: text("filename").notNull(),
+});

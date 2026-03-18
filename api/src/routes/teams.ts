@@ -5,6 +5,7 @@ import { eq, and } from "drizzle-orm";
 import { db } from "../db";
 import { teams, teamMembers, invitations } from "../db/schema";
 import { requireAuth } from "../middleware/auth";
+import { sendInvitationEmail } from "../services/ses";
 
 export const teamsRoutes = new Hono();
 
@@ -62,7 +63,15 @@ teamsRoutes.get("/:id", requireAuth, async (c) => {
 
   const team = await db.query.teams.findFirst({
     where: eq(teams.id, teamId),
-    with: { members: true },
+    with: {
+      members: {
+        with: {
+          user: {
+            columns: { id: true, name: true, email: true, image: true },
+          },
+        },
+      },
+    },
   });
 
   return c.json({ team });
@@ -94,10 +103,23 @@ teamsRoutes.post("/:id/invite", requireAuth, zValidator("json", inviteSchema), a
     return c.json({ error: "Invitation already pending" }, 409);
   }
 
+  const team = await db.query.teams.findFirst({ where: eq(teams.id, teamId) });
+
   const [invitation] = await db
     .insert(invitations)
     .values({ teamId, email, invitedBy: user.id })
     .returning();
+
+  // Envoie l'email d'invitation via SES.
+  // En sandbox AWS SES, seules les adresses vérifiées peuvent recevoir des emails :
+  // si l'envoi échoue (destinataire non vérifié), on log sans bloquer la réponse.
+  const siteUrl = process.env.USER_SITE_URL ?? "http://localhost:3000";
+  const inviteLink = `${siteUrl}/invitations`;
+  try {
+    await sendInvitationEmail(email, team?.name ?? teamId, user.name ?? user.email, inviteLink);
+  } catch (err) {
+    console.warn("[teams] SES email not sent (sandbox ou erreur):", (err as Error).message);
+  }
 
   return c.json({ invitation }, 201);
 });

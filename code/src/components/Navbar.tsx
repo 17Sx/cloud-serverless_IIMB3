@@ -31,6 +31,9 @@ export function Navbar() {
               <Link href="/invitations" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
                 Invitations
               </Link>
+              <Link href="/profile" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+                Profil
+              </Link>
             </>
           )}
         </div>
