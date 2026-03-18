@@ -97,9 +97,7 @@ function LoginForm() {
 
   const redirectTo = callbackUrl.startsWith("http")
     ? callbackUrl
-    : callbackUrl.startsWith("/")
-      ? callbackUrl
-      : `/${callbackUrl}`;
+    : `${typeof window !== "undefined" ? window.location.origin : ""}${callbackUrl.startsWith("/") ? callbackUrl : `/${callbackUrl}`}`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -4,60 +4,39 @@ var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-function __accessProp(key) {
-  return this[key];
-}
-var __toESMCache_node;
-var __toESMCache_esm;
 var __toESM = (mod, isNodeMode, target) => {
-  var canCache = mod != null && typeof mod === "object";
-  if (canCache) {
-    var cache = isNodeMode ? __toESMCache_node ??= new WeakMap : __toESMCache_esm ??= new WeakMap;
-    var cached = cache.get(mod);
-    if (cached)
-      return cached;
-  }
   target = mod != null ? __create(__getProtoOf(mod)) : {};
   const to = isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target;
   for (let key of __getOwnPropNames(mod))
     if (!__hasOwnProp.call(to, key))
       __defProp(to, key, {
-        get: __accessProp.bind(mod, key),
+        get: () => mod[key],
         enumerable: true
       });
-  if (canCache)
-    cache.set(mod, to);
   return to;
 };
+var __moduleCache = /* @__PURE__ */ new WeakMap;
 var __toCommonJS = (from) => {
-  var entry = (__moduleCache ??= new WeakMap).get(from), desc;
+  var entry = __moduleCache.get(from), desc;
   if (entry)
     return entry;
   entry = __defProp({}, "__esModule", { value: true });
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (var key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(entry, key))
-        __defProp(entry, key, {
-          get: __accessProp.bind(from, key),
-          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
-        });
-  }
+  if (from && typeof from === "object" || typeof from === "function")
+    __getOwnPropNames(from).map((key) => !__hasOwnProp.call(entry, key) && __defProp(entry, key, {
+      get: () => from[key],
+      enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+    }));
   __moduleCache.set(from, entry);
   return entry;
 };
-var __moduleCache;
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
-var __returnValue = (v) => v;
-function __exportSetter(name, newValue) {
-  this[name] = __returnValue.bind(null, newValue);
-}
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, {
       get: all[name],
       enumerable: true,
       configurable: true,
-      set: __exportSetter.bind(all, name)
+      set: (newValue) => all[name] = () => newValue
     });
 };
 var __esm = (fn, res) => () => (fn && (res = fn(fn = 0)), res);
@@ -15851,6 +15830,9 @@ var init_infer_result = () => {};
 
 // node_modules/kysely/dist/esm/index.js
 var init_esm = __esm(() => {
+  init_expression_builder();
+  init_log_once();
+  init_query_id();
   init_kysely();
   init_query_creator();
   init_expression();
@@ -21153,7 +21135,7 @@ var require_serde = __commonJS((exports2) => {
     }
     return value.slice(idx);
   };
-  var LazyJsonString = function LazyJsonString2(val) {
+  var LazyJsonString = function LazyJsonString(val) {
     const str = Object.assign(new String(val), {
       deserializeJSON() {
         return JSON.parse(String(val));
@@ -22739,7 +22721,7 @@ var require_dist_cjs20 = __commonJS((exports2) => {
       return httpRequest;
     }
   }
-  var createIsIdentityExpiredFunction = (expirationMs) => function isIdentityExpired2(identity) {
+  var createIsIdentityExpiredFunction = (expirationMs) => function isIdentityExpired(identity) {
     return doesIdentityRequireRefresh(identity) && identity.expiration.getTime() - Date.now() < expirationMs;
   };
   var EXPIRATION_MS = 300000;
@@ -32565,7 +32547,7 @@ var require_package3 = __commonJS((exports2, module2) => {
 
 // node_modules/@aws-sdk/util-user-agent-node/dist-cjs/index.js
 var require_dist_cjs44 = __commonJS((exports2) => {
-  var __dirname = "C:\\Dev\\IIM_A3\\CloudServerless\\cloud-serverless_IIMB3\\api\\node_modules\\@aws-sdk\\util-user-agent-node\\dist-cjs";
+  var __dirname = "C:\\Users\\noaob\\Documents\\GitHub\\cloud-serverless_IIMB3\\api\\node_modules\\@aws-sdk\\util-user-agent-node\\dist-cjs";
   var node_os = require("node:os");
   var node_process = require("node:process");
   var utilConfigProvider = require_dist_cjs33();
@@ -55375,7 +55357,7 @@ __export(exports_src, {
   default: () => src_default2
 });
 module.exports = __toCommonJS(exports_src);
-var import_dotenv = __toESM(require_main(), 1);
+var import_dotenv = __toESM(require_main());
 var import_path = __toESM(require("path"));
 
 // node_modules/hono/dist/compose.js
@@ -107222,13 +107204,16 @@ var client = src_default(connectionString, { ssl: false });
 var db3 = drizzle(client, { schema: { ...exports_schema, ...exports_auth_schema } });
 
 // src/auth.ts
+var rawAuthUrl = (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(/\/$/, "");
+var betterAuthUrl = rawAuthUrl + "/api/auth";
+var oauthCallbackBase = process.env.OAUTH_CALLBACK_BASE_URL ?? rawAuthUrl;
 var auth = betterAuth({
   database: drizzleAdapter(db3, {
     provider: "pg",
     schema: exports_auth_schema
   }),
   basePath: "/api/auth",
-  baseURL: (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(/\/(dev|prd)\/?$/, ""),
+  baseURL: betterAuthUrl,
   plugins: [admin()],
   advanced: {
     disableOriginCheck: process.env.TRUSTED_ORIGINS === "*",
@@ -107236,6 +107221,22 @@ var auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: "none",
       secure: true
+    }
+  },
+  socialProviders: {
+    ...(process.env.GOOGLE_CLIENT_ID || process.env.OAUTH_GOOGLE_CLIENT_ID) && (process.env.GOOGLE_CLIENT_SECRET || process.env.OAUTH_GOOGLE_CLIENT_SECRET) && {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID || process.env.OAUTH_GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET || process.env.OAUTH_GOOGLE_CLIENT_SECRET,
+        redirectURI: `${oauthCallbackBase}/api/auth/callback/google`
+      }
+    },
+    ...(process.env.GITHUB_CLIENT_ID || process.env.OAUTH_GITHUB_CLIENT_ID) && (process.env.GITHUB_CLIENT_SECRET || process.env.OAUTH_GITHUB_CLIENT_SECRET) && {
+      github: {
+        clientId: process.env.GITHUB_CLIENT_ID || process.env.OAUTH_GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET || process.env.OAUTH_GITHUB_CLIENT_SECRET,
+        redirectURI: `${oauthCallbackBase}/api/auth/callback/github`
+      }
     }
   },
   emailAndPassword: {
@@ -107250,7 +107251,30 @@ var auth = betterAuth({
       }
     }
   },
-  trustedOrigins: process.env.TRUSTED_ORIGINS === "*" ? ["*"] : (process.env.TRUSTED_ORIGINS ?? "http://localhost:3000").split(",").map((o) => o.trim())
+  trustedOrigins: process.env.TRUSTED_ORIGINS === "*" ? ["*"] : (process.env.TRUSTED_ORIGINS ?? "http://localhost:3000").split(",").map((o) => o.trim()),
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      const path2 = ctx.path ?? "";
+      if (path2.includes("sign-in/social")) {
+        const provider = ctx.body?.provider ?? ctx.query?.provider ?? "?";
+        console.log(`[auth] Social sign-in init: provider=${provider}`);
+      }
+      if (path2.includes("callback/google")) {
+        console.log("[auth] Google OAuth callback received");
+      }
+      if (path2.includes("callback/github")) {
+        console.log("[auth] GitHub OAuth callback received");
+      }
+    }),
+    after: createAuthMiddleware(async (ctx) => {
+      const path2 = ctx.path ?? "";
+      const newSession = ctx.context?.newSession;
+      if ((path2.includes("callback/google") || path2.includes("callback/github")) && newSession) {
+        const provider = path2.includes("google") ? "Google" : "GitHub";
+        console.log(`[auth] Social sign-in success: provider=${provider}, userId=${newSession.user.id}, email=${newSession.user.email}`);
+      }
+    })
+  }
 });
 
 // src/middleware/auth.ts
@@ -107469,7 +107493,7 @@ var zValidator = (target, schema11, hook) => validator(target, async (value, c) 
 });
 
 // src/services/ses.ts
-var import_client_ses = __toESM(require_dist_cjs57(), 1);
+var import_client_ses = __toESM(require_dist_cjs57());
 var fs3 = __toESM(require("fs"));
 var path2 = __toESM(require("path"));
 var ses = new import_client_ses.SESClient({ region: process.env.AWS_REGION ?? "eu-west-3" });
@@ -107814,8 +107838,8 @@ tasksRoutes.delete("/:id", requireAuth, async (c) => {
 });
 
 // src/routes/assets.ts
-var import_client_s3 = __toESM(require_dist_cjs75(), 1);
-var import_s3_request_presigner = __toESM(require_dist_cjs77(), 1);
+var import_client_s3 = __toESM(require_dist_cjs75());
+var import_s3_request_presigner = __toESM(require_dist_cjs77());
 
 // src/domain/verify-task-access.ts
 async function verifyTaskAccess(userId, taskId) {
@@ -108077,13 +108101,20 @@ app.use("*", cors({
   allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
 }));
 app.use("*", logger());
+var authBaseUrl = (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(/\/$/, "");
 app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
+  const url2 = new URL(c.req.url);
+  const path4 = url2.pathname;
+  if (path4.includes("sign-in/social") || path4.includes("callback/google") || path4.includes("callback/github")) {
+    console.log(`[auth] ${c.req.method} ${path4}`);
+  }
+  const authUrl = authBaseUrl + path4 + url2.search;
   const hasBody = c.req.method !== "GET" && c.req.method !== "HEAD";
   let body;
   if (hasBody && c.req.raw.body) {
     body = await c.req.arrayBuffer();
   }
-  const req = new Request(c.req.url, {
+  const req = new Request(authUrl, {
     method: c.req.method,
     headers: c.req.raw.headers,
     body

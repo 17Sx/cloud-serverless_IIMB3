@@ -23,7 +23,7 @@ function SocialButton({
     setLoading(true);
     setError("");
     await signIn.social(
-      { provider, callbackURL: "/teams" },
+      { provider, callbackURL: `${typeof window !== "undefined" ? window.location.origin : ""}/teams` },
       {
         onError: (ctx) => {
           setError(ctx.error.message ?? "Erreur de connexion");

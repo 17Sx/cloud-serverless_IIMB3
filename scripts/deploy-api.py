@@ -109,6 +109,22 @@ def deploy(env: str) -> None:
         if val:
             env_vars[dest_key] = val
 
+    direct_env_keys = [
+        f"BETTER_AUTH_URL_{suffix}",
+        f"BETTER_AUTH_SECRET_{suffix}",
+        f"TRUSTED_ORIGINS_{suffix}",
+    ]
+    dest_map = {
+        f"BETTER_AUTH_URL_{suffix}": "BETTER_AUTH_URL",
+        f"BETTER_AUTH_SECRET_{suffix}": "BETTER_AUTH_SECRET",
+        f"TRUSTED_ORIGINS_{suffix}": "TRUSTED_ORIGINS",
+    }
+    for src_key in direct_env_keys:
+        dest_key = dest_map[src_key]
+        val = (os.environ.get(src_key) or os.environ.get(dest_key) or "").strip()
+        if val:
+            env_vars[dest_key] = val
+
     lambda_client.update_function_configuration(
         FunctionName=function_name,
         Timeout=30,
