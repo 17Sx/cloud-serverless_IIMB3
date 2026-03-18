@@ -45,17 +45,22 @@ app.use(
 
 app.use("*", logger());
 
+const authBaseUrl = (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(/\/$/, "");
+
 app.on(["POST", "GET", "OPTIONS"], "/api/auth/**", async (c) => {
-  const path = new URL(c.req.url).pathname;
+  const url = new URL(c.req.url);
+  const path = url.pathname;
   if (path.includes("sign-in/social") || path.includes("callback/google") || path.includes("callback/github")) {
     console.log(`[auth] ${c.req.method} ${path}`);
   }
+  const authUrl = authBaseUrl + path + url.search;
+
   const hasBody = c.req.method !== "GET" && c.req.method !== "HEAD";
   let body: ArrayBuffer | undefined;
   if (hasBody && c.req.raw.body) {
     body = await c.req.arrayBuffer();
   }
-  const req = new Request(c.req.url, {
+  const req = new Request(authUrl, {
     method: c.req.method,
     headers: c.req.raw.headers,
     body,

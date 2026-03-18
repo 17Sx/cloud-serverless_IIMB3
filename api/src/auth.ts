@@ -5,8 +5,9 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
 import * as authSchema from "../auth-schema";
 
-const betterAuthUrl = process.env.BETTER_AUTH_URL ?? "http://localhost:3001";
-const oauthCallbackBase = process.env.OAUTH_CALLBACK_BASE_URL ?? betterAuthUrl;
+const rawAuthUrl = (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(/\/$/, "");
+const betterAuthUrl = rawAuthUrl + "/api/auth";
+const oauthCallbackBase = process.env.OAUTH_CALLBACK_BASE_URL ?? rawAuthUrl;
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
