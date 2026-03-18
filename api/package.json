@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target node --format cjs",
+    "build:cron": "bun build src/cron.ts --outdir dist-cron --target node --format cjs",
     "start": "bun run src/index.ts"
   },
   "dependencies": {
