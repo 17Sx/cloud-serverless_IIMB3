@@ -11,10 +11,8 @@ export const auth = betterAuth({
     schema: authSchema,
   }),
   basePath: "/api/auth",
-  baseURL: (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(
-    /\/(dev|prd)\/?$/,
-    "",
-  ),
+  // Garder /dev ou /prd pour que redirect_uri Google corresponde à l'URL API Gateway
+  baseURL: (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").replace(/\/$/, ""),
   plugins: [admin()],
   advanced: {
     disableOriginCheck: process.env.TRUSTED_ORIGINS === "*",
@@ -26,17 +24,25 @@ export const auth = betterAuth({
   },
   socialProviders: {
     ...((process.env.GOOGLE_CLIENT_ID || process.env.OAUTH_GOOGLE_CLIENT_ID) &&
-      (process.env.GOOGLE_CLIENT_SECRET || process.env.OAUTH_GOOGLE_CLIENT_SECRET) && {
+      (process.env.GOOGLE_CLIENT_SECRET ||
+        process.env.OAUTH_GOOGLE_CLIENT_SECRET) && {
         google: {
-          clientId: process.env.GOOGLE_CLIENT_ID || process.env.OAUTH_GOOGLE_CLIENT_ID!,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET || process.env.OAUTH_GOOGLE_CLIENT_SECRET!,
+          clientId:
+            process.env.GOOGLE_CLIENT_ID || process.env.OAUTH_GOOGLE_CLIENT_ID!,
+          clientSecret:
+            process.env.GOOGLE_CLIENT_SECRET ||
+            process.env.OAUTH_GOOGLE_CLIENT_SECRET!,
         },
       }),
     ...((process.env.GITHUB_CLIENT_ID || process.env.OAUTH_GITHUB_CLIENT_ID) &&
-      (process.env.GITHUB_CLIENT_SECRET || process.env.OAUTH_GITHUB_CLIENT_SECRET) && {
+      (process.env.GITHUB_CLIENT_SECRET ||
+        process.env.OAUTH_GITHUB_CLIENT_SECRET) && {
         github: {
-          clientId: process.env.GITHUB_CLIENT_ID || process.env.OAUTH_GITHUB_CLIENT_ID!,
-          clientSecret: process.env.GITHUB_CLIENT_SECRET || process.env.OAUTH_GITHUB_CLIENT_SECRET!,
+          clientId:
+            process.env.GITHUB_CLIENT_ID || process.env.OAUTH_GITHUB_CLIENT_ID!,
+          clientSecret:
+            process.env.GITHUB_CLIENT_SECRET ||
+            process.env.OAUTH_GITHUB_CLIENT_SECRET!,
         },
       }),
   },
@@ -62,7 +68,10 @@ export const auth = betterAuth({
     before: createAuthMiddleware(async (ctx) => {
       const path = ctx.path ?? "";
       if (path.includes("sign-in/social")) {
-        const provider = (ctx.body as { provider?: string })?.provider ?? ctx.query?.provider ?? "?";
+        const provider =
+          (ctx.body as { provider?: string })?.provider ??
+          ctx.query?.provider ??
+          "?";
         console.log(`[auth] Social sign-in init: provider=${provider}`);
       }
       if (path.includes("callback/google")) {
@@ -75,9 +84,15 @@ export const auth = betterAuth({
     after: createAuthMiddleware(async (ctx) => {
       const path = ctx.path ?? "";
       const newSession = ctx.context?.newSession;
-      if ((path.includes("callback/google") || path.includes("callback/github")) && newSession) {
+      if (
+        (path.includes("callback/google") ||
+          path.includes("callback/github")) &&
+        newSession
+      ) {
         const provider = path.includes("google") ? "Google" : "GitHub";
-        console.log(`[auth] Social sign-in success: provider=${provider}, userId=${newSession.user.id}, email=${newSession.user.email}`);
+        console.log(
+          `[auth] Social sign-in success: provider=${provider}, userId=${newSession.user.id}, email=${newSession.user.email}`,
+        );
       }
     }),
   },
