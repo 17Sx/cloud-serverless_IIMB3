@@ -4,14 +4,29 @@
 -- Ordre : enums -> user -> auth tables -> business tables
 -- ============================================================
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- ── Enums ──
 
-CREATE TYPE invitation_status AS ENUM ('pending', 'accepted', 'declined');
-CREATE TYPE task_status AS ENUM ('todo', 'in_progress', 'done');
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'invitation_status') THEN
+    CREATE TYPE invitation_status AS ENUM ('pending', 'accepted', 'declined');
+  END IF;
+END
+$$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'task_status') THEN
+    CREATE TYPE task_status AS ENUM ('todo', 'in_progress', 'done');
+  END IF;
+END
+$$;
 
 -- ── Table user (auth Better Auth) ──
 
-CREATE TABLE "user" (
+CREATE TABLE IF NOT EXISTS "user" (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
@@ -25,7 +40,7 @@ CREATE TABLE "user" (
 
 -- ── Tables auth ──
 
-CREATE TABLE session (
+CREATE TABLE IF NOT EXISTS session (
   id TEXT PRIMARY KEY,
   expires_at TIMESTAMP NOT NULL,
   token TEXT NOT NULL UNIQUE,
@@ -36,9 +51,9 @@ CREATE TABLE session (
   user_id TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE
 );
 
-CREATE INDEX session_user_id_idx ON session(user_id);
+CREATE INDEX IF NOT EXISTS session_user_id_idx ON session(user_id);
 
-CREATE TABLE account (
+CREATE TABLE IF NOT EXISTS account (
   id TEXT PRIMARY KEY,
   account_id TEXT NOT NULL,
   provider_id TEXT NOT NULL,
@@ -54,9 +69,9 @@ CREATE TABLE account (
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX account_user_id_idx ON account(user_id);
+CREATE INDEX IF NOT EXISTS account_user_id_idx ON account(user_id);
 
-CREATE TABLE verification (
+CREATE TABLE IF NOT EXISTS verification (
   id TEXT PRIMARY KEY,
   identifier TEXT NOT NULL,
   value TEXT NOT NULL,
@@ -65,18 +80,18 @@ CREATE TABLE verification (
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX verification_identifier_idx ON verification(identifier);
+CREATE INDEX IF NOT EXISTS verification_identifier_idx ON verification(identifier);
 
 -- ── Tables metier ──
 
-CREATE TABLE teams (
+CREATE TABLE IF NOT EXISTS teams (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(255) NOT NULL,
   owner_id TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE team_members (
+CREATE TABLE IF NOT EXISTS team_members (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
   user_id TEXT NOT NULL,
@@ -84,7 +99,7 @@ CREATE TABLE team_members (
   joined_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE invitations (
+CREATE TABLE IF NOT EXISTS invitations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
   email VARCHAR(255) NOT NULL,
@@ -93,7 +108,7 @@ CREATE TABLE invitations (
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE projects (
+CREATE TABLE IF NOT EXISTS projects (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
   name VARCHAR(255) NOT NULL,
@@ -101,7 +116,7 @@ CREATE TABLE projects (
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE tasks (
+CREATE TABLE IF NOT EXISTS tasks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
   name VARCHAR(255) NOT NULL,
@@ -111,7 +126,7 @@ CREATE TABLE tasks (
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE task_assets (
+CREATE TABLE IF NOT EXISTS task_assets (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   task_id UUID NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
   s3_key TEXT NOT NULL,
