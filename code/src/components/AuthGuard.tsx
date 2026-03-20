@@ -5,6 +5,33 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const USER_SITE = (process.env.NEXT_PUBLIC_USER_SITE_URL ?? "").replace(/\/$/, "");
+/** Hostname de la CF « admin » (ex. d1111abcd.cloudfront.net). Optionnel : précise qu’on est sur le bucket admin. */
+const ADMIN_SITE_HOSTNAME = (process.env.NEXT_PUBLIC_ADMIN_SITE_HOSTNAME ?? "").trim().toLowerCase();
+
+/**
+ * Rediriger vers le site user pour le login uniquement depuis le déploiement admin
+ * (autre origine, pas de /login utilisable).
+ *
+ * Sur la CF user dev, même si NEXT_PUBLIC_USER_SITE_URL est mal rempli (ex. URL prod),
+ * il ne faut pas envoyer vers un autre domaine : ça provoque une boucle (session sur une autre origine).
+ */
+function shouldSendToUserSiteLogin(): boolean {
+  if (!USER_SITE || typeof window === "undefined") return false;
+
+  try {
+    const userOrigin = new URL(USER_SITE).origin;
+    if (window.location.origin === userOrigin) return false;
+  } catch {
+    return false;
+  }
+
+  const host = window.location.hostname.toLowerCase();
+  if (ADMIN_SITE_HOSTNAME && host === ADMIN_SITE_HOSTNAME) return true;
+
+  const path = window.location.pathname.replace(/\/$/, "") || "/";
+  const onAdminPath = path === "/admin" || path.startsWith("/admin/");
+  return onAdminPath;
+}
 
 export function AuthGuard({
   children,
@@ -19,18 +46,10 @@ export function AuthGuard({
   useEffect(() => {
     if (isPending) return;
     if (!session) {
-      // Sur le domaine admin, /login n'existe pas → boucle. Rediriger vers le site user.
-      if (USER_SITE && typeof window !== "undefined") {
-        try {
-          const userOrigin = new URL(USER_SITE).origin;
-          if (window.location.origin !== userOrigin) {
-            const returnTo = encodeURIComponent(window.location.href);
-            window.location.href = `${USER_SITE}/login?callbackUrl=${returnTo}`;
-            return;
-          }
-        } catch {
-          /* USER_SITE invalide, fallback sur router */
-        }
+      if (shouldSendToUserSiteLogin()) {
+        const returnTo = encodeURIComponent(window.location.href);
+        window.location.href = `${USER_SITE}/login?callbackUrl=${returnTo}`;
+        return;
       }
       router.replace("/login");
       return;
