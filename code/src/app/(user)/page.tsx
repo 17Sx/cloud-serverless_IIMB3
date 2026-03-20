@@ -8,14 +8,17 @@ export default function HomePage() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
 
+  // Ne pas dépendre de `session` (référence instable → replace en boucle avec le header / navigation).
+  const userId = session?.user?.id;
+
   useEffect(() => {
     if (isPending) return;
-    if (!session) {
+    if (!userId) {
       router.replace("/login");
     } else {
       router.replace("/teams");
     }
-  }, [session, isPending, router]);
+  }, [isPending, userId, router]);
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center">

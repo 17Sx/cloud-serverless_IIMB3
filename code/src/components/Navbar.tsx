@@ -1,12 +1,48 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useLayoutEffect, useMemo, useState } from "react";
+import {
+  headerLogoCdnBaseUrl,
+  shouldBustBrowserLogoCache,
+} from "@/lib/public-asset-url";
+
+function useNavbarLogoSrc(): string | null {
+  const cacheKey = (process.env.NEXT_PUBLIC_ASSETS_CACHE_KEY ?? "").trim();
+  const bustBrowser = shouldBustBrowserLogoCache();
+  const base = headerLogoCdnBaseUrl("test.png");
+  const [bustStamp, setBustStamp] = useState<number | null>(null);
+
+  useLayoutEffect(() => {
+    if (!base || !bustBrowser || cacheKey) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- un seul set après montage, pas d’alternative conforme aux règles strictes
+    setBustStamp((prev) => prev ?? Date.now());
+  }, [base, bustBrowser, cacheKey]);
+
+  const isClient = typeof window !== "undefined";
+
+  return useMemo(() => {
+    if (!base) return null;
+    if (cacheKey) {
+      return `${base}?v=${encodeURIComponent(cacheKey)}`;
+    }
+    if (bustBrowser) {
+      if (!isClient || bustStamp === null) {
+        return base;
+      }
+      return `${base}?cb=${bustStamp}`;
+    }
+    return base;
+  }, [base, cacheKey, bustBrowser, isClient, bustStamp]);
+}
 
 export function Navbar() {
   const { data: session } = useSession();
   const router = useRouter();
+  const logoCdnUrl = useNavbarLogoSrc();
 
   const handleSignOut = async () => {
     await signOut({
@@ -20,7 +56,28 @@ export function Navbar() {
     <header className="border-b border-zinc-200 bg-white px-6 py-3 dark:border-zinc-800 dark:bg-zinc-950">
       <nav className="mx-auto flex max-w-5xl items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link href="/" className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          <Link
+            href="/teams"
+            className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+          >
+            {logoCdnUrl ? (
+              <Image
+                src={logoCdnUrl}
+                alt=""
+                width={32}
+                height={32}
+                unoptimized
+                suppressHydrationWarning
+                className="h-8 w-8 rounded-md object-cover ring-1 ring-zinc-200 dark:ring-zinc-700"
+              />
+            ) : (
+              <span
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-zinc-200 text-xs font-bold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                aria-hidden
+              >
+                T
+              </span>
+            )}
             TaskFlow
           </Link>
           {session && (

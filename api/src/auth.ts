@@ -9,6 +9,9 @@ const rawAuthUrl = (process.env.BETTER_AUTH_URL ?? "http://localhost:3001").repl
 const betterAuthUrl = rawAuthUrl + "/api/auth";
 const oauthCallbackBase = process.env.OAUTH_CALLBACK_BASE_URL ?? rawAuthUrl;
 
+/** API sur localhost : Postman/curl sans Origin, cookies HTTP sans Secure, CSRF assoupli. */
+const isLocalApiHost = /localhost|127\.0\.0\.1/.test(rawAuthUrl);
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -18,12 +21,13 @@ export const auth = betterAuth({
   baseURL: betterAuthUrl,
   plugins: [admin()],
   advanced: {
-    disableOriginCheck: process.env.TRUSTED_ORIGINS === "*",
-    disableCSRFCheck: process.env.TRUSTED_ORIGINS === "*",
-    defaultCookieAttributes: {
-      sameSite: "none",
-      secure: true,
-    },
+    disableOriginCheck:
+      process.env.TRUSTED_ORIGINS === "*" || isLocalApiHost,
+    disableCSRFCheck:
+      process.env.TRUSTED_ORIGINS === "*" || isLocalApiHost,
+    defaultCookieAttributes: isLocalApiHost
+      ? { sameSite: "lax", secure: false }
+      : { sameSite: "none", secure: true },
   },
   socialProviders: {
     ...((process.env.GOOGLE_CLIENT_ID || process.env.OAUTH_GOOGLE_CLIENT_ID) &&
