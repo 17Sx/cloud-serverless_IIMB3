@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import {
   headerLogoCdnBaseUrl,
   shouldBustBrowserLogoCache,
@@ -13,28 +14,29 @@ function useNavbarLogoSrc(): string | null {
   const cacheKey = (process.env.NEXT_PUBLIC_ASSETS_CACHE_KEY ?? "").trim();
   const bustBrowser = shouldBustBrowserLogoCache();
   const base = headerLogoCdnBaseUrl("test.png");
+  const [bustStamp, setBustStamp] = useState<number | null>(null);
 
-  const [src, setSrc] = useState<string | null>(() => {
+  useLayoutEffect(() => {
+    if (!base || !bustBrowser || cacheKey) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- un seul set après montage, pas d’alternative conforme aux règles strictes
+    setBustStamp((prev) => prev ?? Date.now());
+  }, [base, bustBrowser, cacheKey]);
+
+  const isClient = typeof window !== "undefined";
+
+  return useMemo(() => {
     if (!base) return null;
-    if (cacheKey) return `${base}?v=${encodeURIComponent(cacheKey)}`;
-    return base;
-  });
-
-  useEffect(() => {
-    if (!base) {
-      setSrc(null);
-      return;
-    }
     if (cacheKey) {
-      setSrc(`${base}?v=${encodeURIComponent(cacheKey)}`);
-      return;
+      return `${base}?v=${encodeURIComponent(cacheKey)}`;
     }
     if (bustBrowser) {
-      setSrc(`${base}?cb=${Date.now()}`);
+      if (!isClient || bustStamp === null) {
+        return base;
+      }
+      return `${base}?cb=${bustStamp}`;
     }
-  }, [base, cacheKey, bustBrowser]);
-
-  return src;
+    return base;
+  }, [base, cacheKey, bustBrowser, isClient, bustStamp]);
 }
 
 export function Navbar() {
@@ -59,11 +61,13 @@ export function Navbar() {
             className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100"
           >
             {logoCdnUrl ? (
-              <img
+              <Image
                 src={logoCdnUrl}
                 alt=""
                 width={32}
                 height={32}
+                unoptimized
+                suppressHydrationWarning
                 className="h-8 w-8 rounded-md object-cover ring-1 ring-zinc-200 dark:ring-zinc-700"
               />
             ) : (
