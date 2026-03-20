@@ -11,9 +11,11 @@ Options:
     --dir PATH      Local directory to upload (default: ./assets)
     --prefix PREFIX S3 key prefix (default: 'assets/')
 
-Required environment variables:
-    S3_ASSETS_BUCKET
-    AWS_REGION (optional, defaults to eu-west-3)
+Environment variables:
+    S3_ASSETS_BUCKET_DEV / S3_ASSETS_BUCKET_PRD — optionnel ; sinon défaut :
+        cloud-serverless-iimb3-assets-dev  /  cloud-serverless-iimb3-assets-prd
+    (S3_ASSETS_BUCKET sert à l’API pour les presigned URLs, pas à ce script.)
+    AWS_REGION (optionnel, défaut eu-west-3)
 """
 
 import os
@@ -28,6 +30,7 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 import boto3
+from botocore.exceptions import ClientError
 
 VALID_ENVS = ("dev", "prd")
 
@@ -61,18 +64,25 @@ def get_content_type(filepath: str) -> str:
 
 
 def get_bucket(env: str) -> str:
-    """Resolve the S3 bucket name (single bucket for all envs)."""
-    bucket = os.environ.get("S3_ASSETS_BUCKET")
-    if not bucket:
-        print("ERROR: S3_ASSETS_BUCKET is not set.")
-        sys.exit(1)
-    return bucket
+    """Bucket dédié par env (le nom unique cloud-serverless-iimb3-assets n’existe pas en prod)."""
+    suffix = env.upper()
+    explicit = os.environ.get(f"S3_ASSETS_BUCKET_{suffix}")
+    if explicit:
+        return explicit.strip()
+    return f"cloud-serverless-iimb3-assets-{env}"
 
 
 def get_cloudfront_id(env: str) -> str | None:
     """Return the CloudFront distribution ID for assets, or None."""
     suffix = env.upper()
     return os.environ.get(f"CF_ID_ASSETS_{suffix}")
+
+
+def _skip_upload_file(filename: str) -> bool:
+    """Ne pas pousser les fichiers de gestion de repo vers le CDN."""
+    if filename.startswith("."):
+        return True
+    return filename.lower() in ("thumbs.db", "desktop.ini")
 
 
 def upload_directory(
@@ -83,6 +93,8 @@ def upload_directory(
     count = 0
     for root, _, files in os.walk(local_dir):
         for filename in files:
+            if _skip_upload_file(filename):
+                continue
             filepath = os.path.join(root, filename)
             key = os.path.relpath(filepath, local_dir).replace("\\", "/")
             if prefix:
@@ -121,6 +133,20 @@ def deploy_assets(env: str, local_dir: str, prefix: str) -> None:
         sys.exit(1)
 
     s3_client = boto3.client("s3", region_name=region)
+
+    try:
+        s3_client.head_bucket(Bucket=bucket)
+    except ClientError as e:
+        code = e.response.get("Error", {}).get("Code", "")
+        if code in ("404", "NoSuchBucket", "403"):
+            print(
+                f"ERROR: bucket S3 introuvable ou inaccessible : {bucket!r} (région {region}).\n"
+                f"  Crée le bucket dans AWS ou définis S3_ASSETS_BUCKET_{env.upper()} dans .env."
+            )
+            sys.exit(1)
+        raise
+
+    print(f"  Target bucket: {bucket}")
 
     # Upload
     print(f"\n[1/2] Uploading assets from {local_dir}...")

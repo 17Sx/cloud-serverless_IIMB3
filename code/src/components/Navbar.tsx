@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { publicAssetUrl } from "@/lib/public-asset-url";
 
 export function Navbar() {
   const { data: session } = useSession();
@@ -20,7 +21,17 @@ export function Navbar() {
     <header className="border-b border-zinc-200 bg-white px-6 py-3 dark:border-zinc-800 dark:bg-zinc-950">
       <nav className="mx-auto flex max-w-5xl items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link href="/" className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+          >
+            <img
+              src={publicAssetUrl("test.png")}
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-md object-cover ring-1 ring-zinc-200 dark:ring-zinc-700"
+            />
             TaskFlow
           </Link>
           {session && (

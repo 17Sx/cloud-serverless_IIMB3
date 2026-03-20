@@ -1,5 +1,6 @@
 import { config } from "dotenv";
 import path from "path";
+import fs from "fs";
 
 config({ path: path.resolve(process.cwd(), "../.env") });
 
