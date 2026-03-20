@@ -3,12 +3,44 @@
 import Link from "next/link";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { headerLogoCdnUrl } from "@/lib/public-asset-url";
+import { useEffect, useState } from "react";
+import {
+  headerLogoCdnBaseUrl,
+  shouldBustBrowserLogoCache,
+} from "@/lib/public-asset-url";
+
+function useNavbarLogoSrc(): string | null {
+  const cacheKey = (process.env.NEXT_PUBLIC_ASSETS_CACHE_KEY ?? "").trim();
+  const bustBrowser = shouldBustBrowserLogoCache();
+  const base = headerLogoCdnBaseUrl("test.png");
+
+  const [src, setSrc] = useState<string | null>(() => {
+    if (!base) return null;
+    if (cacheKey) return `${base}?v=${encodeURIComponent(cacheKey)}`;
+    return base;
+  });
+
+  useEffect(() => {
+    if (!base) {
+      setSrc(null);
+      return;
+    }
+    if (cacheKey) {
+      setSrc(`${base}?v=${encodeURIComponent(cacheKey)}`);
+      return;
+    }
+    if (bustBrowser) {
+      setSrc(`${base}?cb=${Date.now()}`);
+    }
+  }, [base, cacheKey, bustBrowser]);
+
+  return src;
+}
 
 export function Navbar() {
   const { data: session } = useSession();
   const router = useRouter();
-  const logoCdnUrl = headerLogoCdnUrl("test.png");
+  const logoCdnUrl = useNavbarLogoSrc();
 
   const handleSignOut = async () => {
     await signOut({
