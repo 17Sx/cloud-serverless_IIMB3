@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { publicAssetUrl } from "@/lib/public-asset-url";
+import { headerLogoCdnUrl } from "@/lib/public-asset-url";
 
 export function Navbar() {
   const { data: session } = useSession();
   const router = useRouter();
+  const logoCdnUrl = headerLogoCdnUrl("test.png");
 
   const handleSignOut = async () => {
     await signOut({
@@ -22,16 +23,25 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-5xl items-center justify-between">
         <div className="flex items-center gap-6">
           <Link
-            href="/"
+            href="/teams"
             className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100"
           >
-            <img
-              src={publicAssetUrl("test.png")}
-              alt=""
-              width={32}
-              height={32}
-              className="h-8 w-8 rounded-md object-cover ring-1 ring-zinc-200 dark:ring-zinc-700"
-            />
+            {logoCdnUrl ? (
+              <img
+                src={logoCdnUrl}
+                alt=""
+                width={32}
+                height={32}
+                className="h-8 w-8 rounded-md object-cover ring-1 ring-zinc-200 dark:ring-zinc-700"
+              />
+            ) : (
+              <span
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-zinc-200 text-xs font-bold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                aria-hidden
+              >
+                T
+              </span>
+            )}
             TaskFlow
           </Link>
           {session && (
